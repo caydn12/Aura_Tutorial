@@ -6,9 +6,10 @@
 #include "GameFramework/PlayerController.h"
 #include "AuraPlayerController.generated.h"
 
-/**
- * 
- */
+class UInputMappingContext;
+class UInputAction;
+struct FInputActionValue;
+
 UCLASS()
 class AURA_API AAuraPlayerController : public APlayerController
 {
@@ -19,10 +20,16 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void SetupInputComponent() override;
 
 public:
 
 private:
+	void Move(const FInputActionValue& InputActionValue);
+
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
-	TObjectPtr<class UInputMappingContext> AuraContext;
+	TObjectPtr<UInputMappingContext> AuraContext;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TObjectPtr<UInputAction> MoveAction;
 };
