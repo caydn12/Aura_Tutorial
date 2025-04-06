@@ -4,6 +4,7 @@
 #include "Player/AuraPlayerController.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "Interaction/EnemyInterface.h"
 
 AAuraPlayerController::AAuraPlayerController()
 {
@@ -40,6 +41,13 @@ void AAuraPlayerController::SetupInputComponent()
 	EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AAuraPlayerController::Move);
 }
 
+void AAuraPlayerController::PlayerTick(float DeltaTime)
+{
+	Super::PlayerTick(DeltaTime);
+
+	CursorTrace();
+}
+
 void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
 {
 	const FVector2D MovementAxisVector = InputActionValue.Get<FVector2D>();
@@ -53,5 +61,34 @@ void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
 	{
 		ControlledPawn->AddMovementInput(ForwardDirection, MovementAxisVector.Y);
 		ControlledPawn->AddMovementInput(RightDirection, MovementAxisVector.X);
+	}
+}
+
+void AAuraPlayerController::CursorTrace()
+{
+	FHitResult CursorHit;
+	GetHitResultUnderCursor(ECC_Visibility, false, CursorHit);
+
+	if (CursorHit.bBlockingHit)
+	{
+		LastActor = NewActor;
+		NewActor = CursorHit.GetActor();
+
+		// Both actors are valid but are different objects
+		if (LastActor && NewActor && LastActor != NewActor)
+		{
+			LastActor->UnHighlightActor();
+			NewActor->HighlightActor();
+		}
+		// Last actor is valid and new actor is invalid
+		else if (LastActor && !NewActor)
+		{
+			LastActor->UnHighlightActor();
+		}
+		// New actor is valid and last actor is invalid
+		else if (NewActor && !LastActor)
+		{
+			NewActor->HighlightActor();
+		}
 	}
 }
