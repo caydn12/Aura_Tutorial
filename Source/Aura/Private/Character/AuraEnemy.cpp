@@ -12,8 +12,9 @@ AAuraEnemy::AAuraEnemy()
 void AAuraEnemy::HighlightActor()
 {
 	GetMesh()->SetRenderCustomDepth(true);
-	//GetMesh()->SetCustomDepthStencilValue(CUSTOM_DEPTH_RED);
 	Weapon->SetRenderCustomDepth(true);
+	// The material is only supposed to work on a specific custom depth value, but it functions regardless.
+	//GetMesh()->SetCustomDepthStencilValue(CUSTOM_DEPTH_RED);
 	//Weapon->SetCustomDepthStencilValue(CUSTOM_DEPTH_RED);
 }
 
