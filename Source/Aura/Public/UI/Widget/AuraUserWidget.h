@@ -21,7 +21,7 @@ protected:
 public:
 
 	UFUNCTION(BlueprintCallable)
-	void SetWdigetController(UObject* InWidgetController);
+	void SetWidgetController(UObject* InWidgetController);
 
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<UObject> WidgetController;
