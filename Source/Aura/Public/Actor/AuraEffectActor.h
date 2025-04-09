@@ -31,6 +31,8 @@ struct FEffectConfiguration
 {
 	GENERATED_BODY()
 
+	FEffectConfiguration() {}
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Applied Effects")
 	TSubclassOf<UGameplayEffect> GameplayEffectClass;
 
