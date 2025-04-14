@@ -10,7 +10,7 @@
  * 
  */
 UCLASS()
-class AURA_API UAuraAbilitySystemComponent : public UAbilitySystemComponent
+class AURA_API UAuraAbilitySystemComponent : public UAbilitySystemComponent // Read Uabilitysystemcomponent sometime
 {
 	GENERATED_BODY()
 	
