@@ -20,6 +20,8 @@ protected:
 
 	virtual void InitAbilityActorInfo();
 
+	void InitializePrimaryAttributes() const;
+
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<class USkeletalMeshComponent> Weapon;
 
@@ -28,6 +30,9 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<class UAttributeSet> AttributeSet;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Attributes")
+	TSubclassOf<class UGameplayEffect> DefaultPrimaryAttributes;
 
 public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
