@@ -25,6 +25,15 @@ protected:
 	TObjectPtr<class UAttributeSet> AttributeSet;
 
 public:
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UAttributeSet* GetAttributeSet() const;
+
+	int32 GetPlayerLevel() const;
+private:
+	UFUNCTION()
+	void OnRep_Level(int32 OldLevel);
+
+	UPROPERTY(VisibleAnywhere, ReplicatedUsing=OnRep_Level)
+	int32 Level = 1;
 };
