@@ -28,25 +28,14 @@ void UAuraAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 void UAuraAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
 {
 	Super::PreAttributeChange(Attribute, NewValue);
+
 	if (Attribute == GetHealthAttribute())
 	{
-		const float MaxHealthValue = GetMaxHealth();
-		NewValue = FMath::Clamp(NewValue, 0.0f, MaxHealthValue);
-	}
-	else if (Attribute == GetMaxHealthAttribute())
-	{
-		const float HealthValue = GetHealth();
-		NewValue = FMath::Clamp(NewValue, HealthValue, FLT_MAX);
+		NewValue = FMath::Clamp(NewValue, 0.0f, GetMaxHealth());
 	}
 	else if (Attribute == GetManaAttribute())
 	{
-		const float MaxManaValue = GetMaxMana();
-		NewValue = FMath::Clamp(NewValue, 0.0f, MaxManaValue);
-	}
-	else if (Attribute == GetMaxManaAttribute())
-	{
-		const float ManaValue = GetMana();
-		NewValue = FMath::Clamp(NewValue, ManaValue, FLT_MAX);
+		NewValue = FMath::Clamp(NewValue, 0.0f, GetMaxMana());
 	}
 }
 
@@ -91,6 +80,15 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectMo
 
 	FEffectProperties Props;
 	SetEffectProperties(Data, Props);
+
+	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
+	{
+		SetHealth(FMath::Clamp(GetHealth(), 0.0f, GetMaxHealth()));
+	}
+	if (Data.EvaluatedData.Attribute == GetManaAttribute())
+	{
+		SetMana(FMath::Clamp(GetMana(), 0.0f, GetMaxMana()));
+	}
 }
 
 void UAuraAttributeSet::OnRep_Health(const FGameplayAttributeData& OldHealth) const
