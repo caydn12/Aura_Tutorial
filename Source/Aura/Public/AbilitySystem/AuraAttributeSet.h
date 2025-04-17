@@ -13,6 +13,15 @@
 	GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
 	GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 
+// typedef is specific to the FGameplayAttribute() signature, but TStaticFuncPtr is generic to any signature
+// TBaseStaticDelegateInstance<FGameplayAttribute(), FDefaultDelegateUserPolicy>::FFuncPtr
+// Reduces to FGameplayAttribute(*)() function pointer
+// Function pointer aliased via typedef to FAttributeFuncPtr
+// typedef TBaseStaticDelegateInstance<FGameplayAttribute(), FDefaultDelegateUserPolicy>::FFuncPtr FAttributeFuncPtr
+// Converted to a templated function pointer
+template<class T>
+using TStaticFuncPtr = typename TBaseStaticDelegateInstance<T, FDefaultDelegateUserPolicy>::FFuncPtr;
+
 USTRUCT()
 struct FEffectProperties
 {
@@ -58,6 +67,18 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
 	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
+
+	// Static Function Pointer applied for real world application
+	TMap<FGameplayTag, TStaticFuncPtr<FGameplayAttribute()>> TagsToAttributes;
+
+	// Example of Static Function Pointer being used differently
+	// Function Pointer returns a float, and takes an int, float, int as parameters
+	// TStaticFuncPtr<float(int32, float, int32)> RandomCalculationPointer;
+	// float RandomCalculation(int32, float, int32);
+	// cpp
+	// RandomCalculationPointer = RandomCalculation;
+	// float F = RandomCalculationPointer(0, 0.0f, 0);
+
 
 	// Vital Attribute Replication
 
