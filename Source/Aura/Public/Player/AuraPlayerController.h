@@ -12,6 +12,7 @@ class UInputAction;
 struct FInputActionValue;
 class IEnemyInterface;
 class UAuraInputConfig;
+class UAuraAbilitySystemComponent;
 
 UCLASS()
 class AURA_API AAuraPlayerController : public APlayerController
@@ -29,6 +30,8 @@ public:
 	virtual void PlayerTick(float DeltaTime) override;
 
 private:
+	UAuraAbilitySystemComponent* GetASC();
+
 	void Move(const FInputActionValue& InputActionValue);
 	void CursorTrace();
 
@@ -48,4 +51,6 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TObjectPtr<UAuraInputConfig> InputConfig;
+
+	TObjectPtr<UAuraAbilitySystemComponent> AuraAbilitySystemComponent;
 };
