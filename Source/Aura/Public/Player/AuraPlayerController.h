@@ -48,14 +48,15 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputAction> MoveAction;
 
-	TScriptInterface<IEnemyInterface> LastActor;
-	TScriptInterface<IEnemyInterface> NewActor;
-
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TObjectPtr<UAuraInputConfig> InputConfig;
 
 	UPROPERTY()
 	TObjectPtr<UAuraAbilitySystemComponent> AuraAbilitySystemComponent;
+
+	TScriptInterface<IEnemyInterface> LastHoveredActor;
+	TScriptInterface<IEnemyInterface> HoveredActor;
+	FHitResult CursorHit;
 
 	// Click Movement
 	FVector CachedDestination = FVector::ZeroVector;

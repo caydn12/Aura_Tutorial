@@ -4,7 +4,8 @@
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/Abilities/AuraGameplayAbility.h"
 
-void UAuraAbilitySystemComponent::EffectApplied(UAbilitySystemComponent* AbilitySystemComponent,
+// When using Client RPCs, _Implementation must be added to the CPP Definition Signature
+void UAuraAbilitySystemComponent::ClientEffectApplied_Implementation(UAbilitySystemComponent* AbilitySystemComponent,
 												const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveEffectHandle)
 {
 	FGameplayTagContainer TagContainer;
@@ -15,7 +16,7 @@ void UAuraAbilitySystemComponent::EffectApplied(UAbilitySystemComponent* Ability
 
 void UAuraAbilitySystemComponent::AbilityActorInfoSet()
 {
-	OnGameplayEffectAppliedDelegateToSelf.AddUObject(this, &UAuraAbilitySystemComponent::EffectApplied);
+	OnGameplayEffectAppliedDelegateToSelf.AddUObject(this, &UAuraAbilitySystemComponent::ClientEffectApplied);
 }
 
 void UAuraAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>>& StartupAbilities)
@@ -26,7 +27,7 @@ void UAuraAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf
 		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
 		if (const UAuraGameplayAbility* AuraAbility = Cast<UAuraGameplayAbility>(AbilitySpec.Ability))
 		{
-			AbilitySpec.DynamicAbilityTags.AddTag(AuraAbility->StartupInputTag);
+			AbilitySpec.GetDynamicSpecSourceTags().AddTag(AuraAbility->StartupInputTag);
 			GiveAbility(AbilitySpec);
 		}
 	}
@@ -38,7 +39,7 @@ void UAuraAbilitySystemComponent::AbilityInputTagReleased(const FGameplayTag& In
 	{
 		for (FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
 		{
-			if (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag))
+			if (AbilitySpec.GetDynamicSpecSourceTags().HasTagExact(InputTag))
 			{
 				AbilitySpecInputReleased(AbilitySpec);
 			}
@@ -52,7 +53,7 @@ void UAuraAbilitySystemComponent::AbilityInputTagHeld(const FGameplayTag& InputT
 	{
 		for (FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
 		{
-			if (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag))
+			if (AbilitySpec.GetDynamicSpecSourceTags().HasTagExact(InputTag))
 			{
 				AbilitySpecInputPressed(AbilitySpec);
 				if (!AbilitySpec.IsActive())

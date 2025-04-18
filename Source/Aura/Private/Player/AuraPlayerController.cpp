@@ -87,29 +87,17 @@ void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
 
 void AAuraPlayerController::CursorTrace()
 {
-	FHitResult CursorHit;
 	GetHitResultUnderCursor(ECC_Visibility, false, CursorHit);
 
 	if (CursorHit.bBlockingHit)
 	{
-		LastActor = NewActor;
-		NewActor = CursorHit.GetActor();
+		LastHoveredActor = HoveredActor;
+		HoveredActor = CursorHit.GetActor();
 
-		// Both actors are valid but are different objects
-		if (LastActor && NewActor && LastActor != NewActor)
+		if (LastHoveredActor != HoveredActor)
 		{
-			LastActor->UnHighlightActor();
-			NewActor->HighlightActor();
-		}
-		// Last actor is valid and new actor is invalid
-		else if (LastActor && !NewActor)
-		{
-			LastActor->UnHighlightActor();
-		}
-		// New actor is valid and last actor is invalid
-		else if (NewActor && !LastActor)
-		{
-			NewActor->HighlightActor();
+			if (LastHoveredActor) LastHoveredActor->UnHighlightActor();
+			if (HoveredActor) HoveredActor->HighlightActor();
 		}
 	}
 }
@@ -137,7 +125,7 @@ void AAuraPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 {
 	if (InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_LMB))
 	{
-		bTargeting = NewActor ? true : false;
+		bTargeting = HoveredActor ? true : false;
 		bAutoRunning = false;
 	}
 }
@@ -160,7 +148,7 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 	}
 	else
 	{
-		APawn* ControlledPawn = GetPawn();
+		const APawn* ControlledPawn = GetPawn();
 
 		if (FollowTime <= ShortPressThreshold && ControlledPawn)
 		{
@@ -170,7 +158,7 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 				for (const FVector& PointLocation : NavPath->PathPoints)
 				{
 					Spline->AddSplinePoint(PointLocation, ESplineCoordinateSpace::World);
-					DrawDebugSphere(
+					/* DrawDebugSphere(
 						GetWorld(),
 						PointLocation,
 						8.0f,
@@ -178,7 +166,7 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 						FColor::Green,
 						false,
 						5.0f
-					);
+					); */
 				}
 
 				CachedDestination = NavPath->PathPoints[NavPath->PathPoints.Num() - 1];
@@ -211,10 +199,9 @@ void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 	{
 		FollowTime += GetWorld()->GetDeltaSeconds();
 
-		FHitResult Hit;
-		if (GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, Hit))
+		if (CursorHit.bBlockingHit)
 		{
-			CachedDestination = Hit.ImpactPoint;
+			CachedDestination = CursorHit.ImpactPoint;
 		}
 
 		if (APawn* ControlledPawn = GetPawn())
