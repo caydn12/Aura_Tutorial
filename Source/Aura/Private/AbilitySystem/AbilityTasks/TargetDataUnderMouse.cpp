@@ -18,11 +18,33 @@ void UTargetDataUnderMouse::Activate()
 	if (bIsLocallyControlled)
 	{
 		// On Client, Send mouse cursor data up to server
+		// Client will predict an outcome locally
+		// Server will wait for target data to be received before broadcasting the true outcome
 		SendMouseCursorData();
 	}
 	else
 	{
-		// TODO: On the server, so listen for target data.
+		// On the server, Listen for target data.
+		FGameplayAbilitySpecHandle SpecHandle = GetAbilitySpecHandle();
+		FPredictionKey ActivationPredictionKey = GetActivationPredictionKey();
+
+		AbilitySystemComponent.Get()->AbilityTargetDataSetDelegate(
+			SpecHandle,
+			ActivationPredictionKey).AddUObject(
+				this,
+				&UTargetDataUnderMouse::OnTargetDataReplicatedCallback
+			);
+
+		// returns true if the server has already received the target data it needed and has broadcast the change
+		const bool bCalledDelegate = AbilitySystemComponent.Get()->CallReplicatedTargetDataDelegatesIfSet(SpecHandle, ActivationPredictionKey);
+		if (bCalledDelegate)
+		{
+			
+		}
+		else
+		{
+			SetWaitingOnRemotePlayerData();
+		}
 	}
 }
 
@@ -49,6 +71,18 @@ void UTargetDataUnderMouse::SendMouseCursorData()
 		AbilitySystemComponent->ScopedPredictionKey
 	);
 
+	if (ShouldBroadcastAbilityTaskDelegates())
+	{
+		ValidData.Broadcast(DataHandle);
+	}
+}
+
+void UTargetDataUnderMouse::OnTargetDataReplicatedCallback(const FGameplayAbilityTargetDataHandle& DataHandle, FGameplayTag ActivationTag)
+{
+	// Target Data is received on server. Don't keep the cache of that information any longer.
+	AbilitySystemComponent->ConsumeClientReplicatedTargetData(GetAbilitySpecHandle(), GetActivationPredictionKey());
+
+	// Server is now ready to broadcast server side
 	if (ShouldBroadcastAbilityTaskDelegates())
 	{
 		ValidData.Broadcast(DataHandle);
