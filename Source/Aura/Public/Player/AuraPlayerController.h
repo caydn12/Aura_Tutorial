@@ -35,6 +35,7 @@ private:
 
 	void Move(const FInputActionValue& InputActionValue);
 	void CursorTrace();
+	void AutoRun();
 
 	// AuraInputComponent BindAbilityActions Callback Functions
 	void AbilityInputTagPressed(FGameplayTag InputTag);
