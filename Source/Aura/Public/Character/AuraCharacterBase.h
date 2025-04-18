@@ -24,13 +24,18 @@ protected:
 
 	virtual void InitAbilityActorInfo();
 
+	virtual FVector GetCombatSocketLocation() override;
+
 	void ApplyEffectToSelf(TSubclassOf<UGameplayEffect> GameplayEffectClass, float level) const;
 	void InitializeDefaultAttributes() const;
 	
 	void AddCharacterAbilities();
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category="Combat")
 	TObjectPtr<class USkeletalMeshComponent> Weapon;
+
+	UPROPERTY(EditDefaultsOnly, Category="Combat")
+	FName WeaponTipSocketName;
 
 	UPROPERTY()
 	TObjectPtr<class UAbilitySystemComponent> AbilitySystemComponent;
