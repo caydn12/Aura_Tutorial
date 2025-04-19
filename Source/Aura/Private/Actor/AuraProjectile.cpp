@@ -8,6 +8,8 @@
 #include "NiagaraFunctionLibrary.h"
 #include "Components/AudioComponent.h"
 #include "Aura/Aura.h" // ECC Projectile
+#include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystemComponent.h"
 
 AAuraProjectile::AAuraProjectile()
 {
@@ -65,6 +67,12 @@ void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, 
 
 	if (HasAuthority())
 	{
+		// Apply effect only on server. Effect will modify replicated data
+		if (UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
+		{
+			TargetASC->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
+		}
+
 		// If on server, Destroy the projectile on overlap with other actor
 		Destroy();
 	}
