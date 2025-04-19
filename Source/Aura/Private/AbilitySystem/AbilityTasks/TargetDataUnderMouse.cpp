@@ -51,7 +51,7 @@ void UTargetDataUnderMouse::Activate()
 void UTargetDataUnderMouse::SendMouseCursorData()
 {
 	// Defines the prediction scope as the scope of this function. Everything done in this function should be predicted.
-	FScopedPredictionWindow ScopedPrediction(AbilitySystemComponent.Get());
+	FScopedPredictionWindow ScopedPrediction(AbilitySystemComponent.Get()); // Read GameplayPrediction.h sometime
 
 	APlayerController* PC = Ability->GetCurrentActorInfo()->PlayerController.Get();
 
