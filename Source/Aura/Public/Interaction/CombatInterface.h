@@ -7,7 +7,8 @@
 #include "CombatInterface.generated.h"
 
 // This class does not need to be modified.
-UINTERFACE(MinimalAPI)
+// BlueprintType was added to expose the combat interface for use in blueprints
+UINTERFACE(MinimalAPI, BlueprintType)
 class UCombatInterface : public UInterface
 {
 	GENERATED_BODY()
@@ -24,4 +25,9 @@ class AURA_API ICombatInterface
 public:
 	virtual int32 GetPlayerLevel();
 	virtual FVector GetCombatSocketLocation();
+
+	// Blueprint Implementable Events cannot be virtual.
+	// Blueprint Implementable Events do not have C++ Definitions
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void UpdateFacingTarget(const FVector& Target);
 };
