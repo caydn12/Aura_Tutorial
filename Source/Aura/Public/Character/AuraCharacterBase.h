@@ -24,10 +24,11 @@ protected:
 
 	virtual void InitAbilityActorInfo();
 
+	virtual void InitializeDefaultAttributes() const;
+
 	virtual FVector GetCombatSocketLocation() override;
 
 	void ApplyEffectToSelf(TSubclassOf<UGameplayEffect> GameplayEffectClass, float level) const;
-	void InitializeDefaultAttributes() const;
 	
 	void AddCharacterAbilities();
 
