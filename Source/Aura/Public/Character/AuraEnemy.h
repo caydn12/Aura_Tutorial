@@ -9,6 +9,8 @@
 #include "AbilitySystem/Data/CharacterClassInfo.h"
 #include "AuraEnemy.generated.h"
 
+
+
 class UWidgetComponent;
 
 UCLASS()
@@ -34,6 +36,8 @@ protected:
 	TObjectPtr<UWidgetComponent> HealthBar;
 
 public:
+	void HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
+
 	// Enemy Interface
 	virtual void HighlightActor() override;
 	virtual void UnHighlightActor() override;
@@ -48,5 +52,11 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnAttributeChangedSignature OnMaxHealthChanged;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Combat")
+	bool bHitReacting = false;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Combat")
+	float BaseWalkSpeed = 250.f;
 private:
 };
