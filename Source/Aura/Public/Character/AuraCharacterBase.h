@@ -54,6 +54,22 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Attributes")
 	TSubclassOf<UGameplayEffect> DefaultVitalAttributes;
 
+	// Dissolve Effects
+
+	void Dissolve();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartDissolveTimeline(UMaterialInstanceDynamic* DynamicMaterialInstance);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartWeaponDissolveTimeline(UMaterialInstanceDynamic* DynamicMaterialInstance);
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UMaterialInstance> DissolveMaterialInstance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UMaterialInstance> WeaponDissolveMaterialInstance;
+
 public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UAttributeSet* GetAttributeSet() const { return AttributeSet; }
