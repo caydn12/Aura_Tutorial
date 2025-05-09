@@ -24,6 +24,7 @@ class AURA_API ICombatInterface
 public:
 	virtual int32 GetPlayerLevel();
 	virtual FVector GetCombatSocketLocation();
+	virtual void Die() = 0;
 
 	// Blueprint Implementable Events cannot be virtual.
 	// Blueprint Implementable Events do not have C++ Definitions
