@@ -61,7 +61,6 @@ void UAuraAbilitySystemLibrary::InitializeDefaultAttributes(const UObject* World
 		UCharacterClassInfo* CharacterClassInfo = AuraGameMode->CharacterClassInfo;
 		FCharacterClassDefaultInfo ClassDefaultInfo = CharacterClassInfo->GetClassDefaultInfo(CharacterClass);
 
-
 		FGameplayEffectContextHandle PrimaryAttributesContextHandle = ASC->MakeEffectContext();
 		PrimaryAttributesContextHandle.AddSourceObject(AvatarActor);
 		const FGameplayEffectSpecHandle PrimaryAttributesSpecHandle = ASC->MakeOutgoingSpec(ClassDefaultInfo.PrimaryAttributes, Level, PrimaryAttributesContextHandle);
@@ -76,5 +75,19 @@ void UAuraAbilitySystemLibrary::InitializeDefaultAttributes(const UObject* World
 		VitalAttributesContextHandle.AddSourceObject(AvatarActor);
 		const FGameplayEffectSpecHandle VitalAttributesSpecHandle = ASC->MakeOutgoingSpec(CharacterClassInfo->VitalAttributes, Level, VitalAttributesContextHandle);
 		ASC->ApplyGameplayEffectSpecToSelf(*VitalAttributesSpecHandle.Data.Get());
+	}
+}
+
+void UAuraAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContextObject, UAbilitySystemComponent* ASC)
+{
+	AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
+	if (AuraGameMode)
+	{
+		UCharacterClassInfo* CharacterClassInfo = AuraGameMode->CharacterClassInfo;
+		for (TSubclassOf<UGameplayAbility> AbilityClass : CharacterClassInfo->CommonAbilities)
+		{
+			FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
+			ASC->GiveAbility(AbilitySpec);
+		}
 	}
 }

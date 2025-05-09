@@ -33,6 +33,8 @@ void AAuraEnemy::BeginPlay()
 
 	InitAbilityActorInfo();
 
+	UAuraAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent);
+
 	// Set Widget Controller for the Healthbar Widget
 	if (UAuraUserWidget* AuraUserWidget = Cast<UAuraUserWidget>(HealthBar->GetUserWidgetObject()))
 	{
