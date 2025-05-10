@@ -44,7 +44,7 @@ public:
 	// End Enemy Interface
 
 	// Combat Interface
-	virtual int32 GetPlayerLevel() override;
+	virtual int32 GetPlayerLevel() const override;
 	virtual void Die() override;
 	// End Combat Interface
 
