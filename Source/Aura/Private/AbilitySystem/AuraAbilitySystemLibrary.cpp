@@ -97,7 +97,7 @@ UCharacterClassInfo* UAuraAbilitySystemLibrary::GetCharacterClassInfo(const UObj
 	AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
 	if (AuraGameMode)
 	{
-		UCharacterClassInfo* CharacterClassInfo = AuraGameMode->CharacterClassInfo;
+		CharacterClassInfo = AuraGameMode->CharacterClassInfo;
 	}
 	return CharacterClassInfo;
 }
