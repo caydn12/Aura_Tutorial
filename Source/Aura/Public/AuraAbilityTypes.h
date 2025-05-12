@@ -19,7 +19,7 @@ public:
 		return FGameplayEffectContext::StaticStruct();
 	}
 
-	/** Custom serialization, subclasses must override this */
+	/** Custom serialization, subclasses must override this. */
 	virtual bool NetSerialize(FArchive& Ar, class UPackageMap* Map, bool& bOutSuccess) override;
 protected:
 
