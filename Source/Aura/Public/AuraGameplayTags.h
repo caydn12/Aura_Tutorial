@@ -10,7 +10,16 @@
 struct FAuraGameplayTags
 {
 public:
-	static const FAuraGameplayTags& Get() { return GameplayTags; }
+	static const FAuraGameplayTags& Get() 
+	{ 
+		if (!GameplayTags.bInitialized)
+		{
+			// Initialized very early in the engine initialization, when ExecCalc_Damage CDO is initalized and calls Get()
+			InitializeNativeGameplayTags();
+		}
+		return GameplayTags;
+	}
+
 	static void InitializeNativeGameplayTags();
 
 	// Primary Attribute Tags
@@ -59,4 +68,5 @@ protected:
 
 private:
 	static FAuraGameplayTags GameplayTags;
+	bool bInitialized = false;
 };

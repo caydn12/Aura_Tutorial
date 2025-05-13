@@ -179,4 +179,6 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 		FName("Effects.HitReact"),
 		FString("Tag Granted when Hit Reacting")
 	);
+
+	GameplayTags.bInitialized = true;
 }
