@@ -19,22 +19,26 @@ void AAuraEffectActor::BeginPlay()
 
 void AAuraEffectActor::ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGameplayEffect> GameplayEffectClass, const EEffectRemovalPolicy RemovalPolicy)
 {
-	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
-
-	if (TargetASC)
+	const bool bIsEnemy = TargetActor->ActorHasTag(FName("Enemy"));
+	if (!bIsEnemy || (bIsEnemy && bApplyEffectsToEnemies))
 	{
-		check(GameplayEffectClass);
-		FGameplayEffectContextHandle EffectContextHandle = TargetASC->MakeEffectContext();
-		EffectContextHandle.AddSourceObject(this);
+		UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
 
-		const FGameplayEffectSpecHandle EffectSpecHandle = TargetASC->MakeOutgoingSpec(GameplayEffectClass, ActorLevel, EffectContextHandle);
-
-		const FActiveGameplayEffectHandle ActiveEffectHandle = TargetASC->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data.Get());
-
-		const bool bIsInfinite = EffectSpecHandle.Data.Get()->Def.Get()->DurationPolicy == EGameplayEffectDurationType::Infinite;
-		if (bIsInfinite && RemovalPolicy == EEffectRemovalPolicy::RemoveOnEndOverlap)
+		if (TargetASC)
 		{
-			ActiveEffectHandles.Add(ActiveEffectHandle, TargetASC);
+			check(GameplayEffectClass);
+			FGameplayEffectContextHandle EffectContextHandle = TargetASC->MakeEffectContext();
+			EffectContextHandle.AddSourceObject(this);
+
+			const FGameplayEffectSpecHandle EffectSpecHandle = TargetASC->MakeOutgoingSpec(GameplayEffectClass, ActorLevel, EffectContextHandle);
+
+			const FActiveGameplayEffectHandle ActiveEffectHandle = TargetASC->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data.Get());
+
+			const bool bIsInfinite = EffectSpecHandle.Data.Get()->Def.Get()->DurationPolicy == EGameplayEffectDurationType::Infinite;
+			if (bIsInfinite && RemovalPolicy == EEffectRemovalPolicy::RemoveOnEndOverlap)
+			{
+				ActiveEffectHandles.Add(ActiveEffectHandle, TargetASC);
+			}
 		}
 	}
 }
@@ -82,25 +86,33 @@ void AAuraEffectActor::EvaluateEffectsForRemoval(AActor* TargetActor, const TArr
 
 void AAuraEffectActor::OnOverlap(AActor* TargetActor)
 {
-	EvaluateEffectsForApplication(TargetActor, InstantEffects, EEffectApplicationPolicy::ApplyOnOverlap);
-	EvaluateEffectsForApplication(TargetActor, DurationEffects, EEffectApplicationPolicy::ApplyOnOverlap);
-	EvaluateEffectsForApplication(TargetActor, InfiniteEffects, EEffectApplicationPolicy::ApplyOnOverlap);
-
-	if (bDestroyOnEffectApplication)
+	const bool bIsEnemy = TargetActor->ActorHasTag(FName("Enemy"));
+	if (!bIsEnemy || (bIsEnemy && bApplyEffectsToEnemies))
 	{
-		Destroy();
+		EvaluateEffectsForApplication(TargetActor, InstantEffects, EEffectApplicationPolicy::ApplyOnOverlap);
+		EvaluateEffectsForApplication(TargetActor, DurationEffects, EEffectApplicationPolicy::ApplyOnOverlap);
+		EvaluateEffectsForApplication(TargetActor, InfiniteEffects, EEffectApplicationPolicy::ApplyOnOverlap);
+
+		if (bDestroyOnEffectApplication)
+		{
+			Destroy();
+		}
 	}
 }
 
 void AAuraEffectActor::OnEndOverlap(AActor* TargetActor)
 {
-	EvaluateEffectsForApplication(TargetActor, InstantEffects, EEffectApplicationPolicy::ApplyOnEndOverlap);
-	EvaluateEffectsForApplication(TargetActor, DurationEffects, EEffectApplicationPolicy::ApplyOnEndOverlap);
-	EvaluateEffectsForApplication(TargetActor, InfiniteEffects, EEffectApplicationPolicy::ApplyOnEndOverlap);
-	EvaluateEffectsForRemoval(TargetActor, InfiniteEffects, EEffectRemovalPolicy::RemoveOnEndOverlap);
-
-	if (bDestroyOnEffectRemoval)
+	const bool bIsEnemy = TargetActor->ActorHasTag(FName("Enemy"));
+	if (!bIsEnemy || (bIsEnemy && bApplyEffectsToEnemies))
 	{
-		Destroy();
+		EvaluateEffectsForApplication(TargetActor, InstantEffects, EEffectApplicationPolicy::ApplyOnEndOverlap);
+		EvaluateEffectsForApplication(TargetActor, DurationEffects, EEffectApplicationPolicy::ApplyOnEndOverlap);
+		EvaluateEffectsForApplication(TargetActor, InfiniteEffects, EEffectApplicationPolicy::ApplyOnEndOverlap);
+		EvaluateEffectsForRemoval(TargetActor, InfiniteEffects, EEffectRemovalPolicy::RemoveOnEndOverlap);
+
+		if (bDestroyOnEffectRemoval)
+		{
+			Destroy();
+		}
 	}
 }
