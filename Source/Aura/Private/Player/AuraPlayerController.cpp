@@ -13,6 +13,7 @@
 #include "NavigationPath.h"
 #include "GameFramework/Character.h"
 #include "UI/Widget/DamageTextComponent.h"
+#include "AbilitySystem/AuraAbilitySystemLibrary.h" // PgUp/PgDown stored as static function to adjust scalability. Could be moved.
 
 AAuraPlayerController::AAuraPlayerController()
 {
@@ -52,6 +53,7 @@ void AAuraPlayerController::SetupInputComponent()
 	AuraInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AAuraPlayerController::Move);
 	AuraInputComponent->BindAction(ShiftAction, ETriggerEvent::Started, this, &AAuraPlayerController::ShiftPressed);
 	AuraInputComponent->BindAction(ShiftAction, ETriggerEvent::Completed, this, &AAuraPlayerController::ShiftReleased);
+	AuraInputComponent->BindAction(ScalabilityAction, ETriggerEvent::Triggered, this, &AAuraPlayerController::AdjustScalability);
 	AuraInputComponent->BindAbilityActions(InputConfig, this, &ThisClass::AbilityInputTagPressed, &ThisClass::AbilityInputTagReleased, &ThisClass::AbilityInputTagHeld);
 }
 
@@ -98,6 +100,19 @@ void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
 	{
 		ControlledPawn->AddMovementInput(ForwardDirection, MovementAxisVector.Y);
 		ControlledPawn->AddMovementInput(RightDirection, MovementAxisVector.X);
+	}
+}
+
+void AAuraPlayerController::AdjustScalability(const FInputActionValue& InputActionValue)
+{
+	const float ScaleValue = InputActionValue.Get<float>();
+	if (ScaleValue < 0.0f) // PgDn
+	{
+		UAuraAbilitySystemLibrary::AdjustScalability(false);
+	}
+	else if (ScaleValue > 0.0f) // PgUp
+	{
+		UAuraAbilitySystemLibrary::AdjustScalability(true);
 	}
 }
 

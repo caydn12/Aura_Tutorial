@@ -37,6 +37,7 @@ private:
 	UAuraAbilitySystemComponent* GetASC();
 
 	void Move(const FInputActionValue& InputActionValue);
+	void AdjustScalability(const FInputActionValue& InputActionValue);
 	void CursorTrace();
 	void AutoRun();
 
@@ -57,6 +58,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputAction> ShiftAction;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TObjectPtr<UInputAction> ScalabilityAction;
 
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TObjectPtr<UAuraInputConfig> InputConfig;

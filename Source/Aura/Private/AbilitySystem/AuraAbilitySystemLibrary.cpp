@@ -9,6 +9,7 @@
 #include "Game/AuraGameModeBase.h"
 #include "AbilitySystemComponent.h"
 #include "AuraAbilityTypes.h"
+#include "GameFramework/GameUserSettings.h"
 
 UOverlayWidgetController* UAuraAbilitySystemLibrary::GetOverlayWidgetController(const UObject* WorldContextObject)
 {
@@ -131,5 +132,18 @@ void UAuraAbilitySystemLibrary::SetIsCriticalHit(FGameplayEffectContextHandle& E
 	if (FAuraGameplayEffectContext* AuraEffectContext = static_cast<FAuraGameplayEffectContext*>(EffectContextHandle.Get()))
 	{
 		AuraEffectContext->SetIsCriticalHit(bInIsCriticalHit);
+	}
+}
+
+void UAuraAbilitySystemLibrary::AdjustScalability(bool bIncrease)
+{
+	int32 Increase = bIncrease ? 1 : -1;
+	const int32 CurrentQualityLevel = UGameUserSettings::GetGameUserSettings()->GetOverallScalabilityLevel();
+	const int32 NewQualityLevel = FMath::Clamp(CurrentQualityLevel + Increase, 0, 1); // 0 to 3 is the true range
+	if (CurrentQualityLevel != NewQualityLevel)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Scalability Level Changed: %d -> %d"), CurrentQualityLevel, NewQualityLevel));
+		UGameUserSettings::GetGameUserSettings()->SetOverallScalabilityLevel(NewQualityLevel);
+		UGameUserSettings::GetGameUserSettings()->ApplySettings(false);
 	}
 }
