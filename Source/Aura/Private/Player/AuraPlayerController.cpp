@@ -14,6 +14,8 @@
 #include "GameFramework/Character.h"
 #include "UI/Widget/DamageTextComponent.h"
 #include "AbilitySystem/AuraAbilitySystemLibrary.h" // PgUp/PgDown stored as static function to adjust scalability. Could be moved.
+#include "NiagaraSystem.h" // Click to move cursors
+#include "NiagaraFunctionLibrary.h"
 
 AAuraPlayerController::AAuraPlayerController()
 {
@@ -171,6 +173,17 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 
 		if (FollowTime <= ShortPressThreshold && ControlledPawn)
 		{
+			if (FXCursor)
+			{
+				UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+					this,
+					FXCursor,
+					CursorHit.ImpactPoint,
+					FRotator::ZeroRotator,
+					FVector(1.0f)
+				);
+			}
+
 			if (UNavigationPath* NavPath = UNavigationSystemV1::FindPathToLocationSynchronously(this, ControlledPawn->GetActorLocation(), CachedDestination))
 			{
 				Spline->ClearSplinePoints();

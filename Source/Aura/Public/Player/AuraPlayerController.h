@@ -15,6 +15,7 @@ class UAuraInputConfig;
 class UAuraAbilitySystemComponent;
 class USplineComponent;
 class UDamageTextComponent;
+class UNiagaraSystem;
 
 UCLASS()
 class AURA_API AAuraPlayerController : public APlayerController
@@ -64,6 +65,10 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TObjectPtr<UAuraInputConfig> InputConfig;
+
+	/** FX Class that we will spawn when clicking */
+	UPROPERTY(EditAnywhere, Category = "Input")
+	TObjectPtr<UNiagaraSystem> FXCursor;
 
 	UPROPERTY()
 	TObjectPtr<UAuraAbilitySystemComponent> AuraAbilitySystemComponent;
