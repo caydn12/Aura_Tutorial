@@ -27,7 +27,9 @@ protected:
 
 	virtual void InitializeDefaultAttributes() const;
 
-	virtual FVector GetCombatSocketLocation() override;
+	// Combat Interface
+	virtual FVector GetCombatSocketLocation_Implementation() override;
+	// End Combat Interface
 
 	void ApplyEffectToSelf(TSubclassOf<UGameplayEffect> GameplayEffectClass, float level) const;
 	
