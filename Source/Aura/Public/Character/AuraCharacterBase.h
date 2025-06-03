@@ -27,10 +27,6 @@ protected:
 
 	virtual void InitializeDefaultAttributes() const;
 
-	// Combat Interface
-	virtual FVector GetCombatSocketLocation_Implementation() override;
-	// End Combat Interface
-
 	void ApplyEffectToSelf(TSubclassOf<UGameplayEffect> GameplayEffectClass, float level) const;
 	
 	void AddCharacterAbilities();
@@ -40,6 +36,10 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="Combat")
 	FName WeaponTipSocketName;
+
+	bool bDead = false;
+
+	// Ability System
 
 	UPROPERTY()
 	TObjectPtr<class UAbilitySystemComponent> AbilitySystemComponent;
@@ -82,6 +82,9 @@ public:
 	// Combat Interface
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
 	virtual void Die() override;
+	virtual FVector GetCombatSocketLocation_Implementation() override;
+	virtual bool IsDead_Implementation() const override;
+	virtual AActor* GetAvatar_Implementation() override;
 	// End Combat Interface
 private:
 

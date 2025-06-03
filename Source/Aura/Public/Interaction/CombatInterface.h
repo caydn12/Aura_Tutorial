@@ -26,6 +26,12 @@ public:
 	virtual void Die() = 0;
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	bool IsDead() const;
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	AActor* GetAvatar();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	FVector GetCombatSocketLocation();
 
 	// Blueprint Implementable Events cannot be virtual.

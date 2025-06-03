@@ -37,6 +37,16 @@ FVector AAuraCharacterBase::GetCombatSocketLocation_Implementation()
 	return Weapon->GetSocketLocation(WeaponTipSocketName);
 }
 
+bool AAuraCharacterBase::IsDead_Implementation() const
+{
+	return bDead;
+}
+
+AActor* AAuraCharacterBase::GetAvatar_Implementation()
+{
+	return this;
+}
+
 void AAuraCharacterBase::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> GameplayEffectClass, float level) const
 {
 	check(IsValid(GetAbilitySystemComponent()));
@@ -104,6 +114,7 @@ void AAuraCharacterBase::MulticastHandleDeath_Implementation()
 
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	Dissolve();
+	bDead = true;
 }
 
 UAnimMontage* AAuraCharacterBase::GetHitReactMontage_Implementation()
