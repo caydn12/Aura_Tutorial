@@ -7,13 +7,13 @@
 #include "AuraDamageGameplayAbility.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class AURA_API UAuraDamageGameplayAbility : public UAuraGameplayAbility
 {
 	GENERATED_BODY()
-	
+
 protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
@@ -21,4 +21,8 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Damage")
 	TMap<FGameplayTag, FScalableFloat> DamageTypes;
+
+	public:
+		UFUNCTION(BlueprintCallable)
+		void CauseDamage(AActor* TargetActor);
 };
