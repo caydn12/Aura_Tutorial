@@ -83,6 +83,28 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 		FString("Maximum amount of Mana")
 	);
 
+	// Resistance Attributes
+
+	GameplayTags.Attributes_Resistance_Fire = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Attributes.Resistance.Fire"),
+		FString("Fire Resistance Tag")
+	);
+
+	GameplayTags.Attributes_Resistance_Lightning = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Attributes.Resistance.Lightning"),
+		FString("Lightning Resistance Tag")
+	);
+
+	GameplayTags.Attributes_Resistance_Arcane = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Attributes.Resistance.Arcane"),
+		FString("Arcane Resistance Tag")
+	);
+
+	GameplayTags.Attributes_Resistance_Physical = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Attributes.Resistance.Physical"),
+		FString("Physical Resistance Tag")
+	);
+
 	// Input Tags
 
 	GameplayTags.InputTag_LMB = UGameplayTagsManager::Get().AddNativeGameplayTag(
@@ -117,8 +139,6 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 
 	// Combat Tags
 
-	// Damage Types
-
 	GameplayTags.Damage = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Damage"),
 		FString("Damage Tag")
@@ -144,29 +164,24 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 		FString("Physical Damage Type Tag")
 	);
 
-	// Resistance Attributes
+	// Montage Tags
 
-	GameplayTags.Attributes_Resistance_Fire = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Attributes.Resistance.Fire"),
-		FString("Fire Resistance Tag")
+	GameplayTags.Montage_Attack_Weapon = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Montage.Attack.Weapon"),
+		FString("Weapon")
 	);
 
-	GameplayTags.Attributes_Resistance_Lightning = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Attributes.Resistance.Lightning"),
-		FString("Lightning Resistance Tag")
+	GameplayTags.Montage_Attack_LeftHand = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Montage.Attack.LeftHand"),
+		FString("Left Hand")
 	);
 
-	GameplayTags.Attributes_Resistance_Arcane = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Attributes.Resistance.Arcane"),
-		FString("Arcane Resistance Tag")
+	GameplayTags.Montage_Attack_RightHand = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Montage.Attack.RightHand"),
+		FString("Right Hand")
 	);
 
-	GameplayTags.Attributes_Resistance_Physical = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Attributes.Resistance.Physical"),
-		FString("Physical Resistance Tag")
-	);
-
-	// Abilities
+	// Ability Tags
 
 	GameplayTags.Abilities_Attack = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Abilities.Attack"),
