@@ -172,6 +172,12 @@ void UAuraAbilitySystemLibrary::GetLivePlayersWithinRadius(const UObject* WorldC
 	}
 }
 
+bool UAuraAbilitySystemLibrary::IsNotAlly(AActor* FirstActor, AActor* SecondActor)
+{
+	const bool bBothAreAllies = (FirstActor->ActorHasTag(FName("Player")) && SecondActor->ActorHasTag(FName("Player"))) || (FirstActor->ActorHasTag(FName("Enemy")) && SecondActor->ActorHasTag(FName("Enemy")));
+	return !bBothAreAllies;
+}
+
 void UAuraAbilitySystemLibrary::AdjustScalability(bool bIncrease)
 {
 	int32 Increase = bIncrease ? 1 : -1;
