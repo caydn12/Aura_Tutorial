@@ -31,7 +31,7 @@ protected:
 	
 	void AddCharacterAbilities();
 
-	UPROPERTY(EditDefaultsOnly, Category="Combat")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Combat")
 	TObjectPtr<class USkeletalMeshComponent> Weapon;
 
 	UPROPERTY(EditDefaultsOnly, Category="Combat")
