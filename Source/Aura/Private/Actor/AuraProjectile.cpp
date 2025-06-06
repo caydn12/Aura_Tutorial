@@ -10,6 +10,7 @@
 #include "Aura/Aura.h" // ECC Projectile
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
+#include "AbilitySystem/AuraAbilitySystemLibrary.h"
 
 AAuraProjectile::AAuraProjectile()
 {
@@ -64,30 +65,33 @@ void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, 
 		bool bHitSelf = DamageEffectSpecHandle.Data.Get()->GetContext().GetEffectCauser() == OtherActor;
 		if (!bHitSelf)
 		{
-			if (!bImpacted)
+			if (UAuraAbilitySystemLibrary::IsNotAlly(DamageEffectSpecHandle.Data.Get()->GetContext().GetEffectCauser(), OtherActor))
 			{
-				UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), FRotator::ZeroRotator);
-
-				UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation());
-
-				if (LoopingSoundComponent) LoopingSoundComponent->Stop();
-			}
-
-			if (HasAuthority())
-			{
-				// Apply effect only on server. Effect will modify replicated data
-				if (UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
+				if (!bImpacted)
 				{
-					TargetASC->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
+					UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), FRotator::ZeroRotator);
+
+					UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation());
+
+					if (LoopingSoundComponent) LoopingSoundComponent->Stop();
 				}
 
-				// If on server, Destroy the projectile on overlap with other actor
-				Destroy();
-			}
-			else
-			{
-				// If on client, set bImpacted to true because only the server destroys the object
-				bImpacted = true;
+				if (HasAuthority())
+				{
+					// Apply effect only on server. Effect will modify replicated data
+					if (UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
+					{
+						TargetASC->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
+					}
+
+					// If on server, Destroy the projectile on overlap with other actor
+					Destroy();
+				}
+				else
+				{
+					// If on client, set bImpacted to true because only the server destroys the object
+					bImpacted = true;
+				}
 			}
 		}
 	}
