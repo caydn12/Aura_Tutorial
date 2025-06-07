@@ -175,8 +175,7 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectMo
 
 void UAuraAttributeSet::ShowFloatingText(const FEffectProperties& Props, float Damage, bool bBlockedHit, bool bCriticalHit) const
 {
-	if (Props.SourceCharacter != Props.TargetCharacter ||
-		(Props.EffectContextHandle.GetSourceObject() != Props.SourceAvatarActor && Props.EffectContextHandle.GetSourceObject() != Props.TargetAvatarActor))
+	if (Props.SourceCharacter != Props.TargetCharacter)
 	{
 		AAuraPlayerController* PC = nullptr;
 		if ((PC = Cast<AAuraPlayerController>(Props.SourceCharacter->Controller)) != nullptr)
@@ -184,13 +183,6 @@ void UAuraAttributeSet::ShowFloatingText(const FEffectProperties& Props, float D
 			PC->ShowDamageNumber(Damage, Props.TargetCharacter, bBlockedHit, bCriticalHit);
 		}
 		else if ((PC = Cast<AAuraPlayerController>(Props.TargetCharacter->Controller)) != nullptr)
-		{
-			PC->ShowDamageNumber(Damage, Props.TargetCharacter, bBlockedHit, bCriticalHit);
-		}
-		
-		// For area fire damage effect Only will happen on player 1's screen. Ideally, find a way to loop through all player controllers on a game state or get all actors with player controllers but expensive call
-		if ((Props.EffectContextHandle.GetSourceObject() != Props.SourceAvatarActor && Props.EffectContextHandle.GetSourceObject() != Props.TargetAvatarActor) &&
-			((PC = Cast<AAuraPlayerController>(UGameplayStatics::GetPlayerController(this, 0))) != nullptr))
 		{
 			PC->ShowDamageNumber(Damage, Props.TargetCharacter, bBlockedHit, bCriticalHit);
 		}
