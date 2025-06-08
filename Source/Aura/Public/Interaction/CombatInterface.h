@@ -52,7 +52,7 @@ public:
 	AActor* GetAvatar();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	FVector GetCombatSocketLocation(const FGameplayTag& MontageTag);
+	FVector GetCombatSocketLocation(const FGameplayTag& SocketTag);
 
 	// Blueprint Implementable Events cannot be virtual.
 	// Blueprint Implementable Events do not have C++ Definitions

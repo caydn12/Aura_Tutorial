@@ -33,18 +33,18 @@ void AAuraCharacterBase::InitAbilityActorInfo()
 
 }
 
-FVector AAuraCharacterBase::GetCombatSocketLocation_Implementation(const FGameplayTag& MontageTag)
+FVector AAuraCharacterBase::GetCombatSocketLocation_Implementation(const FGameplayTag& SocketTag)
 {
 	FVector SocketLocation = GetActorLocation();
-	if (MontageTag.MatchesTagExact(FAuraGameplayTags::Get().CombatSocket_Weapon) && IsValid(Weapon))
+	if (SocketTag.MatchesTagExact(FAuraGameplayTags::Get().CombatSocket_Weapon) && IsValid(Weapon))
 	{
 		SocketLocation = Weapon->GetSocketLocation(WeaponTipSocketName);
 	}
-	else if (MontageTag.MatchesTagExact(FAuraGameplayTags::Get().CombatSocket_LeftHand))
+	else if (SocketTag.MatchesTagExact(FAuraGameplayTags::Get().CombatSocket_LeftHand))
 	{
 		SocketLocation = GetMesh()->GetSocketLocation(LeftHandSocketName);
 	}
-	else if (MontageTag.MatchesTagExact(FAuraGameplayTags::Get().CombatSocket_RightHand))
+	else if (SocketTag.MatchesTagExact(FAuraGameplayTags::Get().CombatSocket_RightHand))
 	{
 		SocketLocation = GetMesh()->GetSocketLocation(RightHandSocketName);
 	}
