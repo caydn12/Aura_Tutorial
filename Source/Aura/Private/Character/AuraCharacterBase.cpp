@@ -48,6 +48,10 @@ FVector AAuraCharacterBase::GetCombatSocketLocation_Implementation(const FGamepl
 	{
 		SocketLocation = GetMesh()->GetSocketLocation(RightHandSocketName);
 	}
+	else if (SocketTag.MatchesTagExact(FAuraGameplayTags::Get().CombatSocket_Tail))
+	{
+		SocketLocation = GetMesh()->GetSocketLocation(TailSocketName);
+	}
 	return SocketLocation;
 }
 
