@@ -21,6 +21,9 @@ AAuraCharacterBase::AAuraCharacterBase()
 	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>("Weapon");
 	Weapon->SetupAttachment(GetMesh(), FName("WeaponHandSocket"));
 	Weapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	// Ensure we get correct weapon socket location by the time an AnimNotify is fired, Client issue.
+	GetMesh()->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;
 }
 
 void AAuraCharacterBase::BeginPlay()
