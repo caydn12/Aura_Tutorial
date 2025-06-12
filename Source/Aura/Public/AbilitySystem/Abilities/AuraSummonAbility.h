@@ -13,7 +13,7 @@ class AURA_API UAuraSummonAbility : public UAuraGameplayAbility
 	GENERATED_BODY()
 public:
 	UFUNCTION(BlueprintCallable)
-	TArray<FVector> GetSpawnLocations();
+	TArray<FVector> GetSpawnLocations(bool bShowDebug);
 
 	UPROPERTY(EditDefaultsOnly, Category = "Summoning")
 	int32 MaxMinions = 5;
@@ -29,5 +29,5 @@ public:
 
 	// Angle of AOE
 	UPROPERTY(EditDefaultsOnly, Category = "Summoning")
-	float SpawnSpread = 90.0f;
+	float SpawnSpread = 360.0f;
 };
