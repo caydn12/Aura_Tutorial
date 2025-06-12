@@ -32,6 +32,10 @@ public:
 		return NewContext;
 	}
 
+	TArray<FVector_NetQuantize> GetSpawnLocations() const;
+
+	void SetSpawnLocations(const TArray<FVector_NetQuantize> InSpawnLocations);
+
 	/** Custom serialization, subclasses must override this. */
 	virtual bool NetSerialize(FArchive& Ar, class UPackageMap* Map, bool& bOutSuccess) override;
 protected:
@@ -41,6 +45,9 @@ protected:
 
 	UPROPERTY()
 	bool bIsCriticalHit = false;
+
+	UPROPERTY()
+	TArray<FVector_NetQuantize> SpawnLocations = TArray<FVector_NetQuantize>();
 };
 
 template<>

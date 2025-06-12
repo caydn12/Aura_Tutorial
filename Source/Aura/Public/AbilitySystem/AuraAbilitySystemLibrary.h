@@ -48,6 +48,12 @@ public:
 	UFUNCTION(BlueprintPure, Category = "AuraAbilitySystemLibrary|GameplayMechanics")
 	static bool IsNotAlly(AActor* FirstActor, AActor* SecondActor);
 
+	UFUNCTION(BlueprintPure, Category = "AuraAbilitySystemLibrary|GameplayEffects")
+	static TArray<FVector> GetEffectContextSpawnLocations(const FGameplayEffectContextHandle& EffectContextHandle);
+
+	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|GameplayEffects")
+	static void SetEffectContextSpawnLocations(UPARAM(ref)FGameplayEffectContextHandle& EffectContextHandle, const TArray<FVector>& InSpawnLocations);
+
 	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|Input")
 	static void AdjustScalability(bool bIncrease);
 

@@ -1,5 +1,16 @@
 #include "AuraAbilityTypes.h"
 
+TArray<FVector_NetQuantize> FAuraGameplayEffectContext::GetSpawnLocations() const
+{
+	return SpawnLocations;
+}
+
+void FAuraGameplayEffectContext::SetSpawnLocations(const TArray<FVector_NetQuantize> InSpawnLocations)
+{
+	SpawnLocations.Reset();
+	SpawnLocations.Append(InSpawnLocations);
+}
+
 bool FAuraGameplayEffectContext::NetSerialize(FArchive& Ar, UPackageMap* Map, bool& bOutSuccess)
 {
 	Super::NetSerialize(Ar, Map, bOutSuccess);
@@ -31,6 +42,8 @@ bool FAuraGameplayEffectContext::NetSerialize(FArchive& Ar, UPackageMap* Map, bo
 		bIsBlockedHit = RepBits & (1 << REP_IsBlockedHit);
 		bIsCriticalHit = RepBits & (1 << REP_IsCriticalHit);
 	}
+
+	SafeNetSerializeTArray_WithNetSerialize<31, FVector_NetQuantize>(Ar, SpawnLocations, Map);
 
 	bOutSuccess = true;
 	return true;

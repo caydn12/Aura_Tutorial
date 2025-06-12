@@ -151,8 +151,8 @@ void UAuraAbilitySystemLibrary::SetIsCriticalHit(FGameplayEffectContextHandle& E
 	}
 }
 
-void UAuraAbilitySystemLibrary::GetLivePlayersWithinRadius(const UObject* WorldContextObject, 
-	TArray<AActor*>& OutOverlappingActors, const TArray<AActor*>& ActorsToIgnore, 
+void UAuraAbilitySystemLibrary::GetLivePlayersWithinRadius(const UObject* WorldContextObject,
+	TArray<AActor*>& OutOverlappingActors, const TArray<AActor*>& ActorsToIgnore,
 	float Radius, const FVector& SphereOrigin)
 {
 	FCollisionQueryParams SphereParams;
@@ -176,6 +176,32 @@ bool UAuraAbilitySystemLibrary::IsNotAlly(AActor* FirstActor, AActor* SecondActo
 {
 	const bool bBothAreAllies = (FirstActor->ActorHasTag(FName("Player")) && SecondActor->ActorHasTag(FName("Player"))) || (FirstActor->ActorHasTag(FName("Enemy")) && SecondActor->ActorHasTag(FName("Enemy")));
 	return !bBothAreAllies;
+}
+
+TArray<FVector> UAuraAbilitySystemLibrary::GetEffectContextSpawnLocations(const FGameplayEffectContextHandle& EffectContextHandle)
+{
+	TArray<FVector> TmpSpawnLocations;
+	if (const FAuraGameplayEffectContext* AuraEffectContext = static_cast<const FAuraGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		for (const FVector_NetQuantize& SpawnLocation : AuraEffectContext->GetSpawnLocations())
+		{
+			TmpSpawnLocations.Add(SpawnLocation);
+		}
+	}
+	return TmpSpawnLocations;
+}
+
+void UAuraAbilitySystemLibrary::SetEffectContextSpawnLocations(UPARAM(ref)FGameplayEffectContextHandle& EffectContextHandle, const TArray<FVector>& InSpawnLocations)
+{
+	if (FAuraGameplayEffectContext* AuraEffectContext = static_cast<FAuraGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		TArray<FVector_NetQuantize> TmpSpawnLocations;
+		for (const FVector& SpawnLocation : InSpawnLocations)
+		{
+			TmpSpawnLocations.Add(SpawnLocation);
+		}
+		AuraEffectContext->SetSpawnLocations(TmpSpawnLocations);
+	}
 }
 
 void UAuraAbilitySystemLibrary::AdjustScalability(bool bIncrease)

@@ -15,7 +15,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	TArray<FVector> GetSpawnLocations(bool bShowDebug);
 
-	UPROPERTY(EditDefaultsOnly, Category = "Summoning")
+	UPROPERTY(EditDefaultsOnly, Category = "Summoning", meta = (ClampMin = "0", ClampMax="31"))
 	int32 MaxMinions = 5;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Summoning")
