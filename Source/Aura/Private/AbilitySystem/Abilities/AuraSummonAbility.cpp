@@ -3,6 +3,7 @@
 
 #include "AbilitySystem/Abilities/AuraSummonAbility.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Character/AuraCharacterBase.h"
 
 TArray<FVector> UAuraSummonAbility::GetSpawnLocations(bool bShowDebug)
 {
@@ -129,3 +130,21 @@ TArray<FVector> UAuraSummonAbility::GetSpawnLocations(bool bShowDebug)
 
 	return SpawnLocations;
 }
+
+TSubclassOf<AAuraCharacterBase> UAuraSummonAbility::GetRandomMinionClass()
+{
+	const int32 Selection = FMath::RandRange(0, MinionClasses.Num() - 1);
+	return MinionClasses[Selection];
+}
+
+AAuraCharacterBase* UAuraSummonAbility::GetRandomMinionClassCDO() const
+{
+	AAuraCharacterBase* Minion = nullptr;
+	if (MinionClasses.Num() > 0)
+	{
+		const int32 Selection = FMath::RandRange(0, MinionClasses.Num() - 1);
+		Minion = MinionClasses[Selection]->GetDefaultObject<AAuraCharacterBase>();
+	}
+	return Minion;
+}
+

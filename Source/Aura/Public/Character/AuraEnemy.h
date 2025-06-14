@@ -28,7 +28,7 @@ protected:
 	virtual void InitAbilityActorInfo() override;
 	virtual void InitializeDefaultAttributes() const override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (ExposeOnSpawn = "true"), Category = "Character Class Defaults")
 	int32 Level = 1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
@@ -55,7 +55,7 @@ public:
 	// End Enemy Interface
 
 	// Combat Interface
-	virtual int32 GetPlayerLevel() const override;
+	virtual int32 GetCharacterLevel_Implementation() const override;
 	virtual void Die() override;
 	// End Combat Interface
 
