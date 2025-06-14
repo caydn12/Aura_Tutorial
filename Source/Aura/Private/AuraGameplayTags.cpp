@@ -215,6 +215,11 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 		FString("Attack Ability Tag")
 	);
 
+	GameplayTags.Abilities_Summon = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Summon"),
+		FString("Summon Ability Tag")
+	);
+
 	// Map of Damage Types to Resistance Attributes
 
 	GameplayTags.DamageTypesToResistances.Add(GameplayTags.Damage_Fire, GameplayTags.Attributes_Resistance_Fire);

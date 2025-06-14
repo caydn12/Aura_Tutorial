@@ -76,6 +76,7 @@ public:
 	// Ability Tags
 
 	FGameplayTag Abilities_Attack;
+	FGameplayTag Abilities_Summon;
 
 	TMap<FGameplayTag, FGameplayTag> DamageTypesToResistances;
 

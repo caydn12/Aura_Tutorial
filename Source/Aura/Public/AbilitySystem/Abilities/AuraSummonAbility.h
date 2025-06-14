@@ -6,7 +6,7 @@
 #include "AbilitySystem/Abilities/AuraGameplayAbility.h"
 #include "AuraSummonAbility.generated.h"
 
-class AAuraCharacterBase;
+class AAuraEnemy;
 
 UCLASS()
 class AURA_API UAuraSummonAbility : public UAuraGameplayAbility
@@ -17,16 +17,16 @@ public:
 	TArray<FVector> GetSpawnLocations(bool bShowDebug);
 
 	UFUNCTION(BlueprintPure, Category = "Summoning")
-	TSubclassOf<AAuraCharacterBase> GetRandomMinionClass();
+	TSubclassOf<AAuraEnemy> GetRandomMinionClass();
 
 	UFUNCTION(BlueprintPure, Category = "Summoning")
-	AAuraCharacterBase* GetRandomMinionClassCDO() const;
+	AAuraEnemy* GetRandomMinionClassCDO() const;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Summoning", meta = (ClampMin = "0", ClampMax="31"))
 	int32 MaxMinions = 5;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Summoning")
-	TArray<TSubclassOf<AAuraCharacterBase>> MinionClasses;
+	TArray<TSubclassOf<AAuraEnemy>> MinionClasses;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Summoning")
 	float MinSpawnDistance = 150.0f;

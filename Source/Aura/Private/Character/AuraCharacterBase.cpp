@@ -78,7 +78,7 @@ UNiagaraSystem* AAuraCharacterBase::GetBloodEffect_Implementation() const
 	return BloodEffect;
 }
 
-FTaggedMontage AAuraCharacterBase::GetTaggedMontage(const FGameplayTag& MontageTag)
+FTaggedMontage AAuraCharacterBase::GetTaggedMontageByTag_Implementation(const FGameplayTag& MontageTag)
 {
 	FTaggedMontage TM;
 	for (FTaggedMontage TaggedMontage : AttackMontages)
@@ -89,6 +89,11 @@ FTaggedMontage AAuraCharacterBase::GetTaggedMontage(const FGameplayTag& MontageT
 		}	
 	}
 	return TM;
+}
+
+int32 AAuraCharacterBase::GetMinionCount_Implementation() const
+{
+	return MinionCount;
 }
 
 void AAuraCharacterBase::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> GameplayEffectClass, float level) const
