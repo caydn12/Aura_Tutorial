@@ -96,6 +96,11 @@ int32 AAuraCharacterBase::GetMinionCount_Implementation() const
 	return MinionCount;
 }
 
+void AAuraCharacterBase::IncreaseMinionCount_Implementation(int32 Amount)
+{
+	MinionCount += Amount;
+}
+
 void AAuraCharacterBase::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> GameplayEffectClass, float level) const
 {
 	check(IsValid(GetAbilitySystemComponent()));

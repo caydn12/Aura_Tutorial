@@ -22,7 +22,7 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Summoning")
 	AAuraEnemy* GetRandomMinionClassCDO() const;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Summoning", meta = (ClampMin = "0", ClampMax="31"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, category = "Summoning", meta = (ClampMin = "0", ClampMax="31"))
 	int32 MaxMinions = 5;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Summoning")
