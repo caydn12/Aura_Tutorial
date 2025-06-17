@@ -51,6 +51,8 @@ protected:
 
 	int32 MinionCount = 0;
 
+	int32 MinionSpawnLowerThreshold = 2;
+
 	// Ability System
 
 	UPROPERTY()
@@ -111,6 +113,7 @@ public:
 	virtual UNiagaraSystem* GetBloodEffect_Implementation() const override;
 	virtual FTaggedMontage GetTaggedMontageByTag_Implementation(const FGameplayTag& MontageTag) override;
 	virtual int32 GetMinionCount_Implementation() const override;
+	virtual int32 GetMinionSpawnLowerThreshold_Implementation() const override;
 	virtual void IncreaseMinionCount_Implementation(int32 Amount) override;
 	// End Combat Interface
 

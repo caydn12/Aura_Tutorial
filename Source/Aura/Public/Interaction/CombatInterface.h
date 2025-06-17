@@ -81,5 +81,8 @@ public:
 	int32 GetMinionCount() const;
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	int32 GetMinionSpawnLowerThreshold() const;
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void IncreaseMinionCount(int32 Amount);
 };

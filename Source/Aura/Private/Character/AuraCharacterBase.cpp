@@ -96,6 +96,11 @@ int32 AAuraCharacterBase::GetMinionCount_Implementation() const
 	return MinionCount;
 }
 
+int32 AAuraCharacterBase::GetMinionSpawnLowerThreshold_Implementation() const
+{
+	return MinionSpawnLowerThreshold;
+}
+
 void AAuraCharacterBase::IncreaseMinionCount_Implementation(int32 Amount)
 {
 	MinionCount += Amount;
