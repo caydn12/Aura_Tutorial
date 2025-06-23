@@ -17,6 +17,24 @@ class USplineComponent;
 class UDamageTextComponent;
 class UNiagaraSystem;
 
+USTRUCT(BlueprintType)
+struct FCameraOccludedActor
+{
+	GENERATED_BODY()
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	const AActor* Actor;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UStaticMeshComponent* StaticMesh;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TArray<UMaterialInterface*> Materials;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool IsOccluded;
+};
+
 UCLASS()
 class AURA_API AAuraPlayerController : public APlayerController
 {
@@ -29,11 +47,36 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
 
+	// Camera Occlusion
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera Occlusion|Occlusion",
+		meta = (ClampMin = "0.1", ClampMax = "10.0"))
+	float CapsulePercentageForTrace;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera Occlusion|Materials")
+	UMaterialInterface* FadeMaterial;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Camera Occlusion|Components")
+	class USpringArmComponent* ActiveSpringArm;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Camera Occlusion|Components")
+	class UCameraComponent* ActiveCamera;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Camera Occlusion|Components")
+	class UCapsuleComponent* ActiveCapsuleComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera Occlusion")
+	bool IsOcclusionEnabled;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera Occlusion|Occlusion")
+	bool DebugLineTraces;
+
 public:
 	virtual void PlayerTick(float DeltaTime) override;
 
 	UFUNCTION(Client, Reliable)
 	void ShowDamageNumber(float DamageAmount, ACharacter* TargetCharacter, bool bBlockedHit, bool bCriticalHit);
+	UFUNCTION(BlueprintCallable)
+	void SyncOccludedActors();
 private:
 	UAuraAbilitySystemComponent* GetASC();
 
@@ -50,6 +93,14 @@ private:
 	void AbilityInputTagPressed(FGameplayTag InputTag);
 	void AbilityInputTagReleased(FGameplayTag InputTag);
 	void AbilityInputTagHeld(FGameplayTag InputTag);
+
+	// Camera Occlusion
+	bool HideOccludedActor(const AActor* Actor);
+	bool OnHideOccludedActor(const FCameraOccludedActor& OccludedActor) const;
+	void ShowOccludedActor(FCameraOccludedActor& OccludedActor);
+	bool OnShowOccludedActor(const FCameraOccludedActor& OccludedActor) const;
+	void ForceShowOccludedActors();
+	bool ShouldCheckCameraOcclusion() const;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputMappingContext> AuraContext;
@@ -92,4 +143,7 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UDamageTextComponent> DamageTextComponentClass;
+
+	// Camera Occlusion
+	TMap<const AActor*, FCameraOccludedActor> OccludedActors;
 };

@@ -16,12 +16,20 @@
 #include "AbilitySystem/AuraAbilitySystemLibrary.h" // PgUp/PgDown stored as static function to adjust scalability. Could be moved.
 #include "NiagaraSystem.h" // Click to move cursors
 #include "NiagaraFunctionLibrary.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Camera/CameraComponent.h"
+#include "Components/CapsuleComponent.h"
+#include <Kismet/KismetSystemLibrary.h>
 
 AAuraPlayerController::AAuraPlayerController()
 {
 	bReplicates = true;
 
 	Spline = CreateDefaultSubobject<USplineComponent>("Spline");
+
+	CapsulePercentageForTrace = 1.0f;
+	DebugLineTraces = true;
+	IsOcclusionEnabled = true;
 }
 
 void AAuraPlayerController::BeginPlay()
@@ -44,6 +52,15 @@ void AAuraPlayerController::BeginPlay()
 	InputModeData.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
 	InputModeData.SetHideCursorDuringCapture(false);
 	SetInputMode(InputModeData);
+
+	if (IsValid(GetPawn()))
+	{
+		ActiveSpringArm = Cast<
+			USpringArmComponent>(GetPawn()->GetComponentByClass(USpringArmComponent::StaticClass()));
+		ActiveCamera = Cast<UCameraComponent>(GetPawn()->GetComponentByClass(UCameraComponent::StaticClass()));
+		ActiveCapsuleComponent = Cast<UCapsuleComponent>(
+			GetPawn()->GetComponentByClass(UCapsuleComponent::StaticClass()));
+	}
 }
 
 void AAuraPlayerController::SetupInputComponent()
@@ -77,6 +94,70 @@ void AAuraPlayerController::ShowDamageNumber_Implementation(float DamageAmount, 
 		DamageText->AttachToComponent(TargetCharacter->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 		DamageText->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
 		DamageText->SetDamageText(DamageAmount, bBlockedHit, bCriticalHit);
+	}
+}
+
+void AAuraPlayerController::SyncOccludedActors()
+{
+	if (ShouldCheckCameraOcclusion())
+	{
+		if (ActiveSpringArm->bDoCollisionTest)
+		{
+			ForceShowOccludedActors();
+		}
+		else
+		{
+			FVector Start = ActiveCamera->GetComponentLocation();
+			FVector End = GetPawn()->GetActorLocation();
+
+			TArray<TEnumAsByte<EObjectTypeQuery>> CollisionObjectTypes;
+			CollisionObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_WorldStatic));
+
+			TArray<AActor*> ActorsToIgnore; // TODO: Add configuration to ignore actor types
+			TArray<FHitResult> OutHits;
+
+			auto ShouldDebug = DebugLineTraces ? EDrawDebugTrace::ForDuration : EDrawDebugTrace::None;
+
+			bool bGotHits = UKismetSystemLibrary::CapsuleTraceMultiForObjects(
+				GetWorld(), Start, End, ActiveCapsuleComponent->GetScaledCapsuleRadius() * CapsulePercentageForTrace,
+				ActiveCapsuleComponent->GetScaledCapsuleHalfHeight() * CapsulePercentageForTrace, CollisionObjectTypes, true,
+				ActorsToIgnore,
+				ShouldDebug,
+				OutHits, true);
+
+			if (bGotHits)
+			{
+				// The list of actors hit by the line trace, that means that they are occluded from view
+				TSet<const AActor*> ActorsJustOccluded;
+
+				// Hide actors that are occluded by the camera
+				for (FHitResult Hit : OutHits)
+				{
+					const AActor* HitActor = Hit.GetActor();
+					HideOccludedActor(HitActor);
+					ActorsJustOccluded.Add(HitActor);
+				}
+
+				// Show actors that are currently hidden but that are not occluded by the camera anymore 
+				for (auto& Elem : OccludedActors)
+				{
+					if (!ActorsJustOccluded.Contains(Elem.Value.Actor) && Elem.Value.IsOccluded)
+					{
+						ShowOccludedActor(Elem.Value);
+
+						if (DebugLineTraces)
+						{
+							UE_LOG(LogTemp, Warning,
+								TEXT("Actor %s was occluded, but it's not occluded anymore with the new hits."), *Elem.Value.Actor->GetName());
+						}
+					}
+				}
+			}
+			else
+			{
+				ForceShowOccludedActors();
+			}
+		}
 	}
 }
 
@@ -245,4 +326,93 @@ void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 			ControlledPawn->AddMovementInput(WorldDirection);
 		}
 	}
+}
+
+bool AAuraPlayerController::HideOccludedActor(const AActor* Actor)
+{
+	bool bSuccess = false;
+	FCameraOccludedActor* ExistingOccludedActor = OccludedActors.Find(Actor);
+
+	if (ExistingOccludedActor && ExistingOccludedActor->IsOccluded)
+	{
+		if (DebugLineTraces) UE_LOG(LogTemp, Warning, TEXT("Actor %s was already occluded. Ignoring."),
+			*Actor->GetName());
+		bSuccess = false;
+	}
+
+	if (ExistingOccludedActor && IsValid(ExistingOccludedActor->Actor))
+	{
+		ExistingOccludedActor->IsOccluded = true;
+		OnHideOccludedActor(*ExistingOccludedActor);
+
+		if (DebugLineTraces) UE_LOG(LogTemp, Warning, TEXT("Actor %s exists, but was not occluded. Occluding it now."), *Actor->GetName());
+		bSuccess = true;
+	}
+	else
+	{
+		UStaticMeshComponent* StaticMesh = Cast<UStaticMeshComponent>(
+			Actor->GetComponentByClass(UStaticMeshComponent::StaticClass()));
+
+		FCameraOccludedActor OccludedActor;
+		OccludedActor.Actor = Actor;
+		OccludedActor.StaticMesh = StaticMesh;
+		OccludedActor.Materials = StaticMesh->GetMaterials();
+		OccludedActor.IsOccluded = true;
+		OccludedActors.Add(Actor, OccludedActor);
+		OnHideOccludedActor(OccludedActor);
+
+		if (DebugLineTraces) UE_LOG(LogTemp, Warning, TEXT("Actor %s does not exist, creating and occluding it now."), *Actor->GetName());
+		bSuccess = true;
+	}
+
+	return bSuccess;
+}
+
+bool AAuraPlayerController::OnHideOccludedActor(const FCameraOccludedActor& OccludedActor) const
+{
+	for (int i = 0; i < OccludedActor.StaticMesh->GetNumMaterials(); ++i)
+	{
+		OccludedActor.StaticMesh->SetMaterial(i, FadeMaterial);
+	}
+
+	return true;
+}
+
+void AAuraPlayerController::ShowOccludedActor(FCameraOccludedActor& OccludedActor)
+{
+	if (!IsValid(OccludedActor.Actor))
+	{
+		OccludedActors.Remove(OccludedActor.Actor);
+	}
+
+	OccludedActor.IsOccluded = false;
+	OnShowOccludedActor(OccludedActor);
+}
+
+bool AAuraPlayerController::OnShowOccludedActor(const FCameraOccludedActor& OccludedActor) const
+{
+	for (int i = 0; i < OccludedActor.Materials.Num(); ++i)
+	{
+		OccludedActor.StaticMesh->SetMaterial(i, OccludedActor.Materials[i]);
+	}
+
+	return true;
+}
+
+void AAuraPlayerController::ForceShowOccludedActors()
+{
+	for (TTuple<const AActor*, FCameraOccludedActor>& Elem : OccludedActors)
+	{
+		if (Elem.Value.IsOccluded)
+		{
+			ShowOccludedActor(Elem.Value);
+
+			if (DebugLineTraces) UE_LOG(LogTemp, Warning, TEXT("Actor %s was occluded, force to show again."), *Elem.Value.Actor->GetName());
+		}
+	}
+}
+
+bool AAuraPlayerController::ShouldCheckCameraOcclusion() const
+{
+	return IsOcclusionEnabled && FadeMaterial && ActiveCamera && ActiveCapsuleComponent;
 }
