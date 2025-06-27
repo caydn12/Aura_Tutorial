@@ -220,6 +220,11 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 		FString("Summon Ability Tag")
 	);
 
+	GameplayTags.Abilities_Fire_FireBolt = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Fire.FireBolt"),
+		FString("FireBolt Ability Tag")
+	);
+
 	// Map of Damage Types to Resistance Attributes
 
 	GameplayTags.DamageTypesToResistances.Add(GameplayTags.Damage_Fire, GameplayTags.Attributes_Resistance_Fire);
