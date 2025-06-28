@@ -4,13 +4,22 @@
 #include "UI/WidgetController/OverlayWidgetController.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
+#include "AbilitySystem/Data/AbilityInfo.h"
 
 void UOverlayWidgetController::OnInitializeStartupAbilities(UAuraAbilitySystemComponent* AuraAbilitySystemComponent)
 {
 	// TODO: Get Information about all given abilities, look up their Ability Info, and broadcast it to widgets.
 	if (AuraAbilitySystemComponent->bStartupAbilitiesGiven)
 	{
-
+		FForEachAbility BroadcastDelegate;
+		BroadcastDelegate.BindLambda([this](const FGameplayAbilitySpec& AbilitySpec)
+			{
+				FAuraAbilityInfo Info = AbilityInfo->FindAbilityInfoByTag(UAuraAbilitySystemComponent::GetAbilityTagFromSpec(AbilitySpec));
+				Info.InputTag = UAuraAbilitySystemComponent::GetInputTagFromSpec(AbilitySpec);
+				AbilityInfoDelegate.Broadcast(Info);
+			}
+		);
+		AuraAbilitySystemComponent->ForEachAbility(BroadcastDelegate);
 	}
 }
 

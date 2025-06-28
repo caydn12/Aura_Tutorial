@@ -47,6 +47,7 @@ public:
 	FGameplayTag Attributes_Resistance_Physical;
 
 	// Input Tags
+	FGameplayTag InputTag;
 	FGameplayTag InputTag_LMB;
 	FGameplayTag InputTag_RMB;
 	FGameplayTag InputTag_1;
@@ -75,6 +76,7 @@ public:
 
 	// Ability Tags
 
+	FGameplayTag Abilities;
 	FGameplayTag Abilities_Attack;
 	FGameplayTag Abilities_Summon;
 	FGameplayTag Abilities_Fire_FireBolt;

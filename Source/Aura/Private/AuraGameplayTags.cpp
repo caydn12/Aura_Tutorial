@@ -107,6 +107,11 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 
 	// Input Tags
 
+	GameplayTags.InputTag = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("InputTag"),
+		FString("Parent Input Tag")
+	);
+
 	GameplayTags.InputTag_LMB = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("InputTag.LMB"),
 		FString("Input Tag for Left Mouse Button")
@@ -209,6 +214,11 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	);
 
 	// Ability Tags
+
+	GameplayTags.Abilities = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities"),
+		FString("Parent Ability Tag")
+	);
 
 	GameplayTags.Abilities_Attack = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Abilities.Attack"),
