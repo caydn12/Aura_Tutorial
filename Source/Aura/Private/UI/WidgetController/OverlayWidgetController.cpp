@@ -8,7 +8,6 @@
 
 void UOverlayWidgetController::OnInitializeStartupAbilities(UAuraAbilitySystemComponent* AuraAbilitySystemComponent)
 {
-	// TODO: Get Information about all given abilities, look up their Ability Info, and broadcast it to widgets.
 	if (AuraAbilitySystemComponent->bStartupAbilitiesGiven)
 	{
 		FForEachAbility BroadcastDelegate;

@@ -254,38 +254,41 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 
 		if (FollowTime <= ShortPressThreshold && ControlledPawn)
 		{
-			if (FXCursor)
+			if (InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_LMB))
 			{
-				UNiagaraFunctionLibrary::SpawnSystemAtLocation(
-					this,
-					FXCursor,
-					CursorHit.ImpactPoint,
-					FRotator::ZeroRotator,
-					FVector(1.0f)
-				);
-			}
-
-			if (UNavigationPath* NavPath = UNavigationSystemV1::FindPathToLocationSynchronously(this, ControlledPawn->GetActorLocation(), CachedDestination))
-			{
-				Spline->ClearSplinePoints();
-				for (const FVector& PointLocation : NavPath->PathPoints)
+				if (FXCursor)
 				{
-					Spline->AddSplinePoint(PointLocation, ESplineCoordinateSpace::World);
-					/* DrawDebugSphere(
-						GetWorld(),
-						PointLocation,
-						8.0f,
-						8.0f,
-						FColor::Green,
-						false,
-						5.0f
-					); */
+					UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+						this,
+						FXCursor,
+						CursorHit.ImpactPoint,
+						FRotator::ZeroRotator,
+						FVector(1.0f)
+					);
 				}
 
-				if (NavPath->PathPoints.Num() > 0)
+				if (UNavigationPath* NavPath = UNavigationSystemV1::FindPathToLocationSynchronously(this, ControlledPawn->GetActorLocation(), CachedDestination))
 				{
-					CachedDestination = NavPath->PathPoints[NavPath->PathPoints.Num() - 1];
-					bAutoRunning = true;
+					Spline->ClearSplinePoints();
+					for (const FVector& PointLocation : NavPath->PathPoints)
+					{
+						Spline->AddSplinePoint(PointLocation, ESplineCoordinateSpace::World);
+						/* DrawDebugSphere(
+							GetWorld(),
+							PointLocation,
+							8.0f,
+							8.0f,
+							FColor::Green,
+							false,
+							5.0f
+						); */
+					}
+
+					if (NavPath->PathPoints.Num() > 0)
+					{
+						CachedDestination = NavPath->PathPoints[NavPath->PathPoints.Num() - 1];
+						bAutoRunning = true;
+					}
 				}
 			}
 		}
