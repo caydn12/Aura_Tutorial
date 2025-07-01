@@ -235,6 +235,13 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 		FString("FireBolt Ability Tag")
 	);
 
+	// Cooldown Tags
+
+	GameplayTags.Cooldown_Fire_FireBolt = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Cooldown.Fire.FireBolt"),
+		FString("FireBolt Cooldown Tag")
+	);
+
 	// Map of Damage Types to Resistance Attributes
 
 	GameplayTags.DamageTypesToResistances.Add(GameplayTags.Damage_Fire, GameplayTags.Attributes_Resistance_Fire);
