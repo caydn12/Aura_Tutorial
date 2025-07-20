@@ -15,7 +15,7 @@ int32 ULevelUpInfo::FindLevelForXP(int32 XP) const
 		}
 		else
 		{
-			// Exit loop early if XP doesn't meet a levelup requirement
+			// Exit loop early once XP doesn't meet a levelup requirement
 			i = LevelUpInformation.Num();
 		}
 	}
