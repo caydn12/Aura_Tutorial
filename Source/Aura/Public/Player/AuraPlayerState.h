@@ -40,6 +40,9 @@ public:
 
 	void SetXP(int32 InXP);
 	void SetLevel(int32 InLevel);
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<class ULevelUpInfo> LevelUpInfo;
 private:
 	UFUNCTION()
 	void OnRep_Level(int32 OldLevel);
