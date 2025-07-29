@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
-#include "Data/CharacterClassInfo.h"
 #include "GameplayEffectTypes.h"
 #include "AuraAbilitySystemLibrary.generated.h"
 
 class UAbilitySystemComponent;
+enum class ECharacterClass : uint8;
 
 UCLASS()
 class AURA_API UAuraAbilitySystemLibrary : public UBlueprintFunctionLibrary
@@ -53,6 +53,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|GameplayEffects")
 	static void SetEffectContextSpawnLocations(UPARAM(ref)FGameplayEffectContextHandle& EffectContextHandle, const TArray<FVector>& InSpawnLocations);
+
+	static int32 GetXPRewardForClassAndLevel(const UObject* WorldContextObject, ECharacterClass CharacterClass, int32 CharacterLevel);
 
 	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|Input")
 	static void AdjustScalability(bool bIncrease);

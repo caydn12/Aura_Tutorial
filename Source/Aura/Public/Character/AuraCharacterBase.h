@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
 #include "Interaction/CombatInterface.h"
+#include "AbilitySystem/Data/CharacterClassInfo.h"
 #include "AuraCharacterBase.generated.h"
 
 class UGameplayEffect;
@@ -46,6 +47,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Combat")
 	FName TailSocketName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
+	ECharacterClass CharacterClass = ECharacterClass::Warrior;
 
 	bool bDead = false;
 
@@ -115,6 +119,7 @@ public:
 	virtual int32 GetMinionCount_Implementation() const override;
 	virtual int32 GetMinionSpawnLowerThreshold_Implementation() const override;
 	virtual void IncreaseMinionCount_Implementation(int32 Amount) override;
+	virtual ECharacterClass GetCharacterClass_Implementation() override;
 	// End Combat Interface
 
 	UPROPERTY(EditAnywhere, Category = "Combat")

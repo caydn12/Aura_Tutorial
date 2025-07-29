@@ -204,6 +204,19 @@ void UAuraAbilitySystemLibrary::SetEffectContextSpawnLocations(UPARAM(ref)FGamep
 	}
 }
 
+int32 UAuraAbilitySystemLibrary::GetXPRewardForClassAndLevel(const UObject* WorldContextObject, ECharacterClass CharacterClass, int32 CharacterLevel)
+{
+	float LocalXPReward = 0.0f;
+	UCharacterClassInfo* CharacterClassInfo = GetCharacterClassInfo(WorldContextObject);
+
+	if (CharacterClassInfo)
+	{
+		FCharacterClassDefaultInfo Info = CharacterClassInfo->GetClassDefaultInfo(CharacterClass);
+		LocalXPReward = Info.XPReward.GetValueAtLevel(CharacterLevel);
+	}
+	return static_cast<int32>(LocalXPReward);
+}
+
 void UAuraAbilitySystemLibrary::AdjustScalability(bool bIncrease)
 {
 	int32 Increase = bIncrease ? 1 : -1;
