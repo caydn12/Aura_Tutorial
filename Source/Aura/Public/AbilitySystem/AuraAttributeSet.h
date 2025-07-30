@@ -152,7 +152,6 @@ public:
 	FGameplayAttributeData Strength;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Strength)
 
-
 		UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Intelligence, Category = "Primary Attributes")
 	FGameplayAttributeData Intelligence;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Intelligence)
@@ -237,8 +236,12 @@ public:
 
 		// Does not need to be replicated
 		UPROPERTY(BlueprintReadOnly, Category = "Meta Attributes")
-		FGameplayAttributeData IncomingDamage;
-		ATTRIBUTE_ACCESSORS(UAuraAttributeSet, IncomingDamage)
+	FGameplayAttributeData IncomingDamage;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, IncomingDamage)
+
+		UPROPERTY(BlueprintReadOnly, Category = "Meta Attributes")
+	FGameplayAttributeData IncomingXP;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, IncomingXP)
 
 private:
 	void SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props) const;

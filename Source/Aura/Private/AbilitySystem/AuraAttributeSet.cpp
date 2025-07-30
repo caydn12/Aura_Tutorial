@@ -11,6 +11,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Player/AuraPlayerController.h"
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
+#include "AuraLogChannels.h"
 
 UAuraAttributeSet::UAuraAttributeSet()
 {
@@ -136,7 +137,6 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectMo
 	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
 	{
 		SetHealth(FMath::Clamp(GetHealth(), 0.0f, GetMaxHealth()));
-		UE_LOG(LogTemp, Warning, TEXT("Changed Health On: %s, Health: %f"), *Props.TargetAvatarActor->GetName(), GetHealth());
 	}
 	if (Data.EvaluatedData.Attribute == GetManaAttribute())
 	{
@@ -170,6 +170,12 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectMo
 			const bool bCriticalHit = UAuraAbilitySystemLibrary::IsCriticalHit(Props.EffectContextHandle);
 			ShowFloatingText(Props, LocalIncomingDamage, bBlockedHit, bCriticalHit);
 		}
+	}
+	if (Data.EvaluatedData.Attribute == GetIncomingXPAttribute())
+	{
+		const float LocalIncomingXP = GetIncomingXP();
+		SetIncomingXP(0.0f);
+		UE_LOG(LogAura, Log, TEXT("Incoming XP: %f"), LocalIncomingXP);
 	}
 }
 
