@@ -141,6 +141,7 @@ void AAuraCharacterBase::AddCharacterAbilities()
 	if (HasAuthority())
 	{
 		AuraASC->AddCharacterAbilities(StartupAbilities);
+		AuraASC->AddCharacterPassiveAbilities(StartupPassiveAbilities);
 	}
 }
 
