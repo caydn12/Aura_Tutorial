@@ -94,8 +94,7 @@ void UAuraAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContext
 		// Class Startup Abilities
 		for (TSubclassOf<UGameplayAbility> AbilityClass : CharacterClassInfo->GetClassDefaultInfo(CharacterClass).StartupAbilities)
 		{
-			ICombatInterface* CombatInterface = Cast<ICombatInterface>(ASC->GetAvatarActor());
-			if (CombatInterface)
+			if (ASC->GetAvatarActor() && ASC->GetAvatarActor()->Implements<UCombatInterface>())
 			{
 				FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, ICombatInterface::Execute_GetCharacterLevel(ASC->GetAvatarActor()));
 				ASC->GiveAbility(AbilitySpec);
