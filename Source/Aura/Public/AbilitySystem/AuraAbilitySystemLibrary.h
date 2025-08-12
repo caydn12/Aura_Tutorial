@@ -59,4 +59,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|Input")
 	static void AdjustScalability(bool bIncrease);
 
+	UFUNCTION(BlueprintPure, Category = "AuraAbilitySystemLibrary|GameplayEffects")
+	static TArray<FGameplayTag> GetCallerMagnitudeTagsByGameplayEffectClass(TSubclassOf<UGameplayEffect> GameplayEffectClass);
 };

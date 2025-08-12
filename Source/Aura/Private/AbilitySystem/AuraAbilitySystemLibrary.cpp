@@ -12,6 +12,7 @@
 #include "GameFramework/GameUserSettings.h"
 #include "Interaction/CombatInterface.h"
 #include "Engine/OverlapResult.h"
+#include "AbilitySystem/Data/CharacterClassInfo.h"
 
 UOverlayWidgetController* UAuraAbilitySystemLibrary::GetOverlayWidgetController(const UObject* WorldContextObject)
 {
@@ -227,4 +228,23 @@ void UAuraAbilitySystemLibrary::AdjustScalability(bool bIncrease)
 		UGameUserSettings::GetGameUserSettings()->SetOverallScalabilityLevel(NewQualityLevel);
 		UGameUserSettings::GetGameUserSettings()->ApplySettings(false);
 	}
+}
+
+TArray<FGameplayTag> UAuraAbilitySystemLibrary::GetCallerMagnitudeTagsByGameplayEffectClass(TSubclassOf<UGameplayEffect> GameplayEffectClass)
+{
+	UGameplayEffect* GE = NewObject<UGameplayEffect>(GetTransientPackage(), GameplayEffectClass);
+
+	TArray<FGameplayModifierInfo> ModifierInfo = GE->Modifiers;
+
+	TArray<FGameplayTag> CallerTags;
+
+	for (FGameplayModifierInfo Info : ModifierInfo)
+	{
+		if (Info.ModifierMagnitude.GetMagnitudeCalculationType() == EGameplayEffectMagnitudeCalculation::SetByCaller)
+		{
+			CallerTags.Add(Info.ModifierMagnitude.GetSetByCallerFloat().DataTag);
+		}
+	}
+
+	return CallerTags;
 }
