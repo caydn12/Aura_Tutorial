@@ -131,6 +131,22 @@ int32 AAuraCharacter::FindLevelForXP_Implementation(int32 InXP) const
 	return AuraPlayerState->LevelUpInfo->FindLevelForXP(InXP);
 }
 
+int32 AAuraCharacter::GetAttributePoints_Implementation() const
+{
+	AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
+	check(AuraPlayerState);
+
+	return AuraPlayerState->GetAttributePoints();
+}
+
+int32 AAuraCharacter::GetSpellPoints_Implementation() const
+{
+	AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
+	check(AuraPlayerState);
+
+	return AuraPlayerState->GetSpellPoints();
+}
+
 int32 AAuraCharacter::GetCharacterLevel_Implementation() const
 {
 	const AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
