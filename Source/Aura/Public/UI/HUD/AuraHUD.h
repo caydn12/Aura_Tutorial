@@ -9,6 +9,7 @@
 class UAuraUserWidget;
 class UOverlayWidgetController;
 class UAttributeMenuWidgetController;
+class USpellMenuWidgetController;
 struct FWidgetControllerParams;
 class UAbilitySystemComponent;
 class UAttributeSet;
@@ -29,6 +30,10 @@ public:
 	// Attribute Menu
 
 	UAttributeMenuWidgetController* GetAttributeMenuWidgetController(const FWidgetControllerParams& WCParams);
+
+	// Spell Menu
+
+	USpellMenuWidgetController* GetSpellMenuWidgetController(const FWidgetControllerParams& WCParams);
 
 private:
 
@@ -52,4 +57,12 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UAttributeMenuWidgetController> AttributeMenuWidgetControllerClass;
+
+	// Spell Menu
+
+	UPROPERTY()
+	TObjectPtr<USpellMenuWidgetController> SpellMenuWidgetController;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<USpellMenuWidgetController> SpellMenuWidgetControllerClass;
 };
