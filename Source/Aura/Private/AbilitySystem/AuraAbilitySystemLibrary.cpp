@@ -13,6 +13,7 @@
 #include "Interaction/CombatInterface.h"
 #include "Engine/OverlapResult.h"
 #include "AbilitySystem/Data/CharacterClassInfo.h"
+#include "AbilitySystem/Data/AbilityInfo.h"
 
 bool UAuraAbilitySystemLibrary::MakeWidgetControllerParams(const UObject* WorldContextObject, FWidgetControllerParams& OutWCParams, AAuraHUD*& OutAuraHUD)
 {
@@ -123,12 +124,23 @@ void UAuraAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContext
 UCharacterClassInfo* UAuraAbilitySystemLibrary::GetCharacterClassInfo(const UObject* WorldContextObject)
 {
 	UCharacterClassInfo* CharacterClassInfo = nullptr;
-	AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
+	const AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
 	if (AuraGameMode)
 	{
 		CharacterClassInfo = AuraGameMode->CharacterClassInfo;
 	}
 	return CharacterClassInfo;
+}
+
+UAbilityInfo* UAuraAbilitySystemLibrary::GetAbilityInfo(const UObject* WorldContextObject)
+{
+	UAbilityInfo* AbilityInfo = nullptr;
+	const AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
+	if (AuraGameMode)
+	{
+		AbilityInfo = AuraGameMode->AbilityInfo;
+	}
+	return AbilityInfo;
 }
 
 bool UAuraAbilitySystemLibrary::IsBlockedHit(const FGameplayEffectContextHandle& EffectContextHandle)
