@@ -7,6 +7,8 @@
 #include "AuraGameplayTags.h"
 #include "Interaction/PlayerInterface.h"
 #include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystem/AuraAbilitySystemLibrary.h"
+#include "AbilitySystem/Data/AbilityInfo.h"
 
 // When using Client RPCs, _Implementation must be added to the CPP Definition Signature
 void UAuraAbilitySystemComponent::ClientEffectApplied_Implementation(UAbilitySystemComponent* AbilitySystemComponent,
@@ -150,6 +152,26 @@ FGameplayTag UAuraAbilitySystemComponent::GetStatusTagFromSpec(const FGameplayAb
 	return FoundTag;
 }
 
+FGameplayAbilitySpec* UAuraAbilitySystemComponent::GetSpecFromAbilityTag(const FGameplayTag& AbilityTag)
+{
+	FGameplayAbilitySpec* FoundSpec = nullptr;
+
+	FScopedAbilityListLock ActiveScopeLock(*this);
+	for (FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
+	{
+		for (FGameplayTag Tag : AbilitySpec.Ability.Get()->AbilityTags)
+		{
+			if (Tag.MatchesTagExact(AbilityTag))
+			{
+				// If this causes issues, refer back to video 284 Update Ability Statuses
+				FoundSpec = &AbilitySpec;
+			}
+		}
+	}
+
+	return FoundSpec;
+}
+
 void UAuraAbilitySystemComponent::UpgradeAttribute(const FGameplayTag& AttributeTag)
 {
 	if (GetAvatarActor()->Implements<UPlayerInterface>())
@@ -157,6 +179,26 @@ void UAuraAbilitySystemComponent::UpgradeAttribute(const FGameplayTag& Attribute
 		if (IPlayerInterface::Execute_GetAttributePoints(GetAvatarActor()) > 0)
 		{
 			ServerUpgradeAttribute(AttributeTag);
+		}
+	}
+}
+
+void UAuraAbilitySystemComponent::UpdateAbilityStatuses(int32 Level)
+{
+	UAbilityInfo* AbilityInfo = UAuraAbilitySystemLibrary::GetAbilityInfo(GetAvatarActor());
+
+	for (const FAuraAbilityInfo& Info : AbilityInfo->AbilityInformation)
+	{
+		if (Level >= Info.LevelRequirement && Info.AbilityTag.IsValid())
+		{
+			// Checks list of activatable abilities stored in the ASC. If ability is already active, skip over updating its status.
+			if (GetSpecFromAbilityTag(Info.AbilityTag) == nullptr)
+			{
+				FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(Info.AbilityClass, 1);
+				AbilitySpec.DynamicAbilityTags.AddTag(FAuraGameplayTags::Get().Abilities_Status_Eligible);
+				GiveAbility(AbilitySpec);
+				MarkAbilitySpecDirty(AbilitySpec);
+			}
 		}
 	}
 }
