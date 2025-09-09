@@ -20,9 +20,9 @@ void UAuraAbilitySystemComponent::ClientEffectApplied_Implementation(UAbilitySys
 	EffectAssetTags.Broadcast(TagContainer);
 }
 
-void UAuraAbilitySystemComponent::ClientUpdateAbilityStatus_Implementation(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag)
+void UAuraAbilitySystemComponent::ClientUpdateAbilityStatus_Implementation(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag, int32 AbilityLevel)
 {
-	AbilityStatusChanged.Broadcast(AbilityTag, StatusTag);
+	AbilityStatusChanged.Broadcast(AbilityTag, StatusTag, AbilityLevel);
 }
 
 void UAuraAbilitySystemComponent::OnRep_ActivateAbilities()
@@ -147,7 +147,7 @@ FGameplayTag UAuraAbilitySystemComponent::GetInputTagFromSpec(const FGameplayAbi
 FGameplayTag UAuraAbilitySystemComponent::GetStatusTagFromSpec(const FGameplayAbilitySpec& AbilitySpec)
 {
 	FGameplayTag FoundTag;
-	for (FGameplayTag StatusTag : AbilitySpec.DynamicAbilityTags)
+	for (FGameplayTag StatusTag : AbilitySpec.GetDynamicSpecSourceTags())
 	{
 		if (StatusTag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Abilities.Status"))))
 		{
@@ -164,7 +164,7 @@ FGameplayAbilitySpec* UAuraAbilitySystemComponent::GetSpecFromAbilityTag(const F
 	FScopedAbilityListLock ActiveScopeLock(*this);
 	for (FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
 	{
-		for (FGameplayTag Tag : AbilitySpec.Ability.Get()->AbilityTags)
+		for (FGameplayTag Tag : AbilitySpec.Ability.Get()->GetAssetTags())
 		{
 			if (Tag.MatchesTagExact(AbilityTag))
 			{
@@ -200,12 +200,41 @@ void UAuraAbilitySystemComponent::UpdateAbilityStatuses(int32 Level)
 			if (GetSpecFromAbilityTag(Info.AbilityTag) == nullptr)
 			{
 				FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(Info.AbilityClass, 1);
-				AbilitySpec.DynamicAbilityTags.AddTag(FAuraGameplayTags::Get().Abilities_Status_Eligible);
+				AbilitySpec.GetDynamicSpecSourceTags().AddTag(FAuraGameplayTags::Get().Abilities_Status_Eligible);
 				GiveAbility(AbilitySpec);
 				MarkAbilitySpecDirty(AbilitySpec);
-				ClientUpdateAbilityStatus(Info.AbilityTag, FAuraGameplayTags::Get().Abilities_Status_Eligible);
+				ClientUpdateAbilityStatus(Info.AbilityTag, FAuraGameplayTags::Get().Abilities_Status_Eligible, 1);
 			}
 		}
+	}
+}
+
+void UAuraAbilitySystemComponent::ServerSpendSpellPoint_Implementation(const FGameplayTag& AbilityTag)
+{
+	if (FGameplayAbilitySpec* AbilitySpec = GetSpecFromAbilityTag(AbilityTag))
+	{
+		if (GetAvatarActor()->Implements<UPlayerInterface>())
+		{
+			IPlayerInterface::Execute_AddToSpellPoints(GetAvatarActor(), -1);
+		}
+
+		const FAuraGameplayTags GameplayTags = FAuraGameplayTags::Get();
+		FGameplayTag Status = GetStatusTagFromSpec(*AbilitySpec);
+		// if AbilitySpec is valid, the ability is not in a locked state. It is eligible, unlocked, or equipped.
+		if (Status.MatchesTagExact(GameplayTags.Abilities_Status_Eligible))
+		{
+			AbilitySpec->GetDynamicSpecSourceTags().RemoveTag(GameplayTags.Abilities_Status_Eligible);
+			AbilitySpec->GetDynamicSpecSourceTags().AddTag(GameplayTags.Abilities_Status_Unlocked);
+			Status = GameplayTags.Abilities_Status_Unlocked;
+		}
+		else if (Status.MatchesTagExact(GameplayTags.Abilities_Status_Equipped) ||
+			Status.MatchesTagExact(GameplayTags.Abilities_Status_Unlocked))
+		{
+			AbilitySpec->Level += 1;
+		}
+
+		ClientUpdateAbilityStatus(AbilityTag, Status, AbilitySpec->Level);
+		MarkAbilitySpecDirty(*AbilitySpec);
 	}
 }
 

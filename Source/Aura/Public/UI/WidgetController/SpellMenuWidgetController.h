@@ -25,14 +25,17 @@ public:
 	virtual void BroadcastInitialValues() override;
 	virtual void BindCallbacksToDependencies() override;
 
+	UFUNCTION(BlueprintCallable)
+	void SpellGlobeSelected(const FGameplayTag& AbilityTag);
+
+	UFUNCTION(BlueprintCallable)
+	void SpendPointButtonPressed();
+
 	UPROPERTY(BlueprintAssignable)
 	FOnPlayerStatChangedSignature SpellPointsChangedDelegate;
 
 	UPROPERTY(BlueprintAssignable)
 	FSpellGlobeSelectedSignature SpellGlobeSelectedDelegate;
-
-	UFUNCTION(BlueprintCallable)
-	void SpellGlobeSelected(const FGameplayTag& AbilityTag);
 
 private:
 
