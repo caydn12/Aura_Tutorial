@@ -6,7 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "UI/HUD/AuraHUD.h"
 #include "Player/AuraPlayerState.h"
-#include "Game/AuraGameModeBase.h"
+#include "Game/AuraGameInstance.h"
 #include "AbilitySystemComponent.h"
 #include "AuraAbilityTypes.h"
 #include "GameFramework/GameUserSettings.h"
@@ -124,10 +124,10 @@ void UAuraAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContext
 UCharacterClassInfo* UAuraAbilitySystemLibrary::GetCharacterClassInfo(const UObject* WorldContextObject)
 {
 	UCharacterClassInfo* CharacterClassInfo = nullptr;
-	const AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
-	if (AuraGameMode)
+	const UAuraGameInstance* AuraGameInstance = Cast<UAuraGameInstance>(UGameplayStatics::GetGameInstance(WorldContextObject));
+	if (AuraGameInstance)
 	{
-		CharacterClassInfo = AuraGameMode->CharacterClassInfo;
+		CharacterClassInfo = AuraGameInstance->CharacterClassInfo;
 	}
 	return CharacterClassInfo;
 }
@@ -135,10 +135,10 @@ UCharacterClassInfo* UAuraAbilitySystemLibrary::GetCharacterClassInfo(const UObj
 UAbilityInfo* UAuraAbilitySystemLibrary::GetAbilityInfo(const UObject* WorldContextObject)
 {
 	UAbilityInfo* AbilityInfo = nullptr;
-	const AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
-	if (AuraGameMode)
+	const UAuraGameInstance* AuraGameInstance = Cast<UAuraGameInstance>(UGameplayStatics::GetGameInstance(WorldContextObject));
+	if (AuraGameInstance)
 	{
-		AbilityInfo = AuraGameMode->AbilityInfo;
+		AbilityInfo = AuraGameInstance->AbilityInfo;
 	}
 	return AbilityInfo;
 }
