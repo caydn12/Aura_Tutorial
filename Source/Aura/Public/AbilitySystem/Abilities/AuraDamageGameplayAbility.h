@@ -16,13 +16,15 @@ class AURA_API UAuraDamageGameplayAbility : public UAuraGameplayAbility
 
 protected:
 
+	float GetDamageByDamageType(float InLevel, const FGameplayTag& DamageType) const;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSubclassOf<UGameplayEffect> DamageEffectClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Damage")
 	TMap<FGameplayTag, FScalableFloat> DamageTypes;
 
-	public:
-		UFUNCTION(BlueprintCallable)
-		void CauseDamage(AActor* TargetActor);
+public:
+	UFUNCTION(BlueprintCallable)
+	void CauseDamage(AActor* TargetActor);
 };
