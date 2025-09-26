@@ -31,6 +31,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SpendPointButtonPressed();
 
+	UFUNCTION(BlueprintCallable)
+	void GlobeDeslect();
+
 	UPROPERTY(BlueprintAssignable)
 	FOnPlayerStatChangedSignature SpellPointsChangedDelegate;
 
