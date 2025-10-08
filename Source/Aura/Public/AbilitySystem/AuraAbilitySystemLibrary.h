@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "GameplayEffectTypes.h"
+#include "AuraAbilityTypes.h"
 #include "AuraAbilitySystemLibrary.generated.h"
 
 class UAbilitySystemComponent;
@@ -76,4 +77,7 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "AuraAbilitySystemLibrary|GameplayEffects")
 	static TArray<FGameplayTag> GetCallerMagnitudeTagsByGameplayEffectClass(TSubclassOf<UGameplayEffect> GameplayEffectClass);
+
+	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|DamageEffect")
+	static FGameplayEffectContextHandle ApplyDamageEffect(const FDamageEffectParams& DamageEffectParams);
 };
