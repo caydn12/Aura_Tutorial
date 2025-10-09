@@ -14,7 +14,7 @@
 
 AAuraProjectile::AAuraProjectile()
 {
- 	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = false;
 	bReplicates = true;
 
 	Sphere = CreateDefaultSubobject<USphereComponent>("Sphere");
@@ -49,53 +49,51 @@ void AAuraProjectile::Destroyed()
 	// if the client projectile has not yet impacted something, Play the effects on client side
 	if (!bImpacted && !HasAuthority())
 	{
-		UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), FRotator::ZeroRotator);
-
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation());
-
-		if (LoopingSoundComponent) LoopingSoundComponent->Stop();
-
-		bImpacted = true;
+		OnHit();
 	}
 	Super::Destroyed();
 }
 
+void AAuraProjectile::OnHit()
+{
+	UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), FRotator::ZeroRotator);
+
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation());
+
+	if (LoopingSoundComponent) LoopingSoundComponent->Stop();
+
+	bImpacted = true;
+}
+
 void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (DamageEffectSpecHandle.Data.IsValid())
+	AActor* ProjectileOwner = GetOwner();
+	bool bHitSelf = ProjectileOwner == OtherActor;
+	if (!bHitSelf)
 	{
-		bool bHitSelf = DamageEffectSpecHandle.Data.Get()->GetContext().GetEffectCauser() == OtherActor;
-		if (!bHitSelf)
+		if (UAuraAbilitySystemLibrary::IsNotAlly(ProjectileOwner, OtherActor))
 		{
-			if (UAuraAbilitySystemLibrary::IsNotAlly(DamageEffectSpecHandle.Data.Get()->GetContext().GetEffectCauser(), OtherActor))
+			if (!bImpacted)
 			{
-				if (!bImpacted)
+				OnHit();
+			}
+
+			if (HasAuthority())
+			{
+				// Apply effect only on server. Effect will modify replicated data
+				if (UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
 				{
-					UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), FRotator::ZeroRotator);
-
-					UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation());
-
-					if (LoopingSoundComponent) LoopingSoundComponent->Stop();
-
-					bImpacted = true;
+					DamageEffectParams.TargetAbilitySystemComponent = TargetASC;
+					UAuraAbilitySystemLibrary::ApplyDamageEffect(DamageEffectParams);
 				}
 
-				if (HasAuthority())
-				{
-					// Apply effect only on server. Effect will modify replicated data
-					if (UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
-					{
-						TargetASC->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
-					}
-
-					// If on server, Destroy the projectile on overlap with other actor
-					Destroy();
-				}
-				else
-				{
-					// If on client, set bImpacted to true because only the server destroys the object
-					bImpacted = true;
-				}
+				// If on server, Destroy the projectile on overlap with other actor
+				Destroy();
+			}
+			else
+			{
+				// If on client, set bImpacted to true because only the server destroys the object
+				bImpacted = true;
 			}
 		}
 	}
