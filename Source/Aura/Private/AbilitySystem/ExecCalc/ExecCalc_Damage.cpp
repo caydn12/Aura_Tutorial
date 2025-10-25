@@ -241,7 +241,7 @@ void UExecCalc_Damage::DetermineDebuff(const FGameplayEffectSpec& Spec, const FG
 			const bool bDebuff = FMath::RandRange(1, 100) < EffectiveDebuffChance;
 			if (bDebuff)
 			{
-
+				FGameplayEffectContextHandle ContextHandle = Spec.GetContext();
 			}
 		}
 	}
