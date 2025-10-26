@@ -13,6 +13,8 @@
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "Interaction/PlayerInterface.h"
 #include "AuraLogChannels.h"
+#include "GameplayEffectComponents/TargetTagsGameplayEffectComponent.h"
+#include "AbilitySystem/ExecCalc/ExecCalc_Damage.h"
 
 UAuraAttributeSet::UAuraAttributeSet()
 {
@@ -181,7 +183,57 @@ void UAuraAttributeSet::HandleIncomingXP(const FEffectProperties& Props)
 
 void UAuraAttributeSet::Debuff(const FEffectProperties& Props)
 {
+	// Create the new effect context. 
+	// The new effect context is for the debuff. 
+	// Props has the context of the ability that triggered debuff.
+	FGameplayEffectContextHandle EffectContext = Props.SourceASC->MakeEffectContext();
+	EffectContext.AddSourceObject(Props.SourceAvatarActor);
 
+	// Gather debuff properties
+	const FGameplayTag DamageType = UAuraAbilitySystemLibrary::GetDamageType(Props.EffectContextHandle);
+	const float DebuffDamage = UAuraAbilitySystemLibrary::GetDebuffDamage(Props.EffectContextHandle);
+	const float DebuffDuration = UAuraAbilitySystemLibrary::GetDebuffDuration(Props.EffectContextHandle);
+	const float DebuffFrequency = UAuraAbilitySystemLibrary::GetDebuffFrequency(Props.EffectContextHandle);
+	
+	// Create the debuff effect
+	const FString DebuffName = FString::Printf(TEXT("DynamicDebuff %s"), *DamageType.ToString());
+	UGameplayEffect* DebuffEffect = NewObject<UGameplayEffect>(GetTransientPackage(), FName(DebuffName));
+
+	// Configure the debuff
+	DebuffEffect->DurationPolicy = EGameplayEffectDurationType::HasDuration;
+	DebuffEffect->Period = DebuffFrequency;
+	DebuffEffect->bExecutePeriodicEffectOnApplication = false;
+	DebuffEffect->DurationMagnitude = FScalableFloat(DebuffDuration);
+	DebuffEffect->StackingType = EGameplayEffectStackingType::AggregateBySource;
+	DebuffEffect->StackLimitCount = 1;
+
+	// Create Execution Calculation
+	FGameplayEffectExecutionDefinition ExecutionDefinition;
+	ExecutionDefinition.CalculationClass = UExecCalc_Damage::StaticClass();
+
+	DebuffEffect->Executions.Add(ExecutionDefinition);
+
+	// Configure Tag component, added to debuff effect with tags
+	FInheritedTagContainer TagContainer = FInheritedTagContainer();
+	UTargetTagsGameplayEffectComponent& TargetTagsComponent = DebuffEffect->FindOrAddComponent<UTargetTagsGameplayEffectComponent>();
+	
+	const FGameplayTag DebuffType = FAuraGameplayTags::Get().DamageTypesToDebuffs[DamageType];
+	
+	TagContainer.AddTag(DebuffType);
+	TargetTagsComponent.SetAndApplyTargetTagChanges(TagContainer);
+
+	// Create and configure Effect spec
+	FGameplayEffectSpec* EffectSpec = new FGameplayEffectSpec(DebuffEffect, EffectContext, 1.f);
+
+	EffectSpec->SetSetByCallerMagnitude(DebuffType, DebuffDamage);
+
+	// Assign the Damage Type to the new effect context
+	FAuraGameplayEffectContext* AuraEffectContext = static_cast<FAuraGameplayEffectContext*>(EffectContext.Get());
+	TSharedPtr<FGameplayTag> DebuffDamageType = MakeShared<FGameplayTag>(DamageType);
+	AuraEffectContext->SetDamageType(DebuffDamageType);
+
+	// Apply Effect Spec
+	Props.TargetASC->ApplyGameplayEffectSpecToSelf(*EffectSpec);
 }
 
 void UAuraAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props) const
@@ -226,21 +278,33 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectMo
 	FEffectProperties Props;
 	SetEffectProperties(Data, Props);
 
-	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
+	bool bIsDead = false;
+	if (Props.TargetCharacter->Implements<UCombatInterface>())
 	{
-		SetHealth(FMath::Clamp(GetHealth(), 0.0f, GetMaxHealth()));
+		if (ICombatInterface::Execute_IsDead(Props.TargetCharacter))
+		{
+			bIsDead = true;
+		}
 	}
-	if (Data.EvaluatedData.Attribute == GetManaAttribute())
+
+	if (!bIsDead)
 	{
-		SetMana(FMath::Clamp(GetMana(), 0.0f, GetMaxMana()));
-	}
-	if (Data.EvaluatedData.Attribute == GetIncomingDamageAttribute())
-	{
-		HandleIncomingDamage(Props);
-	}
-	if (Data.EvaluatedData.Attribute == GetIncomingXPAttribute())
-	{
-		HandleIncomingXP(Props);
+		if (Data.EvaluatedData.Attribute == GetHealthAttribute())
+		{
+			SetHealth(FMath::Clamp(GetHealth(), 0.0f, GetMaxHealth()));
+		}
+		if (Data.EvaluatedData.Attribute == GetManaAttribute())
+		{
+			SetMana(FMath::Clamp(GetMana(), 0.0f, GetMaxMana()));
+		}
+		if (Data.EvaluatedData.Attribute == GetIncomingDamageAttribute())
+		{
+			HandleIncomingDamage(Props);
+		}
+		if (Data.EvaluatedData.Attribute == GetIncomingXPAttribute())
+		{
+			HandleIncomingXP(Props);
+		}
 	}
 }
 

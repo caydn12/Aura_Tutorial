@@ -120,13 +120,18 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	// Get the Effect Context
 	FGameplayEffectContextHandle EffectContextHandle = Spec.GetContext();
 
+	bool bIsDebuff = EvaluationParameters.TargetTags->HasTag(FGameplayTag::RequestGameplayTag(FName("Debuff")));
+
 	// End Boilerplate
 
 	// Determine Debuffs
-	DetermineDebuff(Spec, ExecutionParams, EvaluationParameters);
+	if (!bIsDebuff)
+	{
+		DetermineDebuff(Spec, ExecutionParams, EvaluationParameters);
+	}
 
-	// Get Damage Set By Caller Magnitude
 	float Damage = 0.f;
+	// Get Damage Set By Caller Magnitude for Damage types
 	for (const TTuple<FGameplayTag, FGameplayTag>& Pair : FAuraGameplayTags::Get().DamageTypesToResistances)
 	{
 		const FGameplayTag DamageTypeTag = Pair.Key;
@@ -146,13 +151,36 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 		Damage += DamageTypeValue;
 	}
 
+	if (bIsDebuff)
+	{
+		// Get Damage Set By Caller Magnitude for Debuff types
+		for (const TTuple<FGameplayTag, FGameplayTag>& Pair : FAuraGameplayTags::Get().DebuffTypesToResistances)
+		{
+			const FGameplayTag DebuffTypeTag = Pair.Key;
+			const FGameplayTag ResistanceTag = Pair.Value;
+			checkf(DamageStatics().TagsToCaptureDefs.Contains(ResistanceTag), TEXT("TagsToCaptureDefs doesn't contain Tag: [%s] in ExecCalc_Damage"), *ResistanceTag.ToString());
+
+			const FGameplayEffectAttributeCaptureDefinition CaptureDef = DamageStatics().TagsToCaptureDefs[ResistanceTag];
+
+			float DamageTypeValue = Spec.GetSetByCallerMagnitude(DebuffTypeTag, false);
+			
+			float Resistance = 0.f;
+			ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(CaptureDef, EvaluationParameters, Resistance);
+			Resistance = FMath::Clamp(Resistance, 0.f, 100.f);
+
+			DamageTypeValue *= (100 - Resistance) / 100.f;
+
+			Damage += DamageTypeValue;
+		}
+	}
+
 	// Capture BlockChance on Target. 
 	float TargetBlockChance = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().BlockChanceDef, EvaluationParameters, TargetBlockChance);
 	TargetBlockChance = FMath::Max<float>(TargetBlockChance, 0.f);
 
 	// Determine if a block occurred.
-	const bool bBlocked = FMath::RandRange(1, 100) <= TargetBlockChance;
+	const bool bBlocked = (FMath::RandRange(1, 100) <= TargetBlockChance) && !bIsDebuff;
 
 	UAuraAbilitySystemLibrary::SetIsBlockedHit(EffectContextHandle, bBlocked);
 
@@ -208,7 +236,7 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	// Critical Hit Resistance reduces Critical Hit Chance
 	const float EffectiveCriticalHitChance = SourceCriticalHitChance - TargetCriticalHitResistance * CriticalHitResistanceCoefficient;
 	
-	const bool bCriticalHit = FMath::RandRange(1, 100) <= EffectiveCriticalHitChance;
+	const bool bCriticalHit = (FMath::RandRange(1, 100) <= EffectiveCriticalHitChance) && !bIsDebuff;
 
 	UAuraAbilitySystemLibrary::SetIsCriticalHit(EffectContextHandle, bCriticalHit);
 
