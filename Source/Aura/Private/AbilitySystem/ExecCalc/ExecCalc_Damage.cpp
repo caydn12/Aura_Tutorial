@@ -162,15 +162,15 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 
 			const FGameplayEffectAttributeCaptureDefinition CaptureDef = DamageStatics().TagsToCaptureDefs[ResistanceTag];
 
-			float DamageTypeValue = Spec.GetSetByCallerMagnitude(DebuffTypeTag, false);
+			float DebuffTypeDamageValue = Spec.GetSetByCallerMagnitude(DebuffTypeTag, false);
 			
 			float Resistance = 0.f;
 			ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(CaptureDef, EvaluationParameters, Resistance);
 			Resistance = FMath::Clamp(Resistance, 0.f, 100.f);
 
-			DamageTypeValue *= (100 - Resistance) / 100.f;
+			DebuffTypeDamageValue *= (100 - Resistance) / 100.f;
 
-			Damage += DamageTypeValue;
+			Damage += DebuffTypeDamageValue;
 		}
 	}
 
