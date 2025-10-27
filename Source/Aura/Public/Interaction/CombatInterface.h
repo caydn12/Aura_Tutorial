@@ -7,9 +7,13 @@
 #include "GameplayTagContainer.h"
 #include "CombatInterface.generated.h"
 
+class UAbilitySystemComponent;
 class UAnimMontage;
 class UNiagaraSystem;
 enum class ECharacterClass : uint8;
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnASCRegistered, UAbilitySystemComponent* /*ASC*/);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDeath, AActor*, DeadActor);
 
 USTRUCT(BlueprintType)
 struct FTaggedMontage
@@ -89,4 +93,7 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void IncreaseMinionCount(int32 Amount);
+
+	virtual FOnASCRegistered GetOnASCRegisteredDelegate() = 0;
+	virtual FOnDeath& GetOnDeathDelegate() = 0;
 };

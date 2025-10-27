@@ -13,6 +13,7 @@ class UGameplayEffect;
 class UGameplayAbility;
 class UAnimMontage;
 class UNiagaraSystem;
+class UDebuffNiagaraComponent;
 
 UCLASS(Abstract)
 class AURA_API AAuraCharacterBase : public ACharacter, public IAbilitySystemInterface, public ICombatInterface
@@ -100,6 +101,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
 	TObjectPtr<USoundBase> DeathSound;
 
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UDebuffNiagaraComponent> BurnDebuffComponent;
+
 public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UAttributeSet* GetAttributeSet() const { return AttributeSet; }
@@ -120,7 +124,12 @@ public:
 	virtual int32 GetMinionSpawnLowerThreshold_Implementation() const override;
 	virtual void IncreaseMinionCount_Implementation(int32 Amount) override;
 	virtual ECharacterClass GetCharacterClass_Implementation() override;
+	virtual FOnASCRegistered GetOnASCRegisteredDelegate() override;
+	virtual FOnDeath& GetOnDeathDelegate() override;
 	// End Combat Interface
+
+	FOnASCRegistered OnASCRegistered;
+	FOnDeath OnDeath;
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	TArray<FTaggedMontage> AttackMontages;
