@@ -83,6 +83,8 @@ void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, 
 				// Apply effect only on server. Effect will modify replicated data
 				if (UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
 				{
+					const FVector DeathImpulse = GetActorForwardVector() * DamageEffectParams.DeathImpulseMagnitude;
+					DamageEffectParams.DeathImpulse = DeathImpulse;
 					DamageEffectParams.TargetAbilitySystemComponent = TargetASC;
 					UAuraAbilitySystemLibrary::ApplyDamageEffect(DamageEffectParams);
 				}
