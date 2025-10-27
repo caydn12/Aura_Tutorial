@@ -27,6 +27,9 @@ struct FDamageEffectParams
 	float BaseDamage = 0.f;
 
 	UPROPERTY()
+	float DeathImpulseMagnitude = 0.f;
+
+	UPROPERTY()
 	float AbilityLevel = 1.f;
 
 	UPROPERTY()
