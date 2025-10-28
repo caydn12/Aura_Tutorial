@@ -163,3 +163,9 @@ void AAuraEnemy::Die(const FVector& DeathImpulse)
 	}
 	Super::Die(DeathImpulse);
 }
+
+void AAuraEnemy::Knockback(const FVector& KnockbackForce)
+{
+	Super::Knockback(KnockbackForce);
+	AuraAIController->StopMovement();
+}

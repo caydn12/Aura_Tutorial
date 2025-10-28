@@ -48,6 +48,8 @@ class AURA_API ICombatInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	virtual void Die(const FVector& DeathImpulse) = 0;
+
+	virtual void Knockback(const FVector& KnockbackForce) = 0;
 	
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	int32 GetCharacterLevel() const;

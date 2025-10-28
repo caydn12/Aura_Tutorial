@@ -214,3 +214,8 @@ void AAuraCharacterBase::Die(const FVector& DeathImpulse)
 	// Server and Client calls
 	MulticastHandleDeath(DeathImpulse);
 }
+
+void AAuraCharacterBase::Knockback(const FVector& KnockbackForce)
+{
+	LaunchCharacter(KnockbackForce, false, false);
+}
