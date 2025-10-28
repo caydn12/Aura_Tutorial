@@ -52,7 +52,7 @@ public:
 
 	// Combat Interface
 	virtual int32 GetCharacterLevel_Implementation() const override;
-	virtual void Die() override;
+	virtual void Die(const FVector& DeathImpulse) override;
 	// End Combat Interface
 
 	UPROPERTY(BlueprintAssignable)
