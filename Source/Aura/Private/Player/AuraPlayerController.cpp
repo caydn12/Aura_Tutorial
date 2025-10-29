@@ -113,7 +113,7 @@ void AAuraPlayerController::SyncOccludedActors()
 			TArray<TEnumAsByte<EObjectTypeQuery>> CollisionObjectTypes;
 			CollisionObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_WorldStatic));
 
-			TArray<AActor*> ActorsToIgnore; // TODO: Add configuration to ignore actor types
+			TArray<AActor*> ActorsToIgnore;
 			TArray<FHitResult> OutHits;
 
 			auto ShouldDebug = DebugLineTraces ? EDrawDebugTrace::ForDuration : EDrawDebugTrace::None;
