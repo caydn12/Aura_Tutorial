@@ -15,4 +15,11 @@ public:
 	virtual FString GetDescription(int32 Level) override;
 	virtual FString GetNextLevelDescription(int32 Level) override;
 	
+	UFUNCTION(BlueprintCallable)
+	void SpawnProjectilesInSpread(const FVector& ProjectileTargetLocation, const FGameplayTag& SocketTag, bool bOverridePitch, float PitchOverride, AActor* HomingTarget);
+
+protected:
+
+	UPROPERTY(EditDefaultsOnly, Category="Firebolt")
+	float ProjectileSpread = 90.f;
 };
