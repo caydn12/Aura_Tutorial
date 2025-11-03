@@ -47,6 +47,12 @@ void AAuraProjectile::BeginPlay()
 
 void AAuraProjectile::Destroyed()
 {
+	if (LoopingSoundComponent)
+	{
+		LoopingSoundComponent->Stop();
+		LoopingSoundComponent->DestroyComponent();
+	}
+
 	// On client, after server has handled destroying the object
 	// if the client projectile has not yet impacted something, Play the effects on client side
 	if (!bImpacted && !HasAuthority())
@@ -62,7 +68,11 @@ void AAuraProjectile::OnHit()
 
 	UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation());
 
-	if (LoopingSoundComponent) LoopingSoundComponent->Stop();
+	if (LoopingSoundComponent)
+	{
+		LoopingSoundComponent->Stop();
+		LoopingSoundComponent->DestroyComponent();
+	}
 
 	bImpacted = true;
 }
