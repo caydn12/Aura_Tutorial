@@ -18,7 +18,7 @@ public:
 	void SetMouseDataInfo(const FHitResult& HitResult);
 
 	UFUNCTION(BlueprintCallable)
-	void SetOwnerPlayerController();
+	void SetOwnerVariables();
 protected:
 
 	UPROPERTY(BlueprintReadWrite, Category="Beam")
@@ -29,4 +29,7 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, Category = "Beam")
 	TObjectPtr<APlayerController> OwnerPlayerController;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Beam")
+	TObjectPtr<ACharacter> OwnerCharacter;
 };

@@ -96,9 +96,6 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void IncreaseMinionCount(int32 Amount);
 
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
-	void SetInShockLoop(bool bInLoop);
-
 	virtual FOnASCRegistered& GetOnASCRegisteredDelegate() = 0;
 	virtual FOnDeath& GetOnDeathDelegate() = 0;
 };
