@@ -16,12 +16,11 @@ void UAuraBeamSpell::SetMouseDataInfo(const FHitResult& HitResult)
 	}
 }
 
-void UAuraBeamSpell::SetOwnerVariables()
+void UAuraBeamSpell::SetOwnerPlayerController()
 {
 	if (CurrentActorInfo)
 	{
 		OwnerPlayerController = CurrentActorInfo->PlayerController.Get();
-		OwnerCharacter = Cast<ACharacter>(CurrentActorInfo->AvatarActor.Get());
 	}
 }
 

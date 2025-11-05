@@ -172,6 +172,11 @@ UAuraAbilitySystemComponent* AAuraPlayerController::GetASC()
 
 void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
 {
+	if (GetASC() && GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_InputPressed))
+	{
+		return;
+	}
+
 	const FVector2D MovementAxisVector = InputActionValue.Get<FVector2D>();
 	const FRotator Rotation = GetControlRotation();
 	const FRotator YawRotation(0.0f, Rotation.Yaw, 0.0f);
@@ -201,6 +206,14 @@ void AAuraPlayerController::AdjustScalability(const FInputActionValue& InputActi
 
 void AAuraPlayerController::CursorTrace()
 {
+	if (GetASC() && GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_CursorTrace))
+	{
+		if (LastHoveredActor) LastHoveredActor->UnHighlightActor();
+		if (HoveredActor) HoveredActor->UnHighlightActor();
+		LastHoveredActor = nullptr;
+		HoveredActor = nullptr;
+		return;
+	}
 	GetHitResultUnderCursor(ECC_Visibility, false, CursorHit);
 
 	if (CursorHit.bBlockingHit)
@@ -218,6 +231,12 @@ void AAuraPlayerController::CursorTrace()
 
 void AAuraPlayerController::AutoRun()
 {
+	if (GetASC() && GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_InputPressed))
+	{
+		bAutoRunning = false;
+		return;
+	}
+
 	if (bAutoRunning)
 	{
 		if (APawn* ControlledPawn = GetPawn())
@@ -237,6 +256,11 @@ void AAuraPlayerController::AutoRun()
 
 void AAuraPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 {
+	if (GetASC() && GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_InputPressed))
+	{
+		return;
+	}
+
 	if (InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_LMB))
 	{
 		bTargeting = HoveredActor ? true : false;
@@ -247,6 +271,11 @@ void AAuraPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 
 void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 {
+	if (GetASC() && GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_InputReleased))
+	{
+		return;
+	}
+
 	GetASC()->AbilityInputTagReleased(InputTag);
 
 	if (!bTargeting && !bShiftKeyDown)
@@ -279,7 +308,8 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 						CachedDestination = NavPath->PathPoints[NavPath->PathPoints.Num() - 1];
 						bAutoRunning = true;
 
-						if (FXCursor)
+
+						if (FXCursor && GetASC() && !GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_InputPressed))
 						{
 							UNiagaraFunctionLibrary::SpawnSystemAtLocation(
 								this,
@@ -299,6 +329,11 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 
 void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 {
+	if (GetASC() && GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_InputHeld))
+	{
+		return;
+	}
+
 	if ((bTargeting || bShiftKeyDown) && InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_LMB))
 	{
 		if (GetASC() != nullptr)
