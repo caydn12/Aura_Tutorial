@@ -96,6 +96,9 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void IncreaseMinionCount(int32 Amount);
 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	USkeletalMeshComponent* GetWeapon();
+
 	virtual FOnASCRegistered& GetOnASCRegisteredDelegate() = 0;
 	virtual FOnDeath& GetOnDeathDelegate() = 0;
 };
