@@ -20,6 +20,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include <Kismet/KismetSystemLibrary.h>
+#include "Aura/Aura.h"
 
 AAuraPlayerController::AAuraPlayerController()
 {
@@ -380,6 +381,8 @@ bool AAuraPlayerController::HideOccludedActor(const AActor* Actor)
 	if (ExistingOccludedActor && IsValid(ExistingOccludedActor->Actor))
 	{
 		ExistingOccludedActor->IsOccluded = true;
+		ExistingOccludedActor->StaticMesh->SetCollisionResponseToChannel(ECC_Target, ECR_Ignore);
+
 		OnHideOccludedActor(*ExistingOccludedActor);
 
 		if (DebugLineTraces) UE_LOG(LogTemp, Warning, TEXT("Actor %s exists, but was not occluded. Occluding it now."), *Actor->GetName());
@@ -389,6 +392,8 @@ bool AAuraPlayerController::HideOccludedActor(const AActor* Actor)
 	{
 		UStaticMeshComponent* StaticMesh = Cast<UStaticMeshComponent>(
 			Actor->GetComponentByClass(UStaticMeshComponent::StaticClass()));
+
+		StaticMesh->SetCollisionResponseToChannel(ECC_Target, ECR_Ignore);
 
 		FCameraOccludedActor OccludedActor;
 		OccludedActor.Actor = Actor;
@@ -421,6 +426,7 @@ void AAuraPlayerController::ShowOccludedActor(FCameraOccludedActor& OccludedActo
 	{
 		OccludedActors.Remove(OccludedActor.Actor);
 	}
+	OccludedActor.StaticMesh->SetCollisionResponseToChannel(ECC_Target, ECR_Block);
 
 	OccludedActor.IsOccluded = false;
 	OnShowOccludedActor(OccludedActor);
