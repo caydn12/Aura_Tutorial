@@ -332,6 +332,42 @@ void UAuraAbilitySystemLibrary::GetLivePlayersWithinRadius(const UObject* WorldC
 	}
 }
 
+void UAuraAbilitySystemLibrary::GetClosestTargets(int32 MaxTargets, const TArray<AActor*>& Actors, TArray<AActor*>& OutClosestTargets, const FVector& Origin)
+{
+	// Clear the out array in case it has data
+	OutClosestTargets.Empty();
+
+	if (MaxTargets > 0 && !Actors.IsEmpty())
+	{
+		// Load all enemies as potential targets into the out array
+		for (int32 i = 0; i < Actors.Num(); i++)
+		{
+			if (Actors[i]->ActorHasTag(FName("Enemy")))
+			{
+				OutClosestTargets.Add(Actors[i]);
+			}
+		}
+
+		if (!OutClosestTargets.IsEmpty())
+		{
+			// Sort the targets by distance to the origin
+			Algo::Sort(OutClosestTargets, [&Origin](AActor* A, AActor* B)
+				{
+					const float DistA = FVector::DistSquared(Origin, A->GetActorLocation());
+					const float DistB = FVector::DistSquared(Origin, B->GetActorLocation());
+					return DistA < DistB;
+				}
+			);
+
+			// Trim the array to a max number of targets
+			if (OutClosestTargets.Num() > MaxTargets)
+			{
+				OutClosestTargets.RemoveAt(MaxTargets, OutClosestTargets.Num() - MaxTargets);
+			}
+		}
+	}
+}
+
 bool UAuraAbilitySystemLibrary::IsNotAlly(AActor* FirstActor, AActor* SecondActor)
 {
 	const bool bBothAreAllies = (FirstActor->ActorHasTag(FName("Player")) && SecondActor->ActorHasTag(FName("Player"))) || (FirstActor->ActorHasTag(FName("Enemy")) && SecondActor->ActorHasTag(FName("Enemy")));
