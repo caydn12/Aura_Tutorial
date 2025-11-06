@@ -19,6 +19,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetOwnerPlayerController();
+
+	UFUNCTION(BlueprintCallable)
+	void TraceFirstTarget(const FVector& BeamTargetLocation);
 protected:
 
 	UPROPERTY(BlueprintReadWrite, Category="Beam")
