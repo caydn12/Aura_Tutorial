@@ -148,7 +148,7 @@ void UAuraAttributeSet::HandleIncomingDamage(const FEffectProperties& Props)
 
 		const bool bBlockedHit = UAuraAbilitySystemLibrary::IsBlockedHit(Props.EffectContextHandle);
 		const bool bCriticalHit = UAuraAbilitySystemLibrary::IsCriticalHit(Props.EffectContextHandle);
-		ShowFloatingText(Props, LocalIncomingDamage, bBlockedHit, bCriticalHit);
+		ShowFloatingText(Props, FMath::Max(LocalIncomingDamage, 1), bBlockedHit, bCriticalHit);
 
 		if (UAuraAbilitySystemLibrary::IsSuccessfulDebuff(Props.EffectContextHandle))
 		{

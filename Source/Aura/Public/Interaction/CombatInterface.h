@@ -48,7 +48,8 @@ class AURA_API ICombatInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	virtual void Die(const FVector& DeathImpulse) = 0;
-
+	virtual FOnDeath& GetOnDeathDelegate() = 0;
+	virtual FOnASCRegistered& GetOnASCRegisteredDelegate() = 0;
 	virtual void Knockback(const FVector& KnockbackForce) = 0;
 	
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
@@ -98,7 +99,4 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	USkeletalMeshComponent* GetWeapon();
-
-	virtual FOnASCRegistered& GetOnASCRegisteredDelegate() = 0;
-	virtual FOnDeath& GetOnDeathDelegate() = 0;
 };

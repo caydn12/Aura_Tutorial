@@ -114,6 +114,8 @@ public:
 	// Combat Interface
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
 	virtual void Die(const FVector& DeathImpulse) override;
+	virtual FOnDeath& GetOnDeathDelegate() override;
+	virtual FOnASCRegistered& GetOnASCRegisteredDelegate() override;
 	virtual void Knockback(const FVector& KnockbackForce) override;
 	virtual FVector GetCombatSocketLocation_Implementation(const FGameplayTag& SocketTag) override;
 	virtual bool IsDead_Implementation() const override;
@@ -125,8 +127,6 @@ public:
 	virtual int32 GetMinionSpawnLowerThreshold_Implementation() const override;
 	virtual void IncreaseMinionCount_Implementation(int32 Amount) override;
 	virtual ECharacterClass GetCharacterClass_Implementation() override;
-	virtual FOnASCRegistered& GetOnASCRegisteredDelegate() override;
-	virtual FOnDeath& GetOnDeathDelegate() override;
 	virtual USkeletalMeshComponent* GetWeapon_Implementation() override;
 	// End Combat Interface
 
