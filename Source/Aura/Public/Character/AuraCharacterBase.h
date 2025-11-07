@@ -23,6 +23,8 @@ class AURA_API AAuraCharacterBase : public ACharacter, public IAbilitySystemInte
 public:
 	AAuraCharacterBase();
 
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -48,6 +50,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Combat")
 	FName TailSocketName;
+
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	float BaseWalkSpeed = 600.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
 	ECharacterClass CharacterClass = ECharacterClass::Warrior;
@@ -103,6 +108,10 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UDebuffNiagaraComponent> BurnDebuffComponent;
+	
+	// Stun
+
+	virtual void StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
 
 public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
@@ -135,6 +144,12 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	TArray<FTaggedMontage> AttackMontages;
+
+	UPROPERTY(ReplicatedUsing=OnRep_Stunned, BlueprintReadOnly)
+	bool bIsStunned = false;
+
+	UFUNCTION()
+	virtual void OnRep_Stunned();
 private:
 
 	UPROPERTY(EditAnywhere, Category="Abilities")

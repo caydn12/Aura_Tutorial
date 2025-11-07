@@ -229,7 +229,16 @@ void UAuraAttributeSet::Debuff(const FEffectProperties& Props)
 	
 	const FGameplayTag DebuffType = FAuraGameplayTags::Get().DamageTypesToDebuffs[DamageType];
 	
-	TagContainer.AddTag(DebuffType);
+	TagContainer.Added.AddTag(DebuffType);
+
+	if (DebuffType.MatchesTagExact(FAuraGameplayTags::Get().Debuff_Stun))
+	{
+		TagContainer.Added.AddTag(FAuraGameplayTags::Get().Player_Block_CursorTrace);
+		TagContainer.Added.AddTag(FAuraGameplayTags::Get().Player_Block_InputHeld);
+		TagContainer.Added.AddTag(FAuraGameplayTags::Get().Player_Block_InputPressed);
+		TagContainer.Added.AddTag(FAuraGameplayTags::Get().Player_Block_InputReleased);
+	}
+
 	TargetTagsComponent.SetAndApplyTargetTagChanges(TagContainer);
 
 	// Create and configure Effect spec
