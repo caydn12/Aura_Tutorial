@@ -81,7 +81,7 @@ void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, 
 {
 	AActor* ProjectileOwner = GetOwner();
 	bool bHitSelf = ProjectileOwner == OtherActor;
-	if (!bHitSelf)
+	if (!bHitSelf && ProjectileOwner)
 	{
 		if (UAuraAbilitySystemLibrary::IsNotAlly(ProjectileOwner, OtherActor))
 		{

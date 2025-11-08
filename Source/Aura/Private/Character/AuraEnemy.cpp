@@ -89,6 +89,11 @@ void AAuraEnemy::InitAbilityActorInfo()
 	Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
 
 	AbilitySystemComponent->RegisterGameplayTagEvent(
+		FAuraGameplayTags::Get().Debuff_Burn,
+		EGameplayTagEventType::NewOrRemoved
+	).AddUObject(this, &AAuraEnemy::BurnTagChanged);
+
+	AbilitySystemComponent->RegisterGameplayTagEvent(
 		FAuraGameplayTags::Get().Debuff_Stun,
 		EGameplayTagEventType::NewOrRemoved
 	).AddUObject(this, &AAuraEnemy::StunTagChanged);
@@ -104,6 +109,11 @@ void AAuraEnemy::InitializeDefaultAttributes() const
 {
 	// Do not call super, overriding base
 	UAuraAbilitySystemLibrary::InitializeDefaultAttributes(this, CharacterClass, Level, AbilitySystemComponent);
+}
+
+void AAuraEnemy::BurnTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
+{
+	Super::BurnTagChanged(CallbackTag, NewCount);
 }
 
 void AAuraEnemy::StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount)

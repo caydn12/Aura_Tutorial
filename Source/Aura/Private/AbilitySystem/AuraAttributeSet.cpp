@@ -195,6 +195,7 @@ void UAuraAttributeSet::Debuff(const FEffectProperties& Props)
 {
 	if (Props.SourceAvatarActor->HasAuthority())
 	{
+		FAuraGameplayTags GameplayTags = FAuraGameplayTags::Get();
 		// Create the new effect context. 
 		// The new effect context is for the debuff. 
 		// Props has the context of the ability that triggered debuff.
@@ -229,16 +230,16 @@ void UAuraAttributeSet::Debuff(const FEffectProperties& Props)
 		FInheritedTagContainer TagContainer = FInheritedTagContainer();
 		UTargetTagsGameplayEffectComponent& TargetTagsComponent = DebuffEffect->FindOrAddComponent<UTargetTagsGameplayEffectComponent>();
 
-		const FGameplayTag DebuffType = FAuraGameplayTags::Get().DamageTypesToDebuffs[DamageType];
+		const FGameplayTag DebuffType = GameplayTags.DamageTypesToDebuffs[DamageType];
 
 		TagContainer.Added.AddTag(DebuffType);
 
-		if (DebuffType.MatchesTagExact(FAuraGameplayTags::Get().Debuff_Stun))
+		if (DebuffType.MatchesTagExact(GameplayTags.Debuff_Stun))
 		{
-			TagContainer.Added.AddTag(FAuraGameplayTags::Get().Player_Block_CursorTrace);
-			TagContainer.Added.AddTag(FAuraGameplayTags::Get().Player_Block_InputHeld);
-			TagContainer.Added.AddTag(FAuraGameplayTags::Get().Player_Block_InputPressed);
-			TagContainer.Added.AddTag(FAuraGameplayTags::Get().Player_Block_InputReleased);
+			TagContainer.Added.AddTag(GameplayTags.Player_Block_CursorTrace);
+			TagContainer.Added.AddTag(GameplayTags.Player_Block_InputHeld);
+			TagContainer.Added.AddTag(GameplayTags.Player_Block_InputPressed);
+			TagContainer.Added.AddTag(GameplayTags.Player_Block_InputReleased);
 		}
 
 		TargetTagsComponent.SetAndApplyTargetTagChanges(TagContainer);
@@ -252,6 +253,14 @@ void UAuraAttributeSet::Debuff(const FEffectProperties& Props)
 		FAuraGameplayEffectContext* AuraEffectContext = static_cast<FAuraGameplayEffectContext*>(EffectContext.Get());
 		TSharedPtr<FGameplayTag> DebuffDamageType = MakeShared<FGameplayTag>(DamageType);
 		AuraEffectContext->SetDamageType(DebuffDamageType);
+
+		// Stun needs to deactivate non-passive abilities.
+		if (DebuffType.MatchesTagExact(FAuraGameplayTags::Get().Debuff_Stun))
+		{
+			const FGameplayTagContainer AbilitiesToCancelTags(GameplayTags.Abilities);
+			const FGameplayTagContainer AbilitiesToIgnoreTags(GameplayTags.Abilities_Passive);
+			Props.TargetASC->CancelAbilities(&AbilitiesToCancelTags, &AbilitiesToIgnoreTags);
+		}
 
 		// Apply Effect Spec
 		Props.TargetASC->ApplyGameplayEffectSpecToSelf(*EffectSpec);

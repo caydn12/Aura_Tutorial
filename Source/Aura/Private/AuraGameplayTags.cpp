@@ -279,6 +279,11 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 		FString("Parent Ability Tag")
 	);
 
+	GameplayTags.Abilities_Passive = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Passive"),
+		FString("Passive Ability Tag.")
+	);
+
 	GameplayTags.Abilities_None = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Abilities.None"),
 		FString("No Ability Tag")

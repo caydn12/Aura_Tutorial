@@ -42,6 +42,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<UNiagaraComponent> LevelUpNiagaraComponent;
 
+	// Debuffs
+
+	// Burn
+
+	virtual void OnRep_Burned() override;
+
+	// Stun
+
 	virtual void OnRep_Stunned() override;
 protected:
 	virtual void InitAbilityActorInfo() override;

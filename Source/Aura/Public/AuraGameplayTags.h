@@ -94,6 +94,7 @@ public:
 	// Ability Tags
 
 	FGameplayTag Abilities;
+	FGameplayTag Abilities_Passive;
 
 	FGameplayTag Abilities_None;
 

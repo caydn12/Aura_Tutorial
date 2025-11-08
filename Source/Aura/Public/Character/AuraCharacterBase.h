@@ -106,12 +106,21 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
 	TObjectPtr<USoundBase> DeathSound;
 
+	// Debuffs
+
+	// Burn
+
+	virtual void BurnTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
+
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UDebuffNiagaraComponent> BurnDebuffComponent;
 	
 	// Stun
 
 	virtual void StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UDebuffNiagaraComponent> StunDebuffComponent;
 
 public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
@@ -145,11 +154,24 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	TArray<FTaggedMontage> AttackMontages;
 
-	UPROPERTY(ReplicatedUsing=OnRep_Stunned, BlueprintReadOnly)
-	bool bIsStunned = false;
+	// Debuffs
+
+	// Burn
+
+	UFUNCTION()
+	virtual void OnRep_Burned();
+
+	UPROPERTY(ReplicatedUsing=OnRep_Burned, BlueprintReadOnly)
+	bool bIsBurned = false;
+
+	// Stun
 
 	UFUNCTION()
 	virtual void OnRep_Stunned();
+
+	UPROPERTY(ReplicatedUsing=OnRep_Stunned, BlueprintReadOnly)
+	bool bIsStunned = false;
+
 private:
 
 	UPROPERTY(EditAnywhere, Category="Abilities")
