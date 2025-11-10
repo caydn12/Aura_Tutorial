@@ -10,13 +10,13 @@ void UAuraPassiveAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 
 	if (UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(GetAbilitySystemComponentFromActorInfo()))
 	{
-		AuraASC->DeactivatePassiveAbility.AddUObject(this, &ReceiveDeactivate);
+		AuraASC->DeactivatePassiveAbility.AddUObject(this, &UAuraPassiveAbility::ReceiveDeactivate);
 	}
 }
 
 void UAuraPassiveAbility::ReceiveDeactivate(const FGameplayTag& AbilityTag)
 {
-	if (AbilityTags.HasTagExact(AbilityTag))
+	if (GetAssetTags().HasTagExact(AbilityTag))
 	{
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 	}
