@@ -53,6 +53,12 @@ void AAuraCharacter::PossessedBy(AController* NewController)
 
 	// Only called on server. Replicated to clients.
 	AddCharacterAbilities();
+
+	AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
+	if (AuraPlayerState)
+	{
+		AuraPlayerState->InitializeDebuffTagsToDebuffEffects();
+	}
 }
 
 void AAuraCharacter::OnRep_PlayerState()

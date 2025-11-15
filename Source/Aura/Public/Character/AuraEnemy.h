@@ -6,6 +6,7 @@
 #include "Character/AuraCharacterBase.h"
 #include "Interaction/EnemyInterface.h"
 #include "UI/WidgetController/OverlayWidgetController.h"
+#include "GameplayTagContainer.h"
 #include "AuraEnemy.generated.h"
 
 
@@ -44,6 +45,9 @@ protected:
 public:
 	virtual void PossessedBy(AController* NewController) override;
 	void HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
+
+	UPROPERTY(EditDefaultsOnly)
+	TMap<FGameplayTag, TSubclassOf<class UGameplayEffect>> DebuffTagsToDebuffEffects;
 
 	// Enemy Interface
 	virtual void HighlightActor() override;

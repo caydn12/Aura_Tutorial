@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerState.h"
 #include "AbilitySystemInterface.h"
+#include "GameplayTagContainer.h"
 #include "AuraPlayerState.generated.h"
 
 // Simple delegate that only needs to be broadcast in C++, not in blueprints
@@ -18,6 +19,7 @@ public:
 	AAuraPlayerState();
 	
 protected:
+
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UAbilitySystemComponent> AbilitySystemComponent;
 
@@ -28,6 +30,7 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UAttributeSet* GetAttributeSet() const;
+	void InitializeDebuffTagsToDebuffEffects();
 
 	FOnPlayerStatChanged OnXPChangedDelegate;
 	FOnPlayerStatChanged OnLevelChangedDelegate;
@@ -49,6 +52,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<class ULevelUpInfo> LevelUpInfo;
+
+	UPROPERTY(EditDefaultsOnly)
+	TMap<FGameplayTag, TSubclassOf<class UGameplayEffect>> DebuffTagsToDebuffEffects;
 private:
 	UFUNCTION()
 	void OnRep_Level(int32 OldLevel);

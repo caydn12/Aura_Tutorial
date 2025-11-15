@@ -212,21 +212,22 @@ void UAuraAttributeSet::Debuff(const FEffectProperties& Props)
 
 		// Gather debuff properties
 		const FGameplayTag DamageType = UAuraAbilitySystemLibrary::GetDamageType(Props.EffectContextHandle);
+		const FGameplayTag DebuffType = GameplayTags.DamageTypesToDebuffs[DamageType];
 		const float DebuffDamage = UAuraAbilitySystemLibrary::GetDebuffDamage(Props.EffectContextHandle);
 		const float DebuffDuration = UAuraAbilitySystemLibrary::GetDebuffDuration(Props.EffectContextHandle);
 		const float DebuffFrequency = UAuraAbilitySystemLibrary::GetDebuffFrequency(Props.EffectContextHandle);
 
 		// Create the debuff effect
 		const FString DebuffName = FString::Printf(TEXT("DynamicDebuff %s"), *DamageType.ToString());
-		UGameplayEffect* DebuffEffect = NewObject<UGameplayEffect>(GetTransientPackage(), FName(DebuffName));
+		UGameplayEffect* DebuffEffect = NewObject<UGameplayEffect>(GetTransientPackage(), DebuffTagsToDebuffEffects[DebuffType], FName(DebuffName));
 
 		// Configure the debuff
-		DebuffEffect->DurationPolicy = EGameplayEffectDurationType::HasDuration;
+		//DebuffEffect->DurationPolicy = EGameplayEffectDurationType::HasDuration;
 		DebuffEffect->Period = DebuffFrequency;
 		DebuffEffect->bExecutePeriodicEffectOnApplication = false;
-		DebuffEffect->DurationMagnitude = FScalableFloat(DebuffDuration);
+		DebuffEffect->DurationMagnitude = FScalableFloat(DebuffDuration);/*
 		DebuffEffect->StackingType = EGameplayEffectStackingType::AggregateBySource;
-		DebuffEffect->StackLimitCount = 1;
+		DebuffEffect->StackLimitCount = 1;*/
 
 		// Create Execution Calculation
 		FGameplayEffectExecutionDefinition ExecutionDefinition;
@@ -237,8 +238,6 @@ void UAuraAttributeSet::Debuff(const FEffectProperties& Props)
 		// Configure Tag component, added to debuff effect with tags
 		FInheritedTagContainer TagContainer = FInheritedTagContainer();
 		UTargetTagsGameplayEffectComponent& TargetTagsComponent = DebuffEffect->FindOrAddComponent<UTargetTagsGameplayEffectComponent>();
-
-		const FGameplayTag DebuffType = GameplayTags.DamageTypesToDebuffs[DamageType];
 
 		TagContainer.Added.AddTag(DebuffType);
 

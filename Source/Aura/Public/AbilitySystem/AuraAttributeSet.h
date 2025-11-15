@@ -80,6 +80,8 @@ public:
 	// RandomCalculationPointer = RandomCalculation;
 	// float F = RandomCalculationPointer(0, 0.0f, 0);
 
+	UPROPERTY(EditDefaultsOnly)
+	TMap<FGameplayTag, TSubclassOf<UGameplayEffect>> DebuffTagsToDebuffEffects;
 
 	// Vital Attribute Replication
 

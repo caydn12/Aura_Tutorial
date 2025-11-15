@@ -264,8 +264,11 @@ void UExecCalc_Damage::DetermineDebuff(const FGameplayEffectSpec& Spec, const FG
 			const FGameplayTag& ResistanceTag = GameplayTags.DamageTypesToResistances[DamageType];
 			ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().TagsToCaptureDefs[ResistanceTag], EvaluationParameters, TargetDebuffResistance);
 			TargetDebuffResistance = FMath::Max<float>(TargetDebuffResistance, 0.f);
-			const float EffectiveDebuffChance = SourceDebuffChance * (100 - TargetDebuffResistance) / 100.f;
-
+			float EffectiveDebuffChance = SourceDebuffChance * (100 - TargetDebuffResistance) / 100.f;
+			if (SourceDebuffChance >= 100.f)
+			{
+				EffectiveDebuffChance = SourceDebuffChance;
+			}
 			const bool bDebuff = FMath::RandRange(1, 100) < EffectiveDebuffChance;
 			if (bDebuff)
 			{

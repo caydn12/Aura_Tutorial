@@ -4,6 +4,7 @@
 #include "Player/AuraPlayerState.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
+#include "GameplayEffect.h"
 #include "Net/UnrealNetwork.h"
 
 AAuraPlayerState::AAuraPlayerState()
@@ -35,6 +36,14 @@ UAbilitySystemComponent* AAuraPlayerState::GetAbilitySystemComponent() const
 UAttributeSet* AAuraPlayerState::GetAttributeSet() const
 {
 	return AttributeSet;
+}
+
+void AAuraPlayerState::InitializeDebuffTagsToDebuffEffects()
+{
+	for (TTuple<FGameplayTag, TSubclassOf<UGameplayEffect>> Pair : DebuffTagsToDebuffEffects)
+	{
+		((UAuraAttributeSet*)AttributeSet)->DebuffTagsToDebuffEffects.Add(Pair);
+	}
 }
 
 int32 AAuraPlayerState::GetPlayerLevel() const

@@ -31,6 +31,7 @@ AAuraEnemy::AAuraEnemy()
 
 	AttributeSet = CreateDefaultSubobject<UAuraAttributeSet>("AttributeSet");
 
+
 	HealthBar = CreateDefaultSubobject<UWidgetComponent>("HealthBar");
 	HealthBar->SetupAttachment(GetRootComponent());
 
@@ -40,6 +41,11 @@ AAuraEnemy::AAuraEnemy()
 void AAuraEnemy::BeginPlay()
 {
 	Super::BeginPlay();
+
+	for (TTuple<FGameplayTag, TSubclassOf<UGameplayEffect>> Pair : DebuffTagsToDebuffEffects)
+	{
+		((UAuraAttributeSet*)AttributeSet)->DebuffTagsToDebuffEffects.Add(Pair);
+	}
 
 	GetCharacterMovement()->MaxWalkSpeed = bHitReacting ? 0.0f : BaseWalkSpeed;
 
