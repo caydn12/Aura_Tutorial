@@ -243,6 +243,25 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	// Double Damage plus a bonus if Critical Hit
 	Damage = bCriticalHit ? 2.f * Damage + SourceCriticalHitDamage : Damage;
 
+	// Halo Of Protection
+	const UCharacterClassInfo* TargetCharacterClassInfo = UAuraAbilitySystemLibrary::GetCharacterClassInfo(TargetAvatar);
+
+	int32 TargetAbilityLevel = 0;
+	TArray<FGameplayAbilitySpecHandle> AbilityHandles;
+	FGameplayTagContainer Tags;
+	Tags.AddTag(FAuraGameplayTags::Get().Abilities_Passive_HaloOfProtection);
+	TargetASC->FindAllAbilitiesWithTags(AbilityHandles, Tags);
+	for (const FGameplayAbilitySpecHandle& Handle : AbilityHandles)
+	{
+		FGameplayAbilitySpec* FoundSpec = TargetASC->FindAbilitySpecFromHandle(Handle);
+		TargetAbilityLevel = FoundSpec->Level;
+		break;
+	}
+
+	Damage = ApplyDamageReductionByHaloOfProtection(Damage, TargetAbilityLevel, TargetASC, TargetCharacterClassInfo);
+
+	// End Halo Of Protection
+
 	const FGameplayModifierEvaluatedData EvaluatedData(UAuraAttributeSet::GetIncomingDamageAttribute(), EGameplayModOp::Additive, Damage);
 	OutExecutionOutput.AddOutputModifier(EvaluatedData);
 }
@@ -287,4 +306,26 @@ void UExecCalc_Damage::DetermineDebuff(const FGameplayEffectSpec& Spec, const FG
 			}
 		}
 	}
+}
+
+float UExecCalc_Damage::ApplyDamageReductionByHaloOfProtection(float Damage, const int32 TargetLevel, const UAbilitySystemComponent* TargetASC, const UCharacterClassInfo* TargetCharacterClassInfo) const
+{
+	const FAuraGameplayTags& AbilityTags = FAuraGameplayTags::Get();
+	if (!TargetASC || !TargetASC->HasMatchingGameplayTag(AbilityTags.Abilities_Passive_HaloOfProtection) ||
+		!TargetCharacterClassInfo || !TargetCharacterClassInfo->DamageCalculationCoefficients)
+	{
+		return Damage;
+	}
+
+	const FRealCurve* DamageReductionCurve = TargetCharacterClassInfo->DamageCalculationCoefficients->FindCurve(
+		FName("HaloOfProtection"), FString()
+	);
+
+	if (DamageReductionCurve)
+	{
+		const float DamageReductionPercent = DamageReductionCurve->Eval(TargetLevel);
+		Damage *= 1.f - (DamageReductionPercent / 100.f);
+	}
+
+	return Damage;
 }
