@@ -219,9 +219,10 @@ void UAuraAttributeSet::Debuff(const FEffectProperties& Props)
 
 		// Create the debuff effect
 		const FString DebuffName = FString::Printf(TEXT("DynamicDebuff %s"), *DamageType.ToString());
+		checkf(DebuffTagsToDebuffEffects.Contains(DebuffType), TEXT("DebuffTagsToDebuffEffects doesn't contain Tag: [%s] in AuraAttributeSet::Debuff"), *DebuffType.ToString());
 		UGameplayEffect* DebuffEffect = NewObject<UGameplayEffect>(GetTransientPackage(), DebuffTagsToDebuffEffects[DebuffType], FName(DebuffName));
 
-		// Configure the debuff
+		// Configure the debuff (Some Moved to GE_Debuff)
 		//DebuffEffect->DurationPolicy = EGameplayEffectDurationType::HasDuration;
 		DebuffEffect->Period = DebuffFrequency;
 		DebuffEffect->bExecutePeriodicEffectOnApplication = false;
@@ -229,27 +230,27 @@ void UAuraAttributeSet::Debuff(const FEffectProperties& Props)
 		DebuffEffect->StackingType = EGameplayEffectStackingType::AggregateBySource;
 		DebuffEffect->StackLimitCount = 1;*/
 
-		// Create Execution Calculation
-		FGameplayEffectExecutionDefinition ExecutionDefinition;
-		ExecutionDefinition.CalculationClass = UExecCalc_Damage::StaticClass();
+		// Create Execution Calculation (Moved to GE_Debuff)
+		//FGameplayEffectExecutionDefinition ExecutionDefinition;
+		//ExecutionDefinition.CalculationClass = UExecCalc_Damage::StaticClass();
 
-		DebuffEffect->Executions.Add(ExecutionDefinition);
+		//DebuffEffect->Executions.Add(ExecutionDefinition);
 
-		// Configure Tag component, added to debuff effect with tags
-		FInheritedTagContainer TagContainer = FInheritedTagContainer();
+		// Configure Tag component, added to debuff effect with tags (Moved to GE_Debuff)
+		//FInheritedTagContainer TagContainerMods = FInheritedTagContainer();
 		UTargetTagsGameplayEffectComponent& TargetTagsComponent = DebuffEffect->FindOrAddComponent<UTargetTagsGameplayEffectComponent>();
 
-		TagContainer.Added.AddTag(DebuffType);
+		//TagContainerMods.Added.AddTag(DebuffType);
 
-		if (DebuffType.MatchesTagExact(GameplayTags.Debuff_Stun))
-		{
-			TagContainer.Added.AddTag(GameplayTags.Player_Block_CursorTrace);
-			TagContainer.Added.AddTag(GameplayTags.Player_Block_InputHeld);
-			TagContainer.Added.AddTag(GameplayTags.Player_Block_InputPressed);
-			TagContainer.Added.AddTag(GameplayTags.Player_Block_InputReleased);
-		}
+		//if (DebuffType.MatchesTagExact(GameplayTags.Debuff_Stun))
+		//{
+		//	TagContainerMods.Added.AddTag(GameplayTags.Player_Block_CursorTrace);
+		//	TagContainerMods.Added.AddTag(GameplayTags.Player_Block_InputHeld);
+		//	TagContainerMods.Added.AddTag(GameplayTags.Player_Block_InputPressed);
+		//	TagContainerMods.Added.AddTag(GameplayTags.Player_Block_InputReleased);
+		//}
 
-		TargetTagsComponent.SetAndApplyTargetTagChanges(TagContainer);
+		TargetTagsComponent.SetAndApplyTargetTagChanges(TargetTagsComponent.GetConfiguredTargetTagChanges());
 
 		// Create and configure Effect spec
 		FGameplayEffectSpec* EffectSpec = new FGameplayEffectSpec(DebuffEffect, EffectContext, 1.f);
