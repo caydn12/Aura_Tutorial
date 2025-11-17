@@ -31,6 +31,7 @@ public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UAttributeSet* GetAttributeSet() const;
 	void InitializeDebuffTagsToDebuffEffects();
+	void InitializeSiphonTagsToSiphonEffects();
 
 	FOnPlayerStatChanged OnXPChangedDelegate;
 	FOnPlayerStatChanged OnLevelChangedDelegate;
@@ -55,6 +56,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	TMap<FGameplayTag, TSubclassOf<class UGameplayEffect>> DebuffTagsToDebuffEffects;
+
+	UPROPERTY(EditDefaultsOnly)
+	TMap<FGameplayTag, TSubclassOf<class UGameplayEffect>> SiphonTagsToSiphonEffects;
 private:
 	UFUNCTION()
 	void OnRep_Level(int32 OldLevel);

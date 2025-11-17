@@ -238,6 +238,14 @@ FVector UAuraAbilitySystemLibrary::GetKnockbackForce(const FGameplayEffectContex
 	return result;
 }
 
+void UAuraAbilitySystemLibrary::SetSourceObject(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, const UObject* NewSourceObject)
+{
+	if (EffectContextHandle.IsValid())
+	{
+		EffectContextHandle.Get()->AddSourceObject(NewSourceObject);
+	}
+}
+
 void UAuraAbilitySystemLibrary::SetIsBlockedHit(FGameplayEffectContextHandle& EffectContextHandle, bool bInIsBlockedHit)
 {
 	if (FAuraGameplayEffectContext* AuraEffectContext = static_cast<FAuraGameplayEffectContext*>(EffectContextHandle.Get()))

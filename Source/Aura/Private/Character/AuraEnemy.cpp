@@ -47,6 +47,11 @@ void AAuraEnemy::BeginPlay()
 		((UAuraAttributeSet*)AttributeSet)->DebuffTagsToDebuffEffects.Add(Pair);
 	}
 
+	for (TTuple<FGameplayTag, TSubclassOf<UGameplayEffect>> Pair : SiphonTagsToSiphonEffects)
+	{
+		((UAuraAttributeSet*)AttributeSet)->SiphonTagsToSiphonEffects.Add(Pair);
+	}
+
 	GetCharacterMovement()->MaxWalkSpeed = bHitReacting ? 0.0f : BaseWalkSpeed;
 
 	InitAbilityActorInfo();

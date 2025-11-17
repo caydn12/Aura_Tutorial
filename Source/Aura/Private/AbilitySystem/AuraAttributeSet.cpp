@@ -15,6 +15,8 @@
 #include "AuraLogChannels.h"
 #include "GameplayEffectComponents/TargetTagsGameplayEffectComponent.h"
 #include "AbilitySystem/ExecCalc/ExecCalc_Damage.h"
+#include "AbilitySystem/AuraAbilitySystemComponent.h"
+#include "AbilitySystem/Data/CharacterClassInfo.h"
 
 UAuraAttributeSet::UAuraAttributeSet()
 {
@@ -157,6 +159,16 @@ void UAuraAttributeSet::HandleIncomingDamage(const FEffectProperties& Props)
 		{
 			Debuff(Props);
 		}
+
+		if (Props.SourceASC && Props.SourceASC->HasMatchingGameplayTag(FAuraGameplayTags::Get().Abilities_Passive_LifeSiphon) && Props.EffectContextHandle.GetSourceObject()->Implements<UCombatInterface>())
+		{
+			Siphon(ESiphonType::LifeSiphon, LocalIncomingDamage, Props);
+		}
+
+		if (Props.SourceASC && Props.SourceASC->HasMatchingGameplayTag(FAuraGameplayTags::Get().Abilities_Passive_ManaSiphon) && Props.EffectContextHandle.GetSourceObject()->Implements<UCombatInterface>())
+		{
+			Siphon(ESiphonType::ManaSiphon, LocalIncomingDamage, Props);
+		}
 	}
 }
 
@@ -272,6 +284,70 @@ void UAuraAttributeSet::Debuff(const FEffectProperties& Props)
 
 		// Apply Effect Spec
 		Props.TargetASC->ApplyGameplayEffectSpecToSelf(*EffectSpec);
+	}
+}
+
+void UAuraAttributeSet::Siphon(const ESiphonType SiphonType, float Damage, const FEffectProperties& Props)
+{
+	// Early Return if dead
+	if (Props.SourceCharacter->Implements<UCombatInterface>() &&
+		ICombatInterface::Execute_IsDead(Props.SourceCharacter))
+	{
+		return;
+	}
+
+	// Configure SiphonTag, Siphon Name, and Create the effect
+	FGameplayTag SiphonTag;
+	FString SiphonNameString;
+	FString SiphonCurveName;
+	switch (SiphonType)
+	{
+	case ESiphonType::LifeSiphon:
+		SiphonNameString = FString::Printf(TEXT("LifeSiphon"));
+		SiphonTag = FAuraGameplayTags::Get().Abilities_Passive_LifeSiphon;
+		SiphonCurveName = FString::Printf(TEXT("LifeSiphonPercentage"));
+		break;
+	case ESiphonType::ManaSiphon:
+		SiphonNameString = FString::Printf(TEXT("ManaSiphon"));
+		SiphonTag = FAuraGameplayTags::Get().Abilities_Passive_ManaSiphon;
+		SiphonCurveName = FString::Printf(TEXT("ManaSiphonPercentage"));
+		break;
+	}
+	const FString SiphonName = FString::Printf(TEXT("Dynamic Effect %s"), *SiphonNameString);
+
+	UGameplayEffect* Effect = NewObject<UGameplayEffect>(GetTransientPackage(), SiphonTagsToSiphonEffects[SiphonTag], FName(SiphonName));
+
+	// Gather data
+	UAuraAbilitySystemComponent* SourceASC = Cast<UAuraAbilitySystemComponent>(Props.SourceASC);
+	const UCharacterClassInfo* CharacterClassInfo = UAuraAbilitySystemLibrary::GetCharacterClassInfo(Props.SourceCharacter);
+	const FGameplayAbilitySpec* Spec = SourceASC->GetSpecFromAbilityTag(SiphonTag);
+
+	// Early return if bad data
+	if (!SourceASC || !SourceASC->HasMatchingGameplayTag(SiphonTag) || !CharacterClassInfo || !Spec ||
+		!CharacterClassInfo->PassiveAbilityCoefficients) {
+		return;
+	}
+
+	if (const FRealCurve* SiphonCurve = CharacterClassInfo->PassiveAbilityCoefficients->FindCurve(
+		FName(*SiphonCurveName), FString()
+	))
+	{
+		const float AbilityLevel = Spec->Level;
+		const float SiphonPercent = SiphonCurve->Eval(AbilityLevel);
+		Damage *= SiphonPercent / 100.f;
+	}
+
+	checkf(Effect->Modifiers.Num() > 0, TEXT("No Modifier on the blueprint GE for [%s] in AuraAttributeSet::Siphon"), *SiphonName);
+
+	FGameplayModifierInfo& ModifierInfo = Effect->Modifiers[0];
+	ModifierInfo.ModifierMagnitude = FScalableFloat(Damage);
+
+	FGameplayEffectContextHandle EffectContext = Props.SourceASC->MakeEffectContext();
+	EffectContext.AddSourceObject(Props.SourceAvatarActor);
+
+	if (FGameplayEffectSpec* MutableSpec = new FGameplayEffectSpec(Effect, EffectContext, 1.f))
+	{
+		Props.SourceASC->ApplyGameplayEffectSpecToSelf(*MutableSpec);
 	}
 }
 

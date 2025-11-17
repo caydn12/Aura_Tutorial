@@ -312,13 +312,13 @@ float UExecCalc_Damage::ApplyDamageReductionByHaloOfProtection(float Damage, con
 {
 	const FAuraGameplayTags& AbilityTags = FAuraGameplayTags::Get();
 	if (!TargetASC || !TargetASC->HasMatchingGameplayTag(AbilityTags.Abilities_Passive_HaloOfProtection) ||
-		!TargetCharacterClassInfo || !TargetCharacterClassInfo->DamageCalculationCoefficients)
+		!TargetCharacterClassInfo || !TargetCharacterClassInfo->PassiveAbilityCoefficients)
 	{
 		return Damage;
 	}
 
-	const FRealCurve* DamageReductionCurve = TargetCharacterClassInfo->DamageCalculationCoefficients->FindCurve(
-		FName("HaloOfProtection"), FString()
+	const FRealCurve* DamageReductionCurve = TargetCharacterClassInfo->PassiveAbilityCoefficients->FindCurve(
+		FName("DamageReductionPercentage"), FString()
 	);
 
 	if (DamageReductionCurve)

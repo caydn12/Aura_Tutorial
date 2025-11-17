@@ -58,6 +58,7 @@ void AAuraCharacter::PossessedBy(AController* NewController)
 	if (AuraPlayerState)
 	{
 		AuraPlayerState->InitializeDebuffTagsToDebuffEffects();
+		AuraPlayerState->InitializeSiphonTagsToSiphonEffects();
 	}
 }
 

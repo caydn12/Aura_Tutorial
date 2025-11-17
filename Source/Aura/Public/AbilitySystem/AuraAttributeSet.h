@@ -22,6 +22,13 @@
 template<class T>
 using TStaticFuncPtr = typename TBaseStaticDelegateInstance<T, FDefaultDelegateUserPolicy>::FFuncPtr;
 
+// Not needed in blueprint
+enum ESiphonType
+{
+	LifeSiphon,
+	ManaSiphon
+};
+
 USTRUCT()
 struct FEffectProperties
 {
@@ -80,8 +87,12 @@ public:
 	// RandomCalculationPointer = RandomCalculation;
 	// float F = RandomCalculationPointer(0, 0.0f, 0);
 
+	// Dynamic Effects
 	UPROPERTY(EditDefaultsOnly)
 	TMap<FGameplayTag, TSubclassOf<UGameplayEffect>> DebuffTagsToDebuffEffects;
+
+	UPROPERTY(EditDefaultsOnly)
+	TMap<FGameplayTag, TSubclassOf<UGameplayEffect>> SiphonTagsToSiphonEffects;
 
 	// Vital Attribute Replication
 
@@ -250,6 +261,7 @@ private:
 	void HandleIncomingDamage(const FEffectProperties& Props);
 	void HandleIncomingXP(const FEffectProperties& Props);
 	void Debuff(const FEffectProperties& Props);
+	void Siphon(const ESiphonType SiphonType, float Damage, const FEffectProperties& Props);
 
 	void SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props) const;
 	void ShowFloatingText(const FEffectProperties& Props, float Damage, bool bBlockedHit, bool bCriticalHit) const;

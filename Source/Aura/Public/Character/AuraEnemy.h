@@ -49,6 +49,9 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	TMap<FGameplayTag, TSubclassOf<class UGameplayEffect>> DebuffTagsToDebuffEffects;
 
+	UPROPERTY(EditDefaultsOnly)
+	TMap<FGameplayTag, TSubclassOf<class UGameplayEffect>> SiphonTagsToSiphonEffects;
+
 	// Enemy Interface
 	virtual void HighlightActor() override;
 	virtual void UnHighlightActor() override;

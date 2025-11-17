@@ -67,7 +67,7 @@ void AAuraEffectActor::EvaluateEffectsForRemoval(AActor* TargetActor, const TArr
 			{
 				for (TTuple<FActiveGameplayEffectHandle, UAbilitySystemComponent*> HandlePair : ActiveEffectHandles)
 				{
-					if (TargetASC == HandlePair.Value)
+					if (TargetASC == HandlePair.Value && HasAuthority())
 					{
 						TargetASC->RemoveActiveGameplayEffect(HandlePair.Key, 1);
 						HandlesToRemove.Add(HandlePair.Key);

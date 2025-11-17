@@ -46,6 +46,14 @@ void AAuraPlayerState::InitializeDebuffTagsToDebuffEffects()
 	}
 }
 
+void AAuraPlayerState::InitializeSiphonTagsToSiphonEffects()
+{
+	for (TTuple<FGameplayTag, TSubclassOf<UGameplayEffect>> Pair : SiphonTagsToSiphonEffects)
+	{
+		((UAuraAttributeSet*)AttributeSet)->SiphonTagsToSiphonEffects.Add(Pair);
+	}
+}
+
 int32 AAuraPlayerState::GetPlayerLevel() const
 {
 	return Level;

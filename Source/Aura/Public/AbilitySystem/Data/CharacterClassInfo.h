@@ -56,4 +56,7 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Common Class Defaults|Damage")
 	TObjectPtr<UCurveTable> DamageCalculationCoefficients;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Common Class Defaults|Passive")
+	TObjectPtr<UCurveTable> PassiveAbilityCoefficients;
 };
