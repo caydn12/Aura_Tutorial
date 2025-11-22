@@ -251,6 +251,13 @@ void AAuraCharacterBase::MulticastHandleDeath_Implementation(const FVector& Deat
 {
 	UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetActorLocation(), GetActorRotation());
 
+	// AI Recommended fix to prevent falling through the floor on death
+	// Also fixes input causing movement of the staff when player is dead
+	// Also fixes Aura running sound loop to not continue after death
+	GetCharacterMovement()->StopMovementImmediately();
+	GetCharacterMovement()->DisableMovement();
+	// End AI Fix
+
 	Weapon->SetSimulatePhysics(true);
 	Weapon->SetEnableGravity(true);
 	Weapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
