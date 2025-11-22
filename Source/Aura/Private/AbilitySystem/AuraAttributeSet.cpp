@@ -296,7 +296,7 @@ void UAuraAttributeSet::Siphon(const ESiphonType SiphonType, float Damage, const
 		return;
 	}
 
-	// Configure SiphonTag, Siphon Name, and Create the effect
+	// Configure SiphonTag, Siphon Name, Curve Name
 	FGameplayTag SiphonTag;
 	FString SiphonNameString;
 	FString SiphonCurveName;
@@ -313,9 +313,6 @@ void UAuraAttributeSet::Siphon(const ESiphonType SiphonType, float Damage, const
 		SiphonCurveName = FString::Printf(TEXT("ManaSiphonPercentage"));
 		break;
 	}
-	const FString SiphonName = FString::Printf(TEXT("Dynamic Effect %s"), *SiphonNameString);
-
-	UGameplayEffect* Effect = NewObject<UGameplayEffect>(GetTransientPackage(), SiphonTagsToSiphonEffects[SiphonTag], FName(SiphonName));
 
 	// Gather data
 	UAuraAbilitySystemComponent* SourceASC = Cast<UAuraAbilitySystemComponent>(Props.SourceASC);
@@ -328,6 +325,12 @@ void UAuraAttributeSet::Siphon(const ESiphonType SiphonType, float Damage, const
 		return;
 	}
 
+	// Create the effect
+
+	const FString SiphonName = FString::Printf(TEXT("Dynamic Effect %s"), *SiphonNameString);
+
+	UGameplayEffect* Effect = NewObject<UGameplayEffect>(GetTransientPackage(), SiphonTagsToSiphonEffects[SiphonTag], FName(SiphonName));
+
 	if (const FRealCurve* SiphonCurve = CharacterClassInfo->PassiveAbilityCoefficients->FindCurve(
 		FName(*SiphonCurveName), FString()
 	))
@@ -337,7 +340,7 @@ void UAuraAttributeSet::Siphon(const ESiphonType SiphonType, float Damage, const
 		Damage *= SiphonPercent / 100.f;
 	}
 
-	checkf(Effect->Modifiers.Num() > 0, TEXT("No Modifier on the blueprint GE for [%s] in AuraAttributeSet::Siphon"), *SiphonName);
+	checkf(Effect->Modifiers.Num() > 0, TEXT("No Modifier in the blueprint GE for [%s] in AuraAttributeSet::Siphon"), *SiphonName);
 
 	FGameplayModifierInfo& ModifierInfo = Effect->Modifiers[0];
 	ModifierInfo.ModifierMagnitude = FScalableFloat(Damage);

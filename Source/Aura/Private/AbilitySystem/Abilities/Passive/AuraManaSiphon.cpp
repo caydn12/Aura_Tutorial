@@ -16,7 +16,7 @@ FString UAuraManaSiphon::GetDescription(const int32 Level)
 		"<Small>Cooldown: </><Cooldown>%.1f</>\n"
 		"<Default>Generates an aura of widosm "
 		"siphoning life by </>"
-		"<Damage>%d </><Default>percent of damage dealt</>"),
+		"<ManaCost>%d </><Default>percent of damage dealt</>"),
 		Level,
 		ManaCost,
 		Cooldown,
@@ -37,7 +37,7 @@ FString UAuraManaSiphon::GetNextLevelDescription(const int32 Level)
 		"<Small>Cooldown: </><Cooldown>%.1f</>\n"
 		"<Default>Generates an aura of widosm "
 		"siphoning life by </>"
-		"<Damage>%d </><Default>percent of damage dealt</>"),
+		"<ManaCost>%d </><Default>percent of damage dealt</>"),
 		Level,
 		ManaCost,
 		Cooldown,

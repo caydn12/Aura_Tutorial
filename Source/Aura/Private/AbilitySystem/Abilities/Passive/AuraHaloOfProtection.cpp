@@ -16,7 +16,7 @@ FString UAuraHaloOfProtection::GetDescription(const int32 Level)
 		"<Small>Cooldown: </><Cooldown>%.1f</>\n"
 		"<Default>Generates a protective halo "
 		"reducing all types of incoming damage by </>"
-		"<Damage>%d</>"),
+		"<Percent>%d</>"),
 		Level,
 		ManaCost,
 		Cooldown,
@@ -37,7 +37,7 @@ FString UAuraHaloOfProtection::GetNextLevelDescription(const int32 Level)
 		"<Small>Cooldown: </><Cooldown>%.1f</>\n"
 		"<Default>Generates a protective halo "
 		"reducing all types of incoming damage by </>"
-		"<Damage>%d</>"),
+		"<Percent>%d</>"),
 		Level,
 		ManaCost,
 		Cooldown,

@@ -4,6 +4,9 @@
 #include "UI/WidgetController/AuraWidgetController.h"
 #include "AbilitySystem/Data/AbilityInfo.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
+#include "AbilitySystem/AuraAttributeSet.h"
+#include "Player/AuraPlayerController.h"
+#include "Player/AuraPlayerState.h"
 
 AAuraPlayerController* UAuraWidgetController::GetAuraPC()
 {
