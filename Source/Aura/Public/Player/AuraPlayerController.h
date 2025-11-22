@@ -16,6 +16,7 @@ class UAuraAbilitySystemComponent;
 class USplineComponent;
 class UDamageTextComponent;
 class UNiagaraSystem;
+class AMagicCircle;
 
 USTRUCT(BlueprintType)
 struct FCameraOccludedActor
@@ -75,6 +76,13 @@ public:
 
 	UFUNCTION(Client, Reliable)
 	void ShowDamageNumber(float DamageAmount, ACharacter* TargetCharacter, bool bBlockedHit, bool bCriticalHit);
+	
+	UFUNCTION(BlueprintCallable)
+	void ShowMagicCircle();
+
+	UFUNCTION(BlueprintCallable)
+	void HideMagicCircle();
+	
 	UFUNCTION(BlueprintCallable)
 	void SyncOccludedActors();
 private:
@@ -84,6 +92,7 @@ private:
 	void AdjustScalability(const FInputActionValue& InputActionValue);
 	void CursorTrace();
 	void AutoRun();
+	void UpdateMagicCircleLocation();
 
 	void ShiftPressed() { bShiftKeyDown = true; };
 	void ShiftReleased() { bShiftKeyDown = false; };
@@ -143,6 +152,12 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UDamageTextComponent> DamageTextComponentClass;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AMagicCircle> MagicCircleClass;
+
+	UPROPERTY()
+	TObjectPtr<AMagicCircle> MagicCircle;
 
 	// Camera Occlusion
 	TMap<const AActor*, FCameraOccludedActor> OccludedActors;
