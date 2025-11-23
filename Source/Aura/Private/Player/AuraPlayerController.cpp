@@ -23,6 +23,7 @@
 #include "Aura/Aura.h"
 #include "Actor/MagicCircle.h"
 #include "Interaction/CombatInterface.h"
+#include "Components/DecalComponent.h"
 
 AAuraPlayerController::AAuraPlayerController()
 {
@@ -102,12 +103,16 @@ void AAuraPlayerController::ShowDamageNumber_Implementation(float DamageAmount, 
 	}
 }
 
-void AAuraPlayerController::ShowMagicCircle()
+void AAuraPlayerController::ShowMagicCircle(UMaterialInterface* DecalMaterial)
 {
 	if (!IsValid(MagicCircle))
 	{
 		FVector MagicCircleLoc = CursorHit.ImpactPoint;
 		MagicCircle = GetWorld()->SpawnActor<AMagicCircle>(MagicCircleClass, MagicCircleLoc, FRotator::ZeroRotator);
+		if (DecalMaterial)
+		{
+			MagicCircle->MagicCircleDecal->SetDecalMaterial(DecalMaterial);
+		}
 	}
 }
 
