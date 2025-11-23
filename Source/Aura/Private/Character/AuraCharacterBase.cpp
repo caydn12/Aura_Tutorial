@@ -171,6 +171,16 @@ void AAuraCharacterBase::SetIsBeingShocked_Implementation(bool bInBeingShocked)
 	bIsBeingShocked = bInBeingShocked;
 }
 
+FVector AAuraCharacterBase::GetCharacterLocationOnFloor_Implementation() const
+{
+	FVector FoundLocation = FVector::ZeroVector;
+	if (GetCharacterMovement()->CurrentFloor.IsWalkableFloor())
+	{
+		FoundLocation = GetCharacterMovement()->CurrentFloor.HitResult.ImpactPoint;
+	}
+	return FoundLocation;
+}
+
 void AAuraCharacterBase::OnRep_Burned()
 {
 

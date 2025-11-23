@@ -22,6 +22,7 @@
 #include <Kismet/KismetSystemLibrary.h>
 #include "Aura/Aura.h"
 #include "Actor/MagicCircle.h"
+#include "Interaction/CombatInterface.h"
 
 AAuraPlayerController::AAuraPlayerController()
 {
@@ -279,7 +280,26 @@ void AAuraPlayerController::UpdateMagicCircleLocation()
 {
 	if (IsValid(MagicCircle))
 	{
-		MagicCircle->SetActorLocation(CursorHit.ImpactPoint);
+		FVector MagicCircleLocation = FVector::ZeroVector;
+		FVector LastValidLocation = MagicCircle->GetActorLocation();
+
+		if (CursorHit.bBlockingHit)
+		{
+			if (CursorHit.GetActor() && CursorHit.GetActor()->Implements<UCombatInterface>())
+			{
+				MagicCircleLocation = ICombatInterface::Execute_GetCharacterLocationOnFloor(CursorHit.GetActor());
+			}
+			else
+			{
+				MagicCircleLocation = CursorHit.ImpactPoint;
+			}
+		}
+		else
+		{
+			MagicCircleLocation = LastValidLocation;
+		}
+
+		MagicCircle->SetActorLocation(MagicCircleLocation);
 	}
 }
 

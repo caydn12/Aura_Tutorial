@@ -105,4 +105,7 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void SetIsBeingShocked(bool bInBeingShocked);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	FVector GetCharacterLocationOnFloor() const;
 };

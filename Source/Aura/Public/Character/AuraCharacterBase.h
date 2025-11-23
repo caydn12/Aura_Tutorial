@@ -163,6 +163,7 @@ public:
 	virtual USkeletalMeshComponent* GetWeapon_Implementation() override;
 	virtual bool IsBeingShocked_Implementation() const override;
 	virtual void SetIsBeingShocked_Implementation(bool bInBeingShocked);
+	virtual FVector GetCharacterLocationOnFloor_Implementation() const override;
 	// End Combat Interface
 
 	FOnASCRegistered OnASCRegistered;
