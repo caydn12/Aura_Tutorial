@@ -148,6 +148,31 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 
 		DamageTypeValue *= (100 - Resistance) / 100.f;
 
+		if (UAuraAbilitySystemLibrary::IsRadialDamage(EffectContextHandle))
+		{
+			const FVector TargetLocation = TargetAvatar->GetActorLocation();
+			const float Distance = (TargetLocation - UAuraAbilitySystemLibrary::GetRadialDamageOrigin(EffectContextHandle)).Size();
+
+			const float InnerRadius = UAuraAbilitySystemLibrary::GetRadialDamageInnerRadius(EffectContextHandle);
+			const float OuterRadius = UAuraAbilitySystemLibrary::GetRadialDamageOuterRadius(EffectContextHandle);
+
+			if (Distance > InnerRadius)
+			{
+				if (Distance >= OuterRadius)
+				{
+					DamageTypeValue = 0.f;
+				}
+				else
+				{
+
+					const float Range = OuterRadius - InnerRadius;
+					const float Delta = Distance - InnerRadius;
+					const float Alpha = 1.f - Delta / FMath::Max(Delta, Range);
+					DamageTypeValue *= Alpha;
+				}
+			}
+		}
+
 		Damage += DamageTypeValue;
 	}
 
