@@ -123,6 +123,12 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UDebuffNiagaraComponent> StunDebuffComponent;
 
+	// Physical
+
+	virtual void PhysicalTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UDebuffNiagaraComponent> PhysicalDebuffComponent;
+
 	// Passive Effects
 
 	UPROPERTY(VisibleAnywhere)
@@ -192,6 +198,14 @@ public:
 
 	UPROPERTY(Replicated, BlueprintReadOnly)
 	bool bIsBeingShocked = false;
+
+	// Physical
+
+	UFUNCTION()
+	virtual void OnRep_PhysicalDebuff();
+
+	UPROPERTY(ReplicatedUsing = OnRep_PhysicalDebuff, BlueprintReadOnly)
+	bool bIsPhysicallyDebuffed = false;
 
 private:
 

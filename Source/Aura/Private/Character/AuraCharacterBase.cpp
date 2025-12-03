@@ -24,6 +24,10 @@ AAuraCharacterBase::AAuraCharacterBase()
 	StunDebuffComponent->SetupAttachment(GetRootComponent());
 	StunDebuffComponent->DebuffTag = FAuraGameplayTags::Get().Debuff_Stun;
 
+	PhysicalDebuffComponent = CreateDefaultSubobject<UDebuffNiagaraComponent>(TEXT("PhysicalDebuffComponent"));
+	PhysicalDebuffComponent->SetupAttachment(GetRootComponent());
+	PhysicalDebuffComponent->DebuffTag = FAuraGameplayTags::Get().Debuff_Physical;
+
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	GetCapsuleComponent()->SetGenerateOverlapEvents(false);
 	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
@@ -59,6 +63,7 @@ void AAuraCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 	DOREPLIFETIME(AAuraCharacterBase, bIsBurned);
 	DOREPLIFETIME(AAuraCharacterBase, bIsStunned);
 	DOREPLIFETIME(AAuraCharacterBase, bIsBeingShocked);
+	DOREPLIFETIME(AAuraCharacterBase, bIsPhysicallyDebuffed);
 }
 
 void AAuraCharacterBase::BeginPlay()
@@ -191,6 +196,11 @@ void AAuraCharacterBase::OnRep_Stunned()
 
 }
 
+void AAuraCharacterBase::OnRep_PhysicalDebuff()
+{
+
+}
+
 void AAuraCharacterBase::BurnTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
 {
 	bIsBurned = NewCount > 0;
@@ -200,6 +210,11 @@ void AAuraCharacterBase::StunTagChanged(const FGameplayTag CallbackTag, int32 Ne
 {
 	bIsStunned = NewCount > 0;
 	GetCharacterMovement()->MaxWalkSpeed = bIsStunned ? 0.0f : BaseWalkSpeed;
+}
+
+void AAuraCharacterBase::PhysicalTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
+{
+	bIsPhysicallyDebuffed = NewCount > 0;
 }
 
 void AAuraCharacterBase::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> GameplayEffectClass, float level) const
