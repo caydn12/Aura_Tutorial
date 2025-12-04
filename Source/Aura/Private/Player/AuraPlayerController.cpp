@@ -109,16 +109,17 @@ void AAuraPlayerController::ShowMagicCircle(UMaterialInterface* DecalMaterial, f
 	{
 		FVector MagicCircleLoc = CursorHit.ImpactPoint;
 		FTransform MagicCircleTransform = FTransform(FRotator::ZeroRotator, MagicCircleLoc);
-		MagicCircle = GetWorld()->SpawnActorDeferred<AMagicCircle>(MagicCircleClass, MagicCircleTransform, this, GetPawn(), ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
-
-		MagicCircle->InitialRadius = Radius;
-
-		if (DecalMaterial)
+		if (MagicCircle = GetWorld()->SpawnActorDeferred<AMagicCircle>(MagicCircleClass, MagicCircleTransform, this, GetPawn(), ESpawnActorCollisionHandlingMethod::AlwaysSpawn))
 		{
-			MagicCircle->MagicCircleDecal->SetDecalMaterial(DecalMaterial);
-		}
+			MagicCircle->InitialRadius = Radius;
 
-		MagicCircle->FinishSpawning(MagicCircleTransform);
+			if (DecalMaterial)
+			{
+				MagicCircle->MagicCircleDecal->SetDecalMaterial(DecalMaterial);
+			}
+
+			MagicCircle->FinishSpawning(MagicCircleTransform);
+		}
 	}
 }
 
