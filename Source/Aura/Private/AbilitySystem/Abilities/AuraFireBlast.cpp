@@ -17,7 +17,7 @@ FString UAuraFireBlast::GetDescription(int32 Level)
 		"fire damage with a chance to burn.</>\n\n"
 		"<Default>Launches %d fire balls in all directions, "
 		"each returning toward the caster, "
-		"and exploding upon impact when returning.</>"),
+		"and exploding upon impact with the caster.</>"),
 		Level,
 		ManaCost,
 		Cooldown,
@@ -40,11 +40,16 @@ FString UAuraFireBlast::GetNextLevelDescription(int32 Level)
 		"fire damage with a chance to burn.</>\n\n"
 		"<Default>Launches %d fire balls in all directions, "
 		"each returning toward the caster, "
-		"and exploding upon impact when returning.</>"),
+		"and exploding upon impact with the caster.</>"),
 		Level,
 		ManaCost,
 		Cooldown,
 		ScaledDamage,
 		NumFireBalls
 	);
+}
+
+TArray<AAuraFireBall*> UAuraFireBlast::SpawnFireBalls()
+{
+	return TArray<AAuraFireBall*>();
 }
