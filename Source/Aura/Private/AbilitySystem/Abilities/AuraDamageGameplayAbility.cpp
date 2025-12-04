@@ -38,16 +38,12 @@ FDamageEffectParams UAuraDamageGameplayAbility::MakeDamageEffectParamsFromClassD
 
 	if (IsValid(TargetActor))
 	{
-		FRotator RotationToTarget = (TargetActor->GetActorLocation() - GetAvatarActorFromActorInfo()->GetActorLocation()).Rotation();
-		RotationToTarget.Pitch = 45.f;
-		const FVector DirectionToTarget = RotationToTarget.Vector();
+		Params.DeathImpulse = GetImpulse(TargetActor) * DeathImpulseMagnitude;
 
-		Params.DeathImpulse = DirectionToTarget * DeathImpulseMagnitude;
-
-		const bool bShouldKnockback = FMath::FRandRange(0.f, 100.f) <= KnockbackChance;
+		const bool bShouldKnockback = FMath::RandRange(1, 100) <= KnockbackChance;
 		if (bShouldKnockback)
 		{
-			Params.KnockbackForce = DirectionToTarget * KnockbackForceMagnitude;
+			Params.KnockbackForce = GetImpulse(TargetActor) * KnockbackForceMagnitude;
 		}
 	}
 
@@ -65,4 +61,21 @@ FDamageEffectParams UAuraDamageGameplayAbility::MakeDamageEffectParamsFromClassD
 float UAuraDamageGameplayAbility::GetDamageAtCurrentLevel() const
 {
 	return Damage.GetValueAtLevel(GetAbilityLevel());
+}
+
+FVector UAuraDamageGameplayAbility::GetImpulse(const AActor* TargetActor, const FVector& OverrideDirection, const bool bOverrideDirection, const float PitchOverride) const
+{
+	FVector Direction = TargetActor->GetActorLocation() - GetAvatarActorFromActorInfo()->GetActorLocation();
+	Direction = bOverrideDirection ? OverrideDirection : Direction;
+
+	Direction.Z = 0.f;
+	Direction.Normalize();
+	const FVector ToTarget = Direction + FVector::UpVector * FMath::Sin(FMath::DegreesToRadians(PitchOverride));
+
+	/* DEBUG */
+	// const FVector Start = TargetActor->GetActorLocation();
+	// const FVector End = Start + ToTarget.GetSafeNormal() * 300.f;
+	// DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 3, false, 2);
+
+	return ToTarget;
 }

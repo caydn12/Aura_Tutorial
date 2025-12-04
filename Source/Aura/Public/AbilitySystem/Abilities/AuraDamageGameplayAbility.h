@@ -23,10 +23,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Damage")
 	FScalableFloat Damage;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Damage")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Damage")
 	float DeathImpulseMagnitude = 8000.f;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Damage")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Damage")
 	float KnockbackForceMagnitude = 1000.f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Damage")
@@ -65,4 +65,7 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	float GetDamageAtCurrentLevel() const;
+
+	UFUNCTION(BlueprintPure)
+	FVector GetImpulse(const AActor* TargetActor, const FVector& OverrideDirection = FVector::ZeroVector, const bool bOverrideDirection = false, const float PitchOverride = 45.f) const;
 };
