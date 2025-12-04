@@ -54,6 +54,10 @@ AAuraCharacterBase::AAuraCharacterBase()
 
 	ManaSiphonNiagaraComponent = CreateDefaultSubobject<UPassiveNiagaraComponent>("ManaSiphonComponent");
 	ManaSiphonNiagaraComponent->SetupAttachment(EffectAttachComponent);
+
+	GetCapsuleComponent()->SetReceivesDecals(false);
+	GetMesh()->SetReceivesDecals(false);
+	Weapon->SetReceivesDecals(false);
 }
 
 void AAuraCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

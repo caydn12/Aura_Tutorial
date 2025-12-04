@@ -158,7 +158,7 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 
 			if (Distance > InnerRadius)
 			{
-				if (Distance >= OuterRadius)
+				if (Distance > OuterRadius)
 				{
 					DamageTypeValue = 0.f;
 				}
