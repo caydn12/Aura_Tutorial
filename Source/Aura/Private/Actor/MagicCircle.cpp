@@ -25,14 +25,29 @@ void AMagicCircle::BeginPlay()
 
 	TargetingSphere->OnComponentBeginOverlap.AddDynamic(this, &AMagicCircle::OnTargetingSphereBeginOverlap);
 	TargetingSphere->OnComponentEndOverlap.AddDynamic(this, &AMagicCircle::OnTargetingSphereEndOverlap);
+}
 
-	SetTargetingRadius(InitialRadius);
+void AMagicCircle::OnConstruction(const FTransform& Transform)
+{
+	Super::OnConstruction(Transform);
+
+	if (MagicCircleDecal)
+	{
+		if (!MagicCircleMID)
+		{
+			MagicCircleMID = MagicCircleDecal->CreateDynamicMaterialInstance();
+		}
+	}
+
+	if (InitialRadius > 0.f)
+	{
+		SetTargetingRadius(InitialRadius);
+	}
 }
 
 void AMagicCircle::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 void AMagicCircle::OnTargetingSphereBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -60,6 +75,11 @@ void AMagicCircle::SetTargetingRadius(float Radius)
 	if (MagicCircleDecal)
 	{
 		MagicCircleDecal->DecalSize = FVector(Radius, Radius, MagicCircleDecal->DecalSize.Z);
+
+		if (MagicCircleMID)
+		{
+			MagicCircleMID->SetScalarParameterValue(TEXT("Radius"), Radius);
+		}
 	}
 }
 
