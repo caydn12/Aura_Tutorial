@@ -13,10 +13,10 @@ FString UAuraManaSiphon::GetDescription(const int32 Level)
 		"<Title>MANA SIPHON</>\n"
 		"<Small>Level: </><Level>%d</>\n"
 		"<Small>Mana Cost: </><ManaCost>%.1f</>\n"
-		"<Small>Cooldown: </><Cooldown>%.1f</>\n"
-		"<Default>Generates an aura of widosm "
-		"siphoning life by </>"
-		"<ManaCost>%d </><Default>percent of damage dealt</>"),
+		"<Small>Cooldown: </><Cooldown>%.1f</>\n\n"
+		"<Default>Generates an aura of wisdom "
+		"siphoning mana by </>"
+		"<ManaCost>%d%%</><Default> of damage dealt</>"),
 		Level,
 		ManaCost,
 		Cooldown,
@@ -31,13 +31,13 @@ FString UAuraManaSiphon::GetNextLevelDescription(const int32 Level)
 	const float Cooldown = GetCooldown(Level);
 
 	return FString::Printf(TEXT(
-		"<Title>MANA SIPHON</>\n"
+		"<Title>NEXT LEVEL</>\n"
 		"<Small>Level: </><Level>%d</>\n"
 		"<Small>Mana Cost: </><ManaCost>%.1f</>\n"
-		"<Small>Cooldown: </><Cooldown>%.1f</>\n"
-		"<Default>Generates an aura of widosm "
-		"siphoning life by </>"
-		"<ManaCost>%d </><Default>percent of damage dealt</>"),
+		"<Small>Cooldown: </><Cooldown>%.1f</>\n\n"
+		"<Default>Generates an aura of wisdom "
+		"siphoning mana by </>"
+		"<ManaCost>%d%%</><Default> of damage dealt</>"),
 		Level,
 		ManaCost,
 		Cooldown,

@@ -13,7 +13,7 @@ FString UAuraHaloOfProtection::GetDescription(const int32 Level)
 		"<Title>HALO OF PROTECTION</>\n"
 		"<Small>Level: </><Level>%d</>\n"
 		"<Small>Mana Cost: </><ManaCost>%.1f</>\n"
-		"<Small>Cooldown: </><Cooldown>%.1f</>\n"
+		"<Small>Cooldown: </><Cooldown>%.1f</>\n\n"
 		"<Default>Generates a protective halo "
 		"reducing all types of incoming damage by </>"
 		"<Percent>%d%%</>"),
@@ -31,10 +31,10 @@ FString UAuraHaloOfProtection::GetNextLevelDescription(const int32 Level)
 	const float Cooldown = GetCooldown(Level);
 
 	return FString::Printf(TEXT(
-		"<Title>HALO OF PROTECTION</>\n"
+		"<Title>NEXT LEVEL</>\n"
 		"<Small>Level: </><Level>%d</>\n"
 		"<Small>Mana Cost: </><ManaCost>%.1f</>\n"
-		"<Small>Cooldown: </><Cooldown>%.1f</>\n"
+		"<Small>Cooldown: </><Cooldown>%.1f</>\n\n"
 		"<Default>Generates a protective halo "
 		"reducing all types of incoming damage by </>"
 		"<Percent>%d%%</>"),

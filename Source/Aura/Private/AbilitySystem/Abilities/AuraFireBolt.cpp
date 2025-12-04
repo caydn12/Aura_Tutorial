@@ -20,7 +20,7 @@ FString UAuraFireBolt::GetDescription(int32 Level)
 			"<Small>Level: </><Level>%d</>\n"
 			"<Small>Mana Cost: </><ManaCost>%.1f</>\n"
 			"<Small>Cooldown: </><Cooldown>%.1f</>\n\n"
-			"<Default>Launches a bolt of Fire, "
+			"<Default>Launches </><Level>1</><Default> bolt of Fire, "
 			"exploding on impact, and dealing </>"
 			"<Damage>%d</><Default> fire damage with a chance to burn.</>"),
 			Level,
@@ -36,7 +36,7 @@ FString UAuraFireBolt::GetDescription(int32 Level)
 			"<Small>Level: </><Level>%d</>\n"
 			"<Small>Mana Cost: </><ManaCost>%.1f</>\n"
 			"<Small>Cooldown: </><Cooldown>%.1f</>\n\n"
-			"<Default>Launches %d bolts of Fire, "
+			"<Default>Launches </><Level>%d</><Default> bolts of Fire, "
 			"exploding on impact, and dealing </>"
 			"<Damage>%d</><Default> fire damage with a chance to burn.</>"),
 			Level,
@@ -58,7 +58,7 @@ FString UAuraFireBolt::GetNextLevelDescription(int32 Level)
 		"<Small>Level: </><Level>%d</>\n"
 		"<Small>Mana Cost: </><ManaCost>%.1f</>\n"
 		"<Small>Cooldown: </><Cooldown>%.1f</>\n\n"
-		"<Default>Launches %d bolts of Fire, "
+		"<Default>Launches </><Level>%d</><Default> bolts of Fire, "
 		"exploding on impact, and dealing </>"
 		"<Damage>%d</><Default> fire damage with a chance to burn.</>"),
 		Level,

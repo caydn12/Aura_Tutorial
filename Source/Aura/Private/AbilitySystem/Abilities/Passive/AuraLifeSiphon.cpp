@@ -13,10 +13,10 @@ FString UAuraLifeSiphon::GetDescription(const int32 Level)
 		"<Title>LIFE SIPHON</>\n"
 		"<Small>Level: </><Level>%d</>\n"
 		"<Small>Mana Cost: </><ManaCost>%.1f</>\n"
-		"<Small>Cooldown: </><Cooldown>%.1f</>\n"
+		"<Small>Cooldown: </><Cooldown>%.1f</>\n\n"
 		"<Default>Generates a bloodthirst aura "
 		"siphoning life by </>"
-		"<Damage>%d </><Default>percent of damage dealt</>"),
+		"<Damage>%d%%</><Default> of damage dealt</>"),
 		Level,
 		ManaCost,
 		Cooldown,
@@ -31,13 +31,13 @@ FString UAuraLifeSiphon::GetNextLevelDescription(const int32 Level)
 	const float Cooldown = GetCooldown(Level);
 
 	return FString::Printf(TEXT(
-		"<Title>LIFE SIPHON</>\n"
+		"<Title>NEXT LEVEL</>\n"
 		"<Small>Level: </><Level>%d</>\n"
 		"<Small>Mana Cost: </><ManaCost>%.1f</>\n"
-		"<Small>Cooldown: </><Cooldown>%.1f</>\n"
+		"<Small>Cooldown: </><Cooldown>%.1f</>\n\n"
 		"<Default>Generates a bloodthirst aura "
 		"siphoning life by </>"
-		"<Damage>%d </><Default>percent of damage dealt</>"),
+		"<Damage>%d%%</><Default> of damage dealt</>"),
 		Level,
 		ManaCost,
 		Cooldown,

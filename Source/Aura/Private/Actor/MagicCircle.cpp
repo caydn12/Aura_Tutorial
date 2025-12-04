@@ -25,6 +25,8 @@ void AMagicCircle::BeginPlay()
 
 	TargetingSphere->OnComponentBeginOverlap.AddDynamic(this, &AMagicCircle::OnTargetingSphereBeginOverlap);
 	TargetingSphere->OnComponentEndOverlap.AddDynamic(this, &AMagicCircle::OnTargetingSphereEndOverlap);
+
+	SetTargetingRadius(InitialRadius);
 }
 
 void AMagicCircle::Tick(float DeltaTime)
@@ -52,6 +54,12 @@ void AMagicCircle::OnTargetingSphereEndOverlap(UPrimitiveComponent* OverlappedCo
 void AMagicCircle::SetTargetingRadius(float Radius)
 {
 	TargetingSphere->SetSphereRadius(Radius);
-	MagicCircleDecal->DecalSize = FVector(Radius);
+
+	InitialRadius = Radius;
+
+	if (MagicCircleDecal)
+	{
+		MagicCircleDecal->DecalSize = FVector(Radius, Radius, MagicCircleDecal->DecalSize.Z);
+	}
 }
 

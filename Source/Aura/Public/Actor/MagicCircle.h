@@ -35,4 +35,7 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<USphereComponent> TargetingSphere;
+
+	UPROPERTY()
+	float InitialRadius = 0.f;
 };

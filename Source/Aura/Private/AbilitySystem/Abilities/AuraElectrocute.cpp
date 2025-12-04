@@ -24,6 +24,25 @@ FString UAuraElectrocute::GetDescription(int32 Level)
 			ScaledDamage
 		);
 	}
+	else if (Level == 2)
+	{
+		return FString::Printf(TEXT(
+			"<Title>ELECTROCUTE</>\n"
+			"<Small>Level: </><Level>%d</>\n"
+			"<Small>Mana Cost: </><ManaCost>%.1f</>\n"
+			"<Small>Cooldown: </><Cooldown>%.1f</>\n\n"
+			"<Default>Channels a beam of electricity, "
+			"shocking on impact, "
+			"and spreading to </><Level>%d </><Default>target, "
+			"dealing </><Damage>%d</><Default> lightning damage "
+			"with a chance to stun.</>"),
+			Level,
+			ManaCost,
+			Cooldown,
+			FMath::Min(Level - 1, MaxNumShockTargets),
+			ScaledDamage
+		);
+	}
 	else
 	{
 		return FString::Printf(TEXT(
@@ -33,7 +52,7 @@ FString UAuraElectrocute::GetDescription(int32 Level)
 			"<Small>Cooldown: </><Cooldown>%.1f</>\n\n"
 			"<Default>Channels a beam of electricity, "
 			"shocking on impact, "
-			"and spreading to </><ManaCost>%d </><Default>targets, "
+			"and spreading to </><Level>%d </><Default>targets, "
 			"dealing </><Damage>%d</><Default> lightning damage "
 			"with a chance to stun.</>"),
 			Level,
@@ -50,20 +69,42 @@ FString UAuraElectrocute::GetNextLevelDescription(int32 Level)
 	const int32 ScaledDamage = Damage.GetValueAtLevel(Level);
 	const float ManaCost = FMath::Abs(GetManaCost(Level));
 	const float Cooldown = GetCooldown(Level);
-	return FString::Printf(TEXT(
-		"<Title>ELECTROCUTE</>\n"
-		"<Small>Level: </><Level>%d</>\n"
-		"<Small>Mana Cost: </><ManaCost>%.1f</>\n"
-		"<Small>Cooldown: </><Cooldown>%.1f</>\n\n"
-		"<Default>Channels a beam of electricity, "
-		"shocking on impact, "
-		"and spreading to </><ManaCost>%d </><Default>targets, "
-		"dealing </><Damage>%d</><Default> lightning damage "
-		"with a chance to stun.</>"),
-		Level,
-		ManaCost,
-		Cooldown,
-		FMath::Min(Level - 1, MaxNumShockTargets),
-		ScaledDamage
-	);
+	if (Level == 2)
+	{
+		return FString::Printf(TEXT(
+			"<Title>NEXT LEVEL</>\n"
+			"<Small>Level: </><Level>%d</>\n"
+			"<Small>Mana Cost: </><ManaCost>%.1f</>\n"
+			"<Small>Cooldown: </><Cooldown>%.1f</>\n\n"
+			"<Default>Channels a beam of electricity, "
+			"shocking on impact, "
+			"and spreading to </><Level>%d </><Default>target, "
+			"dealing </><Damage>%d</><Default> lightning damage "
+			"with a chance to stun.</>"),
+			Level,
+			ManaCost,
+			Cooldown,
+			FMath::Min(Level - 1, MaxNumShockTargets),
+			ScaledDamage
+		);
+	}
+	else
+	{
+		return FString::Printf(TEXT(
+			"<Title>NEXT LEVEL</>\n"
+			"<Small>Level: </><Level>%d</>\n"
+			"<Small>Mana Cost: </><ManaCost>%.1f</>\n"
+			"<Small>Cooldown: </><Cooldown>%.1f</>\n\n"
+			"<Default>Channels a beam of electricity, "
+			"shocking on impact, "
+			"and spreading to </><Level>%d </><Default>targets, "
+			"dealing </><Damage>%d</><Default> lightning damage "
+			"with a chance to stun.</>"),
+			Level,
+			ManaCost,
+			Cooldown,
+			FMath::Min(Level - 1, MaxNumShockTargets),
+			ScaledDamage
+		);
+	}
 }

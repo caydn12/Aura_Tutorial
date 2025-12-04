@@ -381,6 +381,11 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 		FString("Electrocute Cooldown Tag")
 	);
 
+	GameplayTags.Cooldown_Arcane_ArcaneShards = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Cooldown.Arcane.ArcaneShards"),
+		FString("Arcane Shards Cooldown Tag")
+	);
+
 	// Effects Tags
 
 	GameplayTags.Effects_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(
