@@ -72,7 +72,7 @@ FString UAuraElectrocute::GetNextLevelDescription(int32 Level)
 	if (Level == 2)
 	{
 		return FString::Printf(TEXT(
-			"<Title>NEXT LEVEL</>\n"
+			"<Title>NEXT LEVEL:</>\n"
 			"<Small>Level: </><Level>%d</>\n"
 			"<Small>Mana Cost: </><ManaCost>%.1f</>\n"
 			"<Small>Cooldown: </><Cooldown>%.1f</>\n\n"
@@ -91,7 +91,7 @@ FString UAuraElectrocute::GetNextLevelDescription(int32 Level)
 	else
 	{
 		return FString::Printf(TEXT(
-			"<Title>NEXT LEVEL</>\n"
+			"<Title>NEXT LEVEL:</>\n"
 			"<Small>Level: </><Level>%d</>\n"
 			"<Small>Mana Cost: </><ManaCost>%.1f</>\n"
 			"<Small>Cooldown: </><Cooldown>%.1f</>\n\n"
