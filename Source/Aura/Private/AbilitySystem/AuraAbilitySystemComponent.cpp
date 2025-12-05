@@ -359,6 +359,7 @@ void UAuraAbilitySystemComponent::ServerEquipAbility_Implementation(const FGamep
 					}
 
 					ClearSlot(SpecFromSlot);
+					MarkAbilitySpecDirty(*SpecFromSlot);
 				}
 			}
 

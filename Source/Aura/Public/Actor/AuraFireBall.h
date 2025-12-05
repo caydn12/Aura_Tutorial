@@ -22,4 +22,10 @@ protected:
 public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void StartOutgoingTimeline();
+
+	UFUNCTION(BlueprintCallable)
+	void EmptyHitActorsArray();
+
+private:
+	TArray<AActor*> HitActors;
 };

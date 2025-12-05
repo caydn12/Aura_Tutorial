@@ -34,7 +34,7 @@ public:
 	void SpendPointButtonPressed();
 
 	UFUNCTION(BlueprintCallable)
-	void GlobeDeslect();
+	void GlobeDeselect();
 
 	UFUNCTION(BlueprintCallable)
 	void EquipButtonPressed();

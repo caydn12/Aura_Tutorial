@@ -79,48 +79,62 @@ void AAuraProjectile::OnHit()
 
 void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	AActor* ProjectileOwner = GetOwner();
-	bool bHitSelf = ProjectileOwner == OtherActor;
-	if (!bHitSelf && ProjectileOwner)
+	if (IsValidOverlap(OtherActor))
 	{
-		if (UAuraAbilitySystemLibrary::IsNotAlly(ProjectileOwner, OtherActor))
+		if (!bImpacted)
 		{
-			if (!bImpacted)
-			{
-				OnHit();
-			}
+			OnHit();
+		}
 
-			if (HasAuthority())
+		if (HasAuthority())
+		{
+			// Apply effect only on server. Effect will modify replicated data
+			if (UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
 			{
-				// Apply effect only on server. Effect will modify replicated data
-				if (UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
+				const FVector DeathImpulse = GetActorForwardVector() * DamageEffectParams.DeathImpulseMagnitude;
+				DamageEffectParams.DeathImpulse = DeathImpulse;
+
+				const bool bShouldKnockback = FMath::RandRange(1, 100) < DamageEffectParams.KnockbackChance;
+				if (bShouldKnockback)
 				{
-					const FVector DeathImpulse = GetActorForwardVector() * DamageEffectParams.DeathImpulseMagnitude;
-					DamageEffectParams.DeathImpulse = DeathImpulse;
-
-					const bool bShouldKnockback = FMath::RandRange(1, 100) < DamageEffectParams.KnockbackChance;
-					if (bShouldKnockback)
-					{
-						FRotator Rotation = GetActorRotation();
-						Rotation.Pitch = 45.f; // Add vertical component to knockback
-						const FVector KnockbackDirection = Rotation.Vector();
-						const FVector KnockbackForce = KnockbackDirection * DamageEffectParams.KnockbackForceMagnitude;
-						DamageEffectParams.KnockbackForce = KnockbackForce;
-					}
-					
-
-					DamageEffectParams.TargetAbilitySystemComponent = TargetASC;
-					UAuraAbilitySystemLibrary::ApplyDamageEffect(DamageEffectParams);
+					FRotator Rotation = GetActorRotation();
+					Rotation.Pitch = 45.f; // Add vertical component to knockback
+					const FVector KnockbackDirection = Rotation.Vector();
+					const FVector KnockbackForce = KnockbackDirection * DamageEffectParams.KnockbackForceMagnitude;
+					DamageEffectParams.KnockbackForce = KnockbackForce;
 				}
 
-				// If on server, Destroy the projectile on overlap with other actor
-				Destroy();
+
+				DamageEffectParams.TargetAbilitySystemComponent = TargetASC;
+				UAuraAbilitySystemLibrary::ApplyDamageEffect(DamageEffectParams);
 			}
-			else
+
+			// If on server, Destroy the projectile on overlap with other actor
+			Destroy();
+		}
+		else
+		{
+			// If on client, set bImpacted to true because only the server destroys the object
+			bImpacted = true;
+		}
+	}
+}
+
+bool AAuraProjectile::IsValidOverlap(AActor* OtherActor)
+{
+	bool bIsValid = false;
+
+	if (DamageEffectParams.SourceAbilitySystemComponent)
+	{
+		AActor* SourceAvatarActor = DamageEffectParams.SourceAbilitySystemComponent->GetAvatarActor();
+		bool bHitSelf = SourceAvatarActor == OtherActor;
+		if (!bHitSelf && SourceAvatarActor)
+		{
+			if (UAuraAbilitySystemLibrary::IsNotAlly(SourceAvatarActor, OtherActor))
 			{
-				// If on client, set bImpacted to true because only the server destroys the object
-				bImpacted = true;
+				bIsValid = true;
 			}
 		}
 	}
+	return bIsValid;
 }

@@ -29,6 +29,10 @@ protected:
 	UFUNCTION()
 	virtual void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	bool IsValidOverlap(AActor* OtherActor);
+
+	bool bImpacted;
+
 public:
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
@@ -41,8 +45,6 @@ public:
 	TObjectPtr<USceneComponent> HomingTargetSceneComponent;
 
 private:
-
-	bool bImpacted;
 
 	UPROPERTY(EditDefaultsOnly)
 	float LifeSpan = 7.0f;

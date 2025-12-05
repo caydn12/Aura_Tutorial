@@ -112,7 +112,7 @@ void USpellMenuWidgetController::SpendPointButtonPressed()
 	}
 }
 
-void USpellMenuWidgetController::GlobeDeslect()
+void USpellMenuWidgetController::GlobeDeselect()
 {
 	if (bIsWaitingForEquipSelection)
 	{
@@ -172,7 +172,7 @@ void USpellMenuWidgetController::OnAbilityEquipped(const FGameplayTag& AbilityTa
 
 	StopWaitingForEquipSelectionDelegate.Broadcast(Info.AbilityTypeTag);
 	SpellGlobeReassignedDelegate.Broadcast(AbilityTag);
-	GlobeDeslect();
+	GlobeDeselect();
 }
 
 void USpellMenuWidgetController::ShouldEnableButtons(const FGameplayTag& AbilityStatus, int32 SpellPoints, bool& bShouldEnableSpendPointsButton, bool& bShouldEnableEquipButton)
