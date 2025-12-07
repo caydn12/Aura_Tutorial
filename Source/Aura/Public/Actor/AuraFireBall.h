@@ -26,6 +26,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void EmptyHitActorsArray();
 
+	UPROPERTY(BlueprintReadWrite)
+	FDamageEffectParams ExplosionDamageParams;
+
 private:
 	TArray<AActor*> HitActors;
 };
