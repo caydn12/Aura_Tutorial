@@ -425,6 +425,13 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 		FString("Block Tracing Under the Cursor")
 	);
 
+	// GameplayCue Tags
+
+	GameplayTags.GameplayCue_FireBlast = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("GameplayCue.FireBlast"),
+		FString("Gameplay Cue for Fire Blast")
+	);
+
 	// Map of Damage Types to Resistance Attributes
 
 	GameplayTags.DamageTypesToResistances.Add(GameplayTags.Damage_Fire, GameplayTags.Attributes_Resistance_Fire);
