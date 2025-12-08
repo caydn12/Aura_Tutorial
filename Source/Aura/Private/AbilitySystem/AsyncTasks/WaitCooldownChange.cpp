@@ -51,6 +51,18 @@ void UWaitCooldownChange::EndTask()
 	}
 }
 
+void UWaitCooldownChange::CheckRemainingCooldownTime() const
+{
+	FGameplayEffectQuery GameplayEffectQuery = FGameplayEffectQuery::MakeQuery_MatchAnyOwningTags(CooldownTag.GetSingleTagContainer());
+	TArray<float> TimesRemaining = ASC->GetActiveEffectsTimeRemaining(GameplayEffectQuery);
+
+	if (TimesRemaining.Num() > 0)
+	{
+		float TimeRemaining = TimesRemaining[0];
+		CooldownStart.Broadcast(TimeRemaining);
+	}
+}
+
 void UWaitCooldownChange::CooldownTagChanged(const FGameplayTag InCooldownTag, int32 NewCount)
 {
 	if (NewCount == 0)

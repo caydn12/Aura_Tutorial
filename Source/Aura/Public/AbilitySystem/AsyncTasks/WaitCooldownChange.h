@@ -31,6 +31,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void EndTask();
 
+	UFUNCTION(BlueprintCallable)
+	void CheckRemainingCooldownTime() const;
+
 protected:
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> ASC;
