@@ -278,7 +278,7 @@ FVector UAuraAbilitySystemLibrary::GetRadialDamageOrigin(const FGameplayEffectCo
 	return result;
 }
 
-void UAuraAbilitySystemLibrary::SetSourceObject(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, const UObject* NewSourceObject)
+void UAuraAbilitySystemLibrary::SetSourceObject(FGameplayEffectContextHandle& EffectContextHandle, const UObject* NewSourceObject)
 {
 	if (EffectContextHandle.IsValid())
 	{
@@ -491,19 +491,6 @@ int32 UAuraAbilitySystemLibrary::GetXPRewardForClassAndLevel(const UObject* Worl
 		LocalXPReward = Info.XPReward.GetValueAtLevel(CharacterLevel);
 	}
 	return static_cast<int32>(LocalXPReward);
-}
-
-void UAuraAbilitySystemLibrary::AdjustScalability(bool bIncrease)
-{
-	int32 Increase = bIncrease ? 1 : -1;
-	const int32 CurrentQualityLevel = UGameUserSettings::GetGameUserSettings()->GetOverallScalabilityLevel();
-	const int32 NewQualityLevel = FMath::Clamp(CurrentQualityLevel + Increase, 0, 3); // 0 to 3 is the true range
-	if (CurrentQualityLevel != NewQualityLevel)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Scalability Level Changed: %d -> %d"), CurrentQualityLevel, NewQualityLevel));
-		UGameUserSettings::GetGameUserSettings()->SetOverallScalabilityLevel(NewQualityLevel);
-		UGameUserSettings::GetGameUserSettings()->ApplySettings(false);
-	}
 }
 
 TArray<FGameplayTag> UAuraAbilitySystemLibrary::GetCallerMagnitudeTagsByGameplayEffectClass(TSubclassOf<UGameplayEffect> GameplayEffectClass)
