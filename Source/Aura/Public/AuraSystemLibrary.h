@@ -20,6 +20,12 @@ class AURA_API UAuraSystemLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 public:
-	UFUNCTION(BlueprintCallable, Category = "AuraSystemLibrary|Input")
+	UFUNCTION(BlueprintCallable, Category = "AuraSystemLibrary|System")
 	static void AdjustScalability(EScalabilitySetting ScalabilitySetting);
+
+	UFUNCTION(BlueprintCallable, Category = "AuraSystemLibrary|System")
+	static void SetGlobalMusicVolume(const UObject* WorldContextObject, float NewVolume);
+
+	UFUNCTION(BlueprintCallable, Category = "AuraSystemLibrary|System")
+	static float GetGlobalMusicVolume(const UObject* WorldContextObject);
 };
