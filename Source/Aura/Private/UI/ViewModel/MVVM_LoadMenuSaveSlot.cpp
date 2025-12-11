@@ -12,3 +12,8 @@ void UMVVM_LoadMenuSaveSlot::SetPlayerName(FString InPlayerName)
 {
 	UE_MVVM_SET_PROPERTY_VALUE(PlayerName, InPlayerName);
 }
+
+void UMVVM_LoadMenuSaveSlot::SetSaveSlotName(FString InSaveSlotName)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(SaveSlotName, InSaveSlotName);
+}

@@ -20,14 +20,20 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FSetWidgetSwitcherIndex OnSetWidgetSwitcherIndex;
 
-	UPROPERTY()
-	FString SaveSlotName;
-
 	// Field Notifies for UI Binding
 
 	void SetPlayerName(FString InPlayerName);
-	FString GetPlayerName() const { return PlayerName; }
+	void SetSaveSlotName(FString InSaveSlotName);
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FString GetPlayerName() const { return PlayerName; }
+	FString GetSaveSlotName() const { return SaveSlotName; }
+
+private:
+	// Field Notifies for UI Binding
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, FieldNotify, Setter, Getter, meta = (AllowPrivateAccess = "true"))
+	FString SaveSlotName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, FieldNotify, Setter, Getter, meta = (AllowPrivateAccess="true"))
 	FString PlayerName;
 };

@@ -9,15 +9,15 @@
 void UMVVM_LoadMenu::InitializeSaveSlots()
 {
 	SaveSlot_0 = NewObject<UMVVM_LoadMenuSaveSlot>(this, LoadMenuSaveSlotViewModelClass);
-	SaveSlot_0->SaveSlotName = FString("SaveSlot_0");
+	SaveSlot_0->SetSaveSlotName(FString("SaveSlot_0"));
 	SaveSlotViewModels.Add(0, SaveSlot_0);
 
 	SaveSlot_1 = NewObject<UMVVM_LoadMenuSaveSlot>(this, LoadMenuSaveSlotViewModelClass);
-	SaveSlot_1->SaveSlotName = FString("SaveSlot_1");
+	SaveSlot_1->SetSaveSlotName(FString("SaveSlot_1"));
 	SaveSlotViewModels.Add(1, SaveSlot_1);
 
 	SaveSlot_2 = NewObject<UMVVM_LoadMenuSaveSlot>(this, LoadMenuSaveSlotViewModelClass);
-	SaveSlot_2->SaveSlotName = FString("SaveSlot_2");
+	SaveSlot_2->SetSaveSlotName(FString("SaveSlot_2"));
 	SaveSlotViewModels.Add(2, SaveSlot_2);
 }
 
