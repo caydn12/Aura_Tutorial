@@ -19,6 +19,15 @@ public:
 	UFUNCTION(BlueprintPure)
 	UMVVM_LoadMenuSaveSlot* GetSaveSlotViewModelByIndex(int32 Index) const;
 
+	UFUNCTION(BlueprintCallable)
+	void NewGameButtonPressed(int32 SlotIndex);
+
+	UFUNCTION(BlueprintCallable)
+	void NewSaveSlotButtonPressed(int32 SlotIndex, const FString& EnteredName);
+
+	UFUNCTION(BlueprintCallable)
+	void SelectSaveSlotButtonPressed(int32 SlotIndex);
+
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UMVVM_LoadMenuSaveSlot> LoadMenuSaveSlotViewModelClass;
 

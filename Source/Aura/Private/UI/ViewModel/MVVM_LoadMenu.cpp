@@ -20,3 +20,18 @@ UMVVM_LoadMenuSaveSlot* UMVVM_LoadMenu::GetSaveSlotViewModelByIndex(int32 Index)
 {
 	return SaveSlotViewModels.FindChecked(Index);
 }
+
+void UMVVM_LoadMenu::NewGameButtonPressed(int32 SlotIndex)
+{
+	SaveSlotViewModels[SlotIndex]->OnSetWidgetSwitcherIndex.Broadcast(1);
+}
+
+void UMVVM_LoadMenu::NewSaveSlotButtonPressed(int32 SlotIndex, const FString& EnteredName)
+{
+	
+}
+
+void UMVVM_LoadMenu::SelectSaveSlotButtonPressed(int32 SlotIndex)
+{
+
+}
