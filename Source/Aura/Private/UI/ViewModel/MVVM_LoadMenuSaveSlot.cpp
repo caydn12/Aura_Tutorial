@@ -7,3 +7,8 @@ void UMVVM_LoadMenuSaveSlot::InitializeSlot()
 {
 	OnSetWidgetSwitcherIndex.Broadcast(2);
 }
+
+void UMVVM_LoadMenuSaveSlot::SetPlayerName(FString InPlayerName)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(PlayerName, InPlayerName);
+}

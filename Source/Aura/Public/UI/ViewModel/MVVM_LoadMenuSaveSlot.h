@@ -21,8 +21,13 @@ public:
 	FSetWidgetSwitcherIndex OnSetWidgetSwitcherIndex;
 
 	UPROPERTY()
-	FString PlayerName;
-
-	UPROPERTY()
 	FString SaveSlotName;
+
+	// Field Notifies for UI Binding
+
+	void SetPlayerName(FString InPlayerName);
+	FString GetPlayerName() const { return PlayerName; }
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, FieldNotify, Setter, Getter)
+	FString PlayerName;
 };

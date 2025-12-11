@@ -35,7 +35,7 @@ void UMVVM_LoadMenu::NewSaveSlotButtonPressed(int32 SlotIndex, const FString& En
 {
 	if (UAuraGameInstance* AuraGameInstance = Cast<UAuraGameInstance>(UGameplayStatics::GetGameInstance(this)))
 	{
-		SaveSlotViewModels[SlotIndex]->PlayerName = EnteredName;
+		SaveSlotViewModels[SlotIndex]->SetPlayerName(EnteredName);
 
 		AuraGameInstance->SaveSlotData(SaveSlotViewModels[SlotIndex]);
 
