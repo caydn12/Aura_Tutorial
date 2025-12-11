@@ -5,5 +5,5 @@
 
 void UMVVM_LoadMenuSaveSlot::InitializeSlot()
 {
-	OnSetWidgetSwitcherIndex.Broadcast(0);
+	OnSetWidgetSwitcherIndex.Broadcast(2);
 }
