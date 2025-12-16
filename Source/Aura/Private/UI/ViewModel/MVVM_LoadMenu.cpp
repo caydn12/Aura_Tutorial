@@ -46,6 +46,7 @@ void UMVVM_LoadMenu::NewSaveSlotButtonPressed(int32 SlotIndex, const FString& En
 
 void UMVVM_LoadMenu::SelectSaveSlotButtonPressed(int32 SlotIndex)
 {
+	OnSlotSelected.Broadcast();
 	for (const TTuple<int32, UMVVM_LoadMenuSaveSlot*> SaveSlotViewModel : SaveSlotViewModels)
 	{
 		// Enable the select button for all slots except the one that was just selected
