@@ -7,6 +7,7 @@
 #include "MVVM_LoadMenuSaveSlot.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSetWidgetSwitcherIndex, int32, WidgetSwitcherIndex);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FEnableSelectSlotButton, bool, bEnable);
 
 UENUM(BlueprintType)
 enum class ESaveSlotWidget : uint8
@@ -27,6 +28,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FSetWidgetSwitcherIndex OnSetWidgetSwitcherIndex;
+
+	UPROPERTY(BlueprintAssignable)
+	FEnableSelectSlotButton OnEnableSelectSlotButton;
 
 	// Field Notifies for UI Binding
 

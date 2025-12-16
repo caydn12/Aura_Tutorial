@@ -46,7 +46,12 @@ void UMVVM_LoadMenu::NewSaveSlotButtonPressed(int32 SlotIndex, const FString& En
 
 void UMVVM_LoadMenu::SelectSaveSlotButtonPressed(int32 SlotIndex)
 {
-
+	for (const TTuple<int32, UMVVM_LoadMenuSaveSlot*> SaveSlotViewModel : SaveSlotViewModels)
+	{
+		// Enable the select button for all slots except the one that was just selected
+		bool bEnable = SaveSlotViewModel.Key != SlotIndex;
+		SaveSlotViewModel.Value->OnEnableSelectSlotButton.Broadcast(bEnable);
+	}
 }
 
 void UMVVM_LoadMenu::LoadSaveData()
@@ -60,7 +65,10 @@ void UMVVM_LoadMenu::LoadSaveData()
 			if (LoadMenuSaveObject)
 			{
 				SaveSlotViewModel.Value->SetPlayerName(LoadMenuSaveObject->PlayerName);
-				if (LoadMenuSaveObject->PlayerName.IsEmpty()) // LoadMenuSaveGame.h defaults PlayerName to ""
+				// LoadMenuSaveGame.h defaults PlayerName to "Default Name".
+				// Save data is always created, and will have default data if unaffected by the user.
+				// In that case, we want to show the slot as vacant. If the name has changed, the slot is taken by the user.
+				if (LoadMenuSaveObject->PlayerName == "Default Name") 
 				{
 					SaveSlotViewModel.Value->SetSaveSlotWidget(ESaveSlotWidget::ESS_Vacant);
 				}
