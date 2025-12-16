@@ -3,9 +3,10 @@
 
 #include "UI/ViewModel/MVVM_LoadMenuSaveSlot.h"
 
-void UMVVM_LoadMenuSaveSlot::InitializeSlot()
+void UMVVM_LoadMenuSaveSlot::SetSaveSlotWidget(const ESaveSlotWidget SaveSlotWidget)
 {
-	OnSetWidgetSwitcherIndex.Broadcast(2);
+	const int32 WidgetSwitcherIndex = static_cast<int32>(SaveSlotWidget);
+	OnSetWidgetSwitcherIndex.Broadcast(WidgetSwitcherIndex);
 }
 
 void UMVVM_LoadMenuSaveSlot::SetPlayerName(FString InPlayerName)

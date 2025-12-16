@@ -17,5 +17,5 @@ class AURA_API ULoadMenuSaveGame : public USaveGame
 public:
 
 	UPROPERTY()
-	FString PlayerName = FString("Default Name");
+	FString PlayerName = FString("");
 };

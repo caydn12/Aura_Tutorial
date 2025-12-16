@@ -5,6 +5,7 @@
 #include "UI/ViewModel/MVVM_LoadMenuSaveSlot.h"
 #include "Game/AuraGameInstance.h"
 #include "Kismet/GameplayStatics.h"
+#include "Game/LoadMenuSaveGame.h"
 
 void UMVVM_LoadMenu::InitializeSaveSlots()
 {
@@ -28,7 +29,7 @@ UMVVM_LoadMenuSaveSlot* UMVVM_LoadMenu::GetSaveSlotViewModelByIndex(int32 Index)
 
 void UMVVM_LoadMenu::NewGameButtonPressed(int32 SlotIndex)
 {
-	SaveSlotViewModels[SlotIndex]->OnSetWidgetSwitcherIndex.Broadcast(1);
+	SaveSlotViewModels[SlotIndex]->SetSaveSlotWidget(ESaveSlotWidget::ESS_EnterName);
 }
 
 void UMVVM_LoadMenu::NewSaveSlotButtonPressed(int32 SlotIndex, const FString& EnteredName)
@@ -39,12 +40,35 @@ void UMVVM_LoadMenu::NewSaveSlotButtonPressed(int32 SlotIndex, const FString& En
 
 		AuraGameInstance->SaveSlotData(SaveSlotViewModels[SlotIndex]);
 
-		// Temporary UI Force change
-		SaveSlotViewModels[SlotIndex]->InitializeSlot();
+		SaveSlotViewModels[SlotIndex]->SetSaveSlotWidget(ESaveSlotWidget::ESS_Taken);
 	}
 }
 
 void UMVVM_LoadMenu::SelectSaveSlotButtonPressed(int32 SlotIndex)
 {
 
+}
+
+void UMVVM_LoadMenu::LoadSaveData()
+{
+	if (UAuraGameInstance* AuraGameInstance = Cast<UAuraGameInstance>(UGameplayStatics::GetGameInstance(this)))
+	{
+		for (const TTuple<int32, UMVVM_LoadMenuSaveSlot*> SaveSlotViewModel : SaveSlotViewModels)
+		{
+			ULoadMenuSaveGame* LoadMenuSaveObject = AuraGameInstance->GetSaveSlotData(SaveSlotViewModel.Value->GetSaveSlotName());
+
+			if (LoadMenuSaveObject)
+			{
+				SaveSlotViewModel.Value->SetPlayerName(LoadMenuSaveObject->PlayerName);
+				if (LoadMenuSaveObject->PlayerName.IsEmpty()) // LoadMenuSaveGame.h defaults PlayerName to ""
+				{
+					SaveSlotViewModel.Value->SetSaveSlotWidget(ESaveSlotWidget::ESS_Vacant);
+				}
+				else
+				{
+					SaveSlotViewModel.Value->SetSaveSlotWidget(ESaveSlotWidget::ESS_Taken);
+				}
+			}
+		}
+	}
 }

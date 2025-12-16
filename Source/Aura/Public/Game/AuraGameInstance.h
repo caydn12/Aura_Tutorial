@@ -10,6 +10,7 @@ class UCharacterClassInfo;
 class UAbilityInfo;
 class UMVVM_LoadMenuSaveSlot;
 class USaveGame;
+class ULoadMenuSaveGame;
 
 UCLASS()
 class AURA_API UAuraGameInstance : public UGameInstance
@@ -19,6 +20,8 @@ class AURA_API UAuraGameInstance : public UGameInstance
 public:
 	// Saving Data
 	void SaveSlotData(UMVVM_LoadMenuSaveSlot* SaveSlotViewModel);
+
+	ULoadMenuSaveGame* GetSaveSlotData(const FString& SlotName);
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<USaveGame> LoadMenuSaveGameClass;

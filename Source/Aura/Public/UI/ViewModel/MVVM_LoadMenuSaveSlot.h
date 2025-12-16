@@ -8,6 +8,14 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSetWidgetSwitcherIndex, int32, WidgetSwitcherIndex);
 
+UENUM(BlueprintType)
+enum class ESaveSlotWidget : uint8
+{
+	ESS_Vacant,
+	ESS_EnterName,
+	ESS_Taken
+};
+
 UCLASS()
 class AURA_API UMVVM_LoadMenuSaveSlot : public UMVVMViewModelBase
 {
@@ -15,7 +23,7 @@ class AURA_API UMVVM_LoadMenuSaveSlot : public UMVVMViewModelBase
 	
 public:
 
-	void InitializeSlot();
+	void SetSaveSlotWidget(const ESaveSlotWidget SaveSlotWidget);
 
 	UPROPERTY(BlueprintAssignable)
 	FSetWidgetSwitcherIndex OnSetWidgetSwitcherIndex;

@@ -28,6 +28,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SelectSaveSlotButtonPressed(int32 SlotIndex);
 
+	void LoadSaveData();
+
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UMVVM_LoadMenuSaveSlot> LoadMenuSaveSlotViewModelClass;
 
