@@ -49,3 +49,10 @@ void UAuraGameInstance::DeleteSaveSlot(const FString& SlotName)
 		UGameplayStatics::DeleteGameInSlot(SlotName, 0);
 	}
 }
+
+void UAuraGameInstance::TravelToMap(UMVVM_LoadMenuSaveSlot* SaveSlot)
+{
+	const FString SlotName = SaveSlot->GetSaveSlotName();
+
+	UGameplayStatics::OpenLevelBySoftObjectPtr(SaveSlot, SoftLoadedMaps.FindChecked(SaveSlot->GetMapName()));
+}

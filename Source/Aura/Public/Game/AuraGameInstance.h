@@ -33,6 +33,8 @@ public:
 
 	// Map Data
 
+	void TravelToMap(UMVVM_LoadMenuSaveSlot* SaveSlot);
+
 	UPROPERTY(EditDefaultsOnly)
 	FString DefaultMapName;
 

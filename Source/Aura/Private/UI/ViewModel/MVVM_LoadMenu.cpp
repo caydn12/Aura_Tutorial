@@ -67,6 +67,17 @@ void UMVVM_LoadMenu::DeleteButtonPressed()
 	}
 }
 
+void UMVVM_LoadMenu::PlayButtonPressed()
+{
+	if (UAuraGameInstance* AuraGameInstance = Cast<UAuraGameInstance>(UGameplayStatics::GetGameInstance(this)))
+	{
+		if (IsValid(SelectedSaveSlotViewModel))
+		{
+			AuraGameInstance->TravelToMap(SelectedSaveSlotViewModel);
+		}
+	}
+}
+
 void UMVVM_LoadMenu::LoadSaveData()
 {
 	if (UAuraGameInstance* AuraGameInstance = Cast<UAuraGameInstance>(UGameplayStatics::GetGameInstance(this)))
