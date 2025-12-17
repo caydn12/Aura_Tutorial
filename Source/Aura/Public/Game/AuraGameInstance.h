@@ -18,13 +18,29 @@ class AURA_API UAuraGameInstance : public UGameInstance
 	GENERATED_BODY()
 	
 public:
+	// Begin Play Equivalent
+	virtual void Init() override;
+
 	// Saving Data
 	void SaveSlotData(UMVVM_LoadMenuSaveSlot* SaveSlotViewModel);
 
 	ULoadMenuSaveGame* GetSaveSlotData(const FString& SlotName);
 
+	static void DeleteSaveSlot(const FString& SlotName);
+
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<USaveGame> LoadMenuSaveGameClass;
+
+	// Map Data
+
+	UPROPERTY(EditDefaultsOnly)
+	FString DefaultMapName;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSoftObjectPtr<UWorld> DefaultMap;
+
+	UPROPERTY(EditDefaultsOnly)
+	TMap<FString, TSoftObjectPtr<UWorld>> SoftLoadedMaps;
 
 	// Global Music
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "System|Audio")
@@ -35,6 +51,8 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "System|Audio")
 	float GlobalMusicVolume = 0.5f;
+
+	// Character Class & Ability Info
 
 	UPROPERTY(EditDefaultsOnly, Category = "Character Class Defaults")
 	TObjectPtr<UCharacterClassInfo> CharacterClassInfo;

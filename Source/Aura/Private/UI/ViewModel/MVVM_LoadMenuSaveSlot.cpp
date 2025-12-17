@@ -18,3 +18,8 @@ void UMVVM_LoadMenuSaveSlot::SetSaveSlotName(FString InSaveSlotName)
 {
 	UE_MVVM_SET_PROPERTY_VALUE(SaveSlotName, InSaveSlotName);
 }
+
+void UMVVM_LoadMenuSaveSlot::SetMapName(FString InMapName)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(MapName, InMapName);
+}

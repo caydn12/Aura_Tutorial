@@ -6,13 +6,16 @@
 #include "Kismet/GameplayStatics.h"
 #include "Game/LoadMenuSaveGame.h"
 
+void UAuraGameInstance::Init()
+{
+	Super::Init();
+
+	SoftLoadedMaps.Add(DefaultMapName, DefaultMap);
+}
+
 void UAuraGameInstance::SaveSlotData(UMVVM_LoadMenuSaveSlot* SaveSlotViewModel)
 {
-	// UserIndex would be something like a steam ID. Not relevant single player.
-	if (UGameplayStatics::DoesSaveGameExist(SaveSlotViewModel->GetSaveSlotName(), 0))
-	{
-		UGameplayStatics::DeleteGameInSlot(SaveSlotViewModel->GetSaveSlotName(), 0);
-	}
+	DeleteSaveSlot(SaveSlotViewModel->GetSaveSlotName());
 	USaveGame* SaveGameObject = UGameplayStatics::CreateSaveGameObject(LoadMenuSaveGameClass);
 
 	ULoadMenuSaveGame* LoadMenuSaveGameObject = Cast<ULoadMenuSaveGame>(SaveGameObject);
@@ -35,4 +38,13 @@ ULoadMenuSaveGame* UAuraGameInstance::GetSaveSlotData(const FString& SlotName)
 		LoadMenuSaveObject = Cast<ULoadMenuSaveGame>(UGameplayStatics::CreateSaveGameObject(LoadMenuSaveGameClass));
 	}
 	return LoadMenuSaveObject;
+}
+
+void UAuraGameInstance::DeleteSaveSlot(const FString& SlotName)
+{
+	// UserIndex would be something like a steam ID. Not relevant single player.
+	if (UGameplayStatics::DoesSaveGameExist(SlotName, 0))
+	{
+		UGameplayStatics::DeleteGameInSlot(SlotName, 0);
+	}
 }

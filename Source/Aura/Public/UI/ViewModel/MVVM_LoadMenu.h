@@ -33,6 +33,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SelectSaveSlotButtonPressed(int32 SlotIndex);
 
+	UFUNCTION(BlueprintCallable)
+	void DeleteButtonPressed();
+
 	void LoadSaveData();
 
 	UPROPERTY(EditDefaultsOnly)
@@ -41,6 +44,9 @@ public:
 private:
 	UPROPERTY()
 	TMap<int32, UMVVM_LoadMenuSaveSlot*> SaveSlotViewModels;
+
+	UPROPERTY()
+	TObjectPtr<UMVVM_LoadMenuSaveSlot> SelectedSaveSlotViewModel;
 
 	// Prevent garbage collection
 

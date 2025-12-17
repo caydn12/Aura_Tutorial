@@ -37,6 +37,7 @@ void UMVVM_LoadMenu::NewSaveSlotButtonPressed(int32 SlotIndex, const FString& En
 	if (UAuraGameInstance* AuraGameInstance = Cast<UAuraGameInstance>(UGameplayStatics::GetGameInstance(this)))
 	{
 		SaveSlotViewModels[SlotIndex]->SetPlayerName(EnteredName);
+		SaveSlotViewModels[SlotIndex]->SetMapName(AuraGameInstance->DefaultMapName);
 
 		AuraGameInstance->SaveSlotData(SaveSlotViewModels[SlotIndex]);
 
@@ -47,11 +48,22 @@ void UMVVM_LoadMenu::NewSaveSlotButtonPressed(int32 SlotIndex, const FString& En
 void UMVVM_LoadMenu::SelectSaveSlotButtonPressed(int32 SlotIndex)
 {
 	OnSlotSelected.Broadcast();
+	SelectedSaveSlotViewModel = SaveSlotViewModels[SlotIndex];
 	for (const TTuple<int32, UMVVM_LoadMenuSaveSlot*> SaveSlotViewModel : SaveSlotViewModels)
 	{
 		// Enable the select button for all slots except the one that was just selected
 		bool bEnable = SaveSlotViewModel.Key != SlotIndex;
 		SaveSlotViewModel.Value->OnEnableSelectSlotButton.Broadcast(bEnable);
+	}
+}
+
+void UMVVM_LoadMenu::DeleteButtonPressed()
+{
+	if (IsValid(SelectedSaveSlotViewModel))
+	{
+		UAuraGameInstance::DeleteSaveSlot(SelectedSaveSlotViewModel->GetSaveSlotName());
+		SelectedSaveSlotViewModel->SetSaveSlotWidget(ESaveSlotWidget::ESS_Vacant);
+		SelectedSaveSlotViewModel->OnEnableSelectSlotButton.Broadcast(true);
 	}
 }
 
