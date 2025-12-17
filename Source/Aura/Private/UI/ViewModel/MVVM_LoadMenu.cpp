@@ -88,6 +88,7 @@ void UMVVM_LoadMenu::LoadSaveData()
 				else
 				{
 					SaveSlotViewModel.Value->SetSaveSlotWidget(ESaveSlotWidget::ESS_Taken);
+					SaveSlotViewModel.Value->SetMapName(LoadMenuSaveObject->MapName);
 				}
 			}
 		}
