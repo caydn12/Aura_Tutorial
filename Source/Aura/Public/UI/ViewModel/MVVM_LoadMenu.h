@@ -41,10 +41,18 @@ public:
 
 	void LoadSaveData();
 
+	void SetNumSaveSlots(int32 InNumSaveSlots);
+
+	int32 GetNumSaveSlots() const { return NumSaveSlots; }
+
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UMVVM_LoadMenuSaveSlot> LoadMenuSaveSlotViewModelClass;
 
 private:
+	// field notify to 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, FieldNotify, Setter, Getter, meta = (AllowPrivateAccess = "true"))
+	int32 NumSaveSlots;
+
 	UPROPERTY()
 	TMap<int32, UMVVM_LoadMenuSaveSlot*> SaveSlotViewModels;
 
