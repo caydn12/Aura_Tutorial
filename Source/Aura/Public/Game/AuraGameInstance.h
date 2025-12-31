@@ -21,6 +21,16 @@ public:
 	// Begin Play Equivalent
 	virtual void Init() override;
 
+	// Player Start Data
+	UPROPERTY()
+	FName PlayerStartTag = FName();
+
+	UPROPERTY()
+	FString SaveSlotName = FString();
+
+	UPROPERTY()
+	int32 SaveSlotIndex = 0;
+
 	// Saving Data
 	void SaveSlotData(UMVVM_LoadMenuSaveSlot* SaveSlotViewModel);
 

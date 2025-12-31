@@ -36,6 +36,9 @@ AAuraEnemy::AAuraEnemy()
 	HealthBar->SetupAttachment(GetRootComponent());
 
 	BaseWalkSpeed = 250.f;
+
+	GetMesh()->SetCustomDepthStencilValue(CUSTOM_DEPTH_RED);
+	Weapon->SetCustomDepthStencilValue(CUSTOM_DEPTH_RED);
 }
 
 void AAuraEnemy::BeginPlay()
@@ -165,9 +168,6 @@ void AAuraEnemy::HighlightActor()
 {
 	GetMesh()->SetRenderCustomDepth(true);
 	Weapon->SetRenderCustomDepth(true);
-	// The material is only supposed to work on a specific custom depth value, but it functions regardless.
-	//GetMesh()->SetCustomDepthStencilValue(CUSTOM_DEPTH_RED);
-	//Weapon->SetCustomDepthStencilValue(CUSTOM_DEPTH_RED);
 }
 
 void AAuraEnemy::UnHighlightActor()

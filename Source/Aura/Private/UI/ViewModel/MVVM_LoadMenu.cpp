@@ -6,6 +6,7 @@
 #include "Game/AuraGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "Game/LoadMenuSaveGame.h"
+#include "Game/AuraGameModeBase.h"
 
 void UMVVM_LoadMenu::InitializeSaveSlots()
 {
@@ -40,6 +41,14 @@ void UMVVM_LoadMenu::NewSaveSlotButtonPressed(int32 SlotIndex, const FString& En
 	{
 		SaveSlotViewModels[SlotIndex]->SetPlayerName(EnteredName);
 		SaveSlotViewModels[SlotIndex]->SetMapName(AuraGameInstance->DefaultMapName);
+
+		AuraGameInstance->SaveSlotName = SaveSlotViewModels[SlotIndex]->GetSaveSlotName();
+		AuraGameInstance->SaveSlotIndex = SlotIndex;
+
+		if (AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(this)))
+		{
+			AuraGameInstance->PlayerStartTag = AuraGameMode->DefaultPlayerStartTag;
+		}
 
 		AuraGameInstance->SaveSlotData(SaveSlotViewModels[SlotIndex]);
 

@@ -4,9 +4,12 @@
 #include "Game/AuraGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/PlayerStart.h"
+#include "Game/AuraGameInstance.h"
 
 AActor* AAuraGameModeBase::ChoosePlayerStart_Implementation(AController* Player)
 {
+	UAuraGameInstance* AuraGameInstance = Cast<UAuraGameInstance>(GetGameInstance());
+
 	APlayerStart* ChosenStart = nullptr;
 
 	TArray<AActor*> PlayerStartActors;
@@ -18,7 +21,7 @@ AActor* AAuraGameModeBase::ChoosePlayerStart_Implementation(AController* Player)
 		{
 			if (APlayerStart* AvailablePlayerStart = Cast<APlayerStart>(AvailablePlayerStartActor))
 			{
-				if (AvailablePlayerStart->PlayerStartTag == FName("TheTag"))
+				if (AvailablePlayerStart->PlayerStartTag == AuraGameInstance->PlayerStartTag)
 				{
 					ChosenStart = AvailablePlayerStart;
 					break;

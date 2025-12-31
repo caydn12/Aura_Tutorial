@@ -13,4 +13,7 @@ class AURA_API AAuraGameModeBase : public AGameModeBase
 
 public:
 	virtual AActor* ChoosePlayerStart_Implementation(AController* Player) override;
+
+	UPROPERTY(EditDefaultsOnly)
+	FName DefaultPlayerStartTag = FName();
 };
