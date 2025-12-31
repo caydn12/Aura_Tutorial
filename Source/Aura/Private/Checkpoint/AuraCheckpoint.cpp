@@ -1,0 +1,53 @@
+// Copyright Kickback Studio
+
+
+#include "Checkpoint/AuraCheckpoint.h"
+#include "Components/SphereComponent.h"
+#include "Components/CapsuleComponent.h"
+
+AAuraCheckpoint::AAuraCheckpoint(const FObjectInitializer& ObjectInitializer) 
+	: Super(ObjectInitializer)
+{
+	PrimaryActorTick.bCanEverTick = false;
+
+	CheckpointMesh = CreateDefaultSubobject<UStaticMeshComponent>("CheckpointMesh");
+	CheckpointMesh->SetupAttachment(GetRootComponent());
+	CheckpointMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	CheckpointMesh->SetCollisionResponseToAllChannels(ECR_Block);
+
+	const float CapsuleHalfHeight = GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight();
+	CheckpointMesh->SetRelativeLocation(FVector(225.f, 0.f, -CapsuleHalfHeight));
+
+	Sphere = CreateDefaultSubobject<USphereComponent>("Sphere");
+	Sphere->SetupAttachment(CheckpointMesh);
+	Sphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	Sphere->SetCollisionResponseToAllChannels(ECR_Ignore);
+	Sphere->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+}
+
+void AAuraCheckpoint::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (bCanGlow && OtherActor->ActorHasTag("Player"))
+	{
+		Glow();
+	}
+}
+
+void AAuraCheckpoint::BeginPlay()
+{
+	Super::BeginPlay();
+
+	Sphere->OnComponentBeginOverlap.AddDynamic(this, &AAuraCheckpoint::OnSphereOverlap);
+}
+
+void AAuraCheckpoint::Glow()
+{
+	bCanGlow = false;
+	UMaterialInstanceDynamic* DynamicMaterialInstance = CheckpointMesh->CreateAndSetMaterialInstanceDynamic(0);
+	StartGlowTimeline(DynamicMaterialInstance);
+}
+
+void AAuraCheckpoint::EndGlow()
+{
+	bCanGlow = true;
+}
