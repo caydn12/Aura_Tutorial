@@ -23,3 +23,8 @@ void UMVVM_LoadMenuSaveSlot::SetMapName(FString InMapName)
 {
 	UE_MVVM_SET_PROPERTY_VALUE(MapName, InMapName);
 }
+
+void UMVVM_LoadMenuSaveSlot::SetPlayerStartTag(FName InPlayerStartTag)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(PlayerStartTag, InPlayerStartTag);
+}

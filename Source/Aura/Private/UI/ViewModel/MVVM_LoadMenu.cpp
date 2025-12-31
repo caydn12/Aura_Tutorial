@@ -47,6 +47,8 @@ void UMVVM_LoadMenu::NewSaveSlotButtonPressed(int32 SlotIndex, const FString& En
 
 		if (AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(this)))
 		{
+			SaveSlotViewModels[SlotIndex]->SetPlayerStartTag(AuraGameMode->DefaultPlayerStartTag);
+
 			AuraGameInstance->PlayerStartTag = AuraGameMode->DefaultPlayerStartTag;
 		}
 
@@ -80,10 +82,12 @@ void UMVVM_LoadMenu::DeleteButtonPressed()
 
 void UMVVM_LoadMenu::PlayButtonPressed()
 {
+	// Game instance can also be found via AuraGameMode->GetGameInstance()
 	if (UAuraGameInstance* AuraGameInstance = Cast<UAuraGameInstance>(UGameplayStatics::GetGameInstance(this)))
 	{
 		if (IsValid(SelectedSaveSlotViewModel))
 		{
+			AuraGameInstance->PlayerStartTag = SelectedSaveSlotViewModel->GetPlayerStartTag();
 			AuraGameInstance->TravelToMap(SelectedSaveSlotViewModel);
 		}
 	}
@@ -111,6 +115,7 @@ void UMVVM_LoadMenu::LoadSaveData()
 				{
 					SaveSlotViewModel.Value->SetSaveSlotWidget(ESaveSlotWidget::ESS_Taken);
 					SaveSlotViewModel.Value->SetMapName(LoadMenuSaveObject->MapName);
+					SaveSlotViewModel.Value->SetPlayerStartTag(LoadMenuSaveObject->PlayerStartTag);
 				}
 			}
 		}
