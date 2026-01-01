@@ -4,6 +4,7 @@
 #include "Checkpoint/AuraCheckpoint.h"
 #include "Components/SphereComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Interaction/PlayerInterface.h"
 
 AAuraCheckpoint::AAuraCheckpoint(const FObjectInitializer& ObjectInitializer) 
 	: Super(ObjectInitializer)
@@ -27,8 +28,9 @@ AAuraCheckpoint::AAuraCheckpoint(const FObjectInitializer& ObjectInitializer)
 
 void AAuraCheckpoint::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (bCanGlow && OtherActor->ActorHasTag("Player"))
+	if (bCanGlow && OtherActor->Implements<UPlayerInterface>())
 	{
+		IPlayerInterface::Execute_SaveProgress(OtherActor, PlayerStartTag);
 		Glow();
 	}
 }
@@ -50,4 +52,16 @@ void AAuraCheckpoint::Glow()
 void AAuraCheckpoint::EndGlow()
 {
 	bCanGlow = true;
+	
+	TArray<AActor*> OverlappingActors;
+	Sphere->GetOverlappingActors(OverlappingActors);
+
+	for (AActor* Actor : OverlappingActors)
+	{
+		if (Actor && Actor->ActorHasTag("Player"))
+		{
+			Glow();
+			break;
+		}
+	}
 }

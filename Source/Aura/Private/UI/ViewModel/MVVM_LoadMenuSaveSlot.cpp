@@ -27,4 +27,13 @@ void UMVVM_LoadMenuSaveSlot::SetMapName(FString InMapName)
 void UMVVM_LoadMenuSaveSlot::SetPlayerStartTag(FName InPlayerStartTag)
 {
 	UE_MVVM_SET_PROPERTY_VALUE(PlayerStartTag, InPlayerStartTag);
+	
+	FString StartTagTrimmed = PlayerStartTag.ToString().RightChop(8);
+	StartTagTrimmed.InsertAt(StartTagTrimmed.Len() - 1, TEXT(" "));
+	SetPlayerStartTagTrimmed(StartTagTrimmed);
+}
+
+void UMVVM_LoadMenuSaveSlot::SetPlayerStartTagTrimmed(FString InPlayerStartTagTrimmed)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(PlayerStartTagTrimmed, InPlayerStartTagTrimmed);
 }

@@ -38,11 +38,13 @@ public:
 	void SetSaveSlotName(FString InSaveSlotName);
 	void SetMapName(FString InMapName);
 	void SetPlayerStartTag(FName InPlayerStartTag);
+	void SetPlayerStartTagTrimmed(FString InPlayerStartTagTrimmed);
 
 	FString GetPlayerName() const { return PlayerName; }
 	FString GetSaveSlotName() const { return SaveSlotName; }
 	FString GetMapName() const { return MapName; }
 	FName GetPlayerStartTag() const { return PlayerStartTag; }
+	FString GetPlayerStartTagTrimmed() const { return PlayerStartTagTrimmed; }
 
 private:
 	// Field Notifies for UI Binding
@@ -58,4 +60,7 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, FieldNotify, Setter, Getter, meta = (AllowPrivateAccess = "true"))
 	FName PlayerStartTag;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, FieldNotify, Setter, Getter, meta = (AllowPrivateAccess = "true"))
+	FString PlayerStartTagTrimmed;
 };

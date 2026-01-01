@@ -16,7 +16,7 @@ UCLASS()
 class AURA_API UAuraGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
-	
+
 public:
 	// Begin Play Equivalent
 	virtual void Init() override;
@@ -28,13 +28,16 @@ public:
 	UPROPERTY()
 	FString SaveSlotName = FString();
 
-	UPROPERTY()
-	int32 SaveSlotIndex = 0;
+	// Tutorial uses this slot index but I don't track slot index in my system
+	//UPROPERTY()
+	//int32 SaveSlotIndex = 0;
 
 	// Saving Data
 	void SaveSlotData(UMVVM_LoadMenuSaveSlot* SaveSlotViewModel);
+	void SaveInGameData(ULoadMenuSaveGame* SaveDataObject);
 
 	ULoadMenuSaveGame* GetSaveSlotData(const FString& SlotName);
+	ULoadMenuSaveGame* GetInGameSaveData();
 
 	static void DeleteSaveSlot(const FString& SlotName);
 
@@ -54,7 +57,7 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	TMap<FString, TSoftObjectPtr<UWorld>> SoftLoadedMaps;
 
-	// Global Music
+	// Global Audio
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "System|Audio")
 	void SetGlobalMusicVolume(float NewVolume);
 

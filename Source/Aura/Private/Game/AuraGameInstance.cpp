@@ -27,6 +27,13 @@ void UAuraGameInstance::SaveSlotData(UMVVM_LoadMenuSaveSlot* SaveSlotViewModel)
 	UGameplayStatics::SaveGameToSlot(LoadMenuSaveGameObject, SaveSlotViewModel->GetSaveSlotName(), 0);
 }
 
+void UAuraGameInstance::SaveInGameData(ULoadMenuSaveGame* SaveDataObject)
+{
+	PlayerStartTag = SaveDataObject->PlayerStartTag;
+
+	UGameplayStatics::SaveGameToSlot(SaveDataObject, SaveSlotName, 0);
+}
+
 ULoadMenuSaveGame* UAuraGameInstance::GetSaveSlotData(const FString& SlotName)
 {
 	ULoadMenuSaveGame* LoadMenuSaveObject = nullptr;
@@ -40,6 +47,11 @@ ULoadMenuSaveGame* UAuraGameInstance::GetSaveSlotData(const FString& SlotName)
 		LoadMenuSaveObject = Cast<ULoadMenuSaveGame>(UGameplayStatics::CreateSaveGameObject(LoadMenuSaveGameClass));
 	}
 	return LoadMenuSaveObject;
+}
+
+ULoadMenuSaveGame* UAuraGameInstance::GetInGameSaveData()
+{
+	return GetSaveSlotData(SaveSlotName);
 }
 
 void UAuraGameInstance::DeleteSaveSlot(const FString& SlotName)

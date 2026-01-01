@@ -13,6 +13,9 @@
 #include "Camera/CameraComponent.h"
 #include "AuraGameplayTags.h"
 #include "AbilitySystem/Debuff/DebuffNiagaraComponent.h"
+#include "Game/AuraGameInstance.h"
+#include "Kismet/GameplayStatics.h"
+#include "Game/LoadMenuSaveGame.h"
 
 AAuraCharacter::AAuraCharacter()
 {
@@ -176,6 +179,19 @@ void AAuraCharacter::HideMagicCircle_Implementation()
 	{
 		AuraPlayerController->HideMagicCircle();
 		AuraPlayerController->bShowMouseCursor = true;
+	}
+}
+
+void AAuraCharacter::SaveProgress_Implementation(const FName& CheckpointTag)
+{
+	if (UAuraGameInstance* AuraGameInstance = Cast<UAuraGameInstance>(UGameplayStatics::GetGameInstance(this)))
+	{
+		ULoadMenuSaveGame* SaveData = AuraGameInstance->GetInGameSaveData();
+		if (SaveData)
+		{
+			SaveData->PlayerStartTag = CheckpointTag;
+			AuraGameInstance->SaveInGameData(SaveData);
+		}
 	}
 }
 
