@@ -10,6 +10,7 @@
 
 // Simple delegate that only needs to be broadcast in C++, not in blueprints
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnPlayerStatChanged, int32 /*StatValue*/)
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnPlayerLevelChanged, int32 /*LevelValue*/, bool /*bShowLevelUp*/)
 
 UCLASS()
 class AURA_API AAuraPlayerState : public APlayerState, public IAbilitySystemInterface
@@ -34,7 +35,7 @@ public:
 	void InitializeSiphonTagsToSiphonEffects();
 
 	FOnPlayerStatChanged OnXPChangedDelegate;
-	FOnPlayerStatChanged OnLevelChangedDelegate;
+	FOnPlayerLevelChanged OnLevelChangedDelegate;
 	FOnPlayerStatChanged OnAttributePointsChangedDelegate;
 	FOnPlayerStatChanged OnSpellPointsChangedDelegate;
 
@@ -50,6 +51,8 @@ public:
 
 	void SetXP(int32 InXP);
 	void SetLevel(int32 InLevel);
+	void SetAttributePoints(int32 InPoints);
+	void SetSpellPoints(int32 InPoints);
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<class ULevelUpInfo> LevelUpInfo;

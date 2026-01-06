@@ -57,6 +57,8 @@ public:
 protected:
 	virtual void InitAbilityActorInfo() override;
 
+	void LoadProgress();
+
 private:
 
 	UPROPERTY(VisibleAnywhere)

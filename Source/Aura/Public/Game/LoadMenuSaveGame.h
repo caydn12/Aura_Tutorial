@@ -25,6 +25,9 @@ public:
 	UPROPERTY()
 	FName PlayerStartTag;
 
+	UPROPERTY()
+	bool bFirstTimePlaying = true;
+
 	// Player
 
 	UPROPERTY()

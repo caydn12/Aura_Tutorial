@@ -17,6 +17,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Game/LoadMenuSaveGame.h"
 #include "AbilitySystem/AuraAttributeSet.h"
+#include "AbilitySystem/AuraAbilitySystemLibrary.h"
 
 AAuraCharacter::AAuraCharacter()
 {
@@ -54,15 +55,45 @@ void AAuraCharacter::PossessedBy(AController* NewController)
 
 	// Init Ability Actor info for the server
 	InitAbilityActorInfo();
+	LoadProgress();
 
-	// Only called on server. Replicated to clients.
-	AddCharacterAbilities();
-
-	AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
-	if (AuraPlayerState)
+	if (AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>())
 	{
 		AuraPlayerState->InitializeDebuffTagsToDebuffEffects();
 		AuraPlayerState->InitializeSiphonTagsToSiphonEffects();
+	}
+}
+
+void AAuraCharacter::LoadProgress()
+{
+	if (UAuraGameInstance* AuraGameInstance = Cast<UAuraGameInstance>(UGameplayStatics::GetGameInstance(this)))
+	{
+		if (ULoadMenuSaveGame* SaveData = AuraGameInstance->GetInGameSaveData())
+		{
+			if (SaveData->bFirstTimePlaying)
+			{
+				InitializeDefaultAttributes();
+
+				// Only called on server. Replicated to clients.
+				AddCharacterAbilities();
+			}
+			else
+			{
+				if (AAuraPlayerState* AuraPlayerState = Cast<AAuraPlayerState>(GetPlayerState()))
+				{
+					AuraPlayerState->SetLevel(SaveData->PlayerLevel);
+					AuraPlayerState->SetXP(SaveData->PlayerXP);
+					AuraPlayerState->SetAttributePoints(SaveData->AttributePoints);
+					AuraPlayerState->SetSpellPoints(SaveData->SpellPoints);
+				}
+
+				UAuraAbilitySystemLibrary::InitializeDefaultAttributesFromSaveData(this, AbilitySystemComponent, SaveData);
+				ApplyEffectToSelf(DefaultSecondaryAttributes, SaveData->PlayerLevel);
+				ApplyEffectToSelf(DefaultVitalAttributes, SaveData->PlayerLevel);
+
+				AddCharacterAbilities(); // TO DO: Custom abilities based on saved data
+			}
+		}
 	}
 }
 
@@ -205,6 +236,7 @@ void AAuraCharacter::SaveProgress_Implementation(const FName& CheckpointTag)
 			SaveData->Resilience = UAuraAttributeSet::GetResilienceAttribute().GetNumericValue(GetAttributeSet());
 			SaveData->Vigor = UAuraAttributeSet::GetVigorAttribute().GetNumericValue(GetAttributeSet());
 
+			SaveData->bFirstTimePlaying = false;
 			AuraGameInstance->SaveInGameData(SaveData);
 		}
 	}
@@ -288,8 +320,6 @@ void AAuraCharacter::InitAbilityActorInfo()
 			AuraHUD->InitOverlay(AuraPlayerController, AuraPlayerState, AbilitySystemComponent, AttributeSet);
 		}
 	}
-
-	InitializeDefaultAttributes();
 }
 
 void AAuraCharacter::MulticastLevelUpParticles_Implementation() const

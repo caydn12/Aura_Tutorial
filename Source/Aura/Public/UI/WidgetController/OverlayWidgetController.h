@@ -72,7 +72,7 @@ public:
 	FOnXPPercentChangedSignature OnXPPercentChanged;
 
 	UPROPERTY(BlueprintAssignable, Category = "GAS|Level")
-	FOnPlayerStatChangedSignature OnPlayerLevelChanged;
+	FOnPlayerLevelChangedSignature OnPlayerLevelChanged;
 
 	UPROPERTY(BlueprintAssignable, Category = "GAS|Messages")
 	FMessageWidgetRowSignature MessageWidgetRow;
