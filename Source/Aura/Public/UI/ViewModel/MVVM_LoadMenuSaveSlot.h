@@ -39,12 +39,15 @@ public:
 	void SetMapName(FString InMapName);
 	void SetPlayerStartTag(FName InPlayerStartTag);
 	void SetPlayerStartTagTrimmed(FString InPlayerStartTagTrimmed);
+	void SetPlayerLevel(int32 InLevel);
 
 	FString GetPlayerName() const { return PlayerName; }
 	FString GetSaveSlotName() const { return SaveSlotName; }
 	FString GetMapName() const { return MapName; }
 	FName GetPlayerStartTag() const { return PlayerStartTag; }
 	FString GetPlayerStartTagTrimmed() const { return PlayerStartTagTrimmed; }
+	int32 GetPlayerLevel() const { return PlayerLevel; }
+
 
 private:
 	// Field Notifies for UI Binding
@@ -63,4 +66,7 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, FieldNotify, Setter, Getter, meta = (AllowPrivateAccess = "true"))
 	FString PlayerStartTagTrimmed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, FieldNotify, Setter, Getter, meta = (AllowPrivateAccess = "true"))
+	int32 PlayerLevel;
 };

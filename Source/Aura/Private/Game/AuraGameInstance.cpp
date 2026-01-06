@@ -23,6 +23,7 @@ void UAuraGameInstance::SaveSlotData(UMVVM_LoadMenuSaveSlot* SaveSlotViewModel)
 	LoadMenuSaveGameObject->PlayerName = SaveSlotViewModel->GetPlayerName();
 	LoadMenuSaveGameObject->MapName = SaveSlotViewModel->GetMapName();
 	LoadMenuSaveGameObject->PlayerStartTag = SaveSlotViewModel->GetPlayerStartTag();
+	LoadMenuSaveGameObject->PlayerLevel = SaveSlotViewModel->GetPlayerLevel();
 
 	UGameplayStatics::SaveGameToSlot(LoadMenuSaveGameObject, SaveSlotViewModel->GetSaveSlotName(), 0);
 }
