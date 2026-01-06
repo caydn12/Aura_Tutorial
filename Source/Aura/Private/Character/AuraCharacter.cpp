@@ -18,6 +18,7 @@
 #include "Game/LoadMenuSaveGame.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
+#include "AbilitySystem/Data/AbilityInfo.h"
 
 AAuraCharacter::AAuraCharacter()
 {
@@ -237,7 +238,34 @@ void AAuraCharacter::SaveProgress_Implementation(const FName& CheckpointTag)
 			SaveData->Vigor = UAuraAttributeSet::GetVigorAttribute().GetNumericValue(GetAttributeSet());
 
 			SaveData->bFirstTimePlaying = false;
-			AuraGameInstance->SaveInGameData(SaveData);
+
+			if (HasAuthority())
+			{
+				UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent);
+				FForEachAbility SaveAbilityDelegate;
+				SaveAbilityDelegate.BindLambda(
+					[this, AuraASC, SaveData](const FGameplayAbilitySpec& AbilitySpec)
+					{
+						const FGameplayTag AbilityTag = AuraASC->GetAbilityTagFromSpec(AbilitySpec);
+						UAbilityInfo* AbilityInfo = UAuraAbilitySystemLibrary::GetAbilityInfo(this);
+						FAuraAbilityInfo Info = AbilityInfo->FindAbilityInfoByTag(AbilityTag);
+
+						FSavedAbility SavedAbility;
+						SavedAbility.GameplayAbilityClass = Info.AbilityClass;
+						SavedAbility.AbilityTag = AbilityTag;
+						SavedAbility.AbilityLevel = AbilitySpec.Level;
+						SavedAbility.AbilitySlot = AuraASC->GetInputTagFromAbilityTag(AbilityTag);
+						SavedAbility.AbilityStatus = AuraASC->GetStatusFromAbilityTag(AbilityTag);
+						SavedAbility.AbilityType = Info.AbilityTypeTag;
+
+						SaveData->SavedAbilities.Add(SavedAbility);
+					}
+				);
+
+				AuraASC->ForEachAbility(SaveAbilityDelegate);
+
+				AuraGameInstance->SaveInGameData(SaveData);
+			}
 		}
 	}
 }
@@ -302,7 +330,7 @@ void AAuraCharacter::InitAbilityActorInfo()
 	AbilitySystemComponent = AuraPlayerState->GetAbilitySystemComponent();
 	AttributeSet = AuraPlayerState->GetAttributeSet();
 	OnASCRegistered.Broadcast(AbilitySystemComponent);
-	
+
 	AbilitySystemComponent->RegisterGameplayTagEvent(
 		FAuraGameplayTags::Get().Debuff_Burn,
 		EGameplayTagEventType::NewOrRemoved

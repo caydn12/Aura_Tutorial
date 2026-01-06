@@ -4,11 +4,35 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/SaveGame.h"
+#include "GameplayTagContainer.h"
 #include "LoadMenuSaveGame.generated.h"
 
-/**
- * 
- */
+class UGameplayAbility;
+
+USTRUCT(BlueprintType)
+struct FSavedAbility
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "ClassDefaults")
+	TSubclassOf<UGameplayAbility> GameplayAbilityClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	FGameplayTag AbilityTag = FGameplayTag();
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	FGameplayTag AbilityStatus = FGameplayTag();
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	FGameplayTag AbilitySlot = FGameplayTag();
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	FGameplayTag AbilityType = FGameplayTag();
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	int32 AbilityLevel;
+};
+
 UCLASS()
 class AURA_API ULoadMenuSaveGame : public USaveGame
 {
@@ -57,4 +81,7 @@ public:
 	float Vigor = 0.f;
 
 	// Abilities
+
+	UPROPERTY()
+	TArray<FSavedAbility> SavedAbilities;
 };
