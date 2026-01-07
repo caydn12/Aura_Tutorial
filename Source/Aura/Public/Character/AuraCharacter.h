@@ -54,6 +54,10 @@ public:
 	// Stun
 
 	virtual void OnRep_Stunned() override;
+
+	// Physical
+
+	virtual void OnRep_PhysicalDebuff() override;
 protected:
 	virtual void InitAbilityActorInfo() override;
 

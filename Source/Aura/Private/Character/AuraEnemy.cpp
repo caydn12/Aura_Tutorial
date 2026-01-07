@@ -103,14 +103,19 @@ void AAuraEnemy::InitAbilityActorInfo()
 	Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
 
 	AbilitySystemComponent->RegisterGameplayTagEvent(
-		FAuraGameplayTags::Get().Debuff_Burn,
+		FAuraGameplayTags::Get().Debuff_Effect_Burn,
 		EGameplayTagEventType::NewOrRemoved
 	).AddUObject(this, &AAuraEnemy::BurnTagChanged);
 
 	AbilitySystemComponent->RegisterGameplayTagEvent(
-		FAuraGameplayTags::Get().Debuff_Stun,
+		FAuraGameplayTags::Get().Debuff_Effect_Stun,
 		EGameplayTagEventType::NewOrRemoved
 	).AddUObject(this, &AAuraEnemy::StunTagChanged);
+
+	AbilitySystemComponent->RegisterGameplayTagEvent(
+		FAuraGameplayTags::Get().Debuff_Effect_Physical,
+		EGameplayTagEventType::NewOrRemoved
+	).AddUObject(this, &AAuraEnemy::PhysicalTagChanged);
 
 	if (HasAuthority())
 	{
@@ -137,6 +142,11 @@ void AAuraEnemy::StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
 	{
 		AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("Stunned"), bIsStunned);
 	}
+}
+
+void AAuraEnemy::PhysicalTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
+{
+	Super::PhysicalTagChanged(CallbackTag, NewCount);
 }
 
 void AAuraEnemy::PossessedBy(AController* NewController)
@@ -194,6 +204,7 @@ int32 AAuraEnemy::GetCharacterLevel_Implementation() const
 void AAuraEnemy::Die(const FVector& DeathImpulse)
 {
 	SetLifeSpan(LifeSpan);
+
 	if (AuraAIController)
 	{
 		AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("Dead"), true);

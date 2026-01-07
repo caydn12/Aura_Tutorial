@@ -51,7 +51,7 @@ public:
 	virtual FOnDeath& GetOnDeathDelegate() = 0;
 	virtual FOnASCRegistered& GetOnASCRegisteredDelegate() = 0;
 	virtual void Knockback(const FVector& KnockbackForce) = 0;
-	
+
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	int32 GetCharacterLevel() const;
 

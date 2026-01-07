@@ -116,6 +116,7 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 
 	// Get Character Class info for curve tables
 	const UCharacterClassInfo* CharacterClassInfo = UAuraAbilitySystemLibrary::GetCharacterClassInfo(SourceAvatar);
+	if (!CharacterClassInfo) return;
 
 	// Get the Effect Context
 	FGameplayEffectContextHandle EffectContextHandle = Spec.GetContext();

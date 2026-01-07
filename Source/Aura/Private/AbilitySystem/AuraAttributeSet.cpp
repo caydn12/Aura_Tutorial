@@ -275,7 +275,7 @@ void UAuraAttributeSet::Debuff(const FEffectProperties& Props)
 		AuraEffectContext->SetDamageType(DebuffDamageType);
 
 		// Stun needs to deactivate non-passive abilities.
-		if (DebuffType.MatchesTagExact(FAuraGameplayTags::Get().Debuff_Stun))
+		if (DebuffType.MatchesTagExact(FAuraGameplayTags::Get().Debuff_Effect_Stun))
 		{
 			const FGameplayTagContainer AbilitiesToCancelTags(GameplayTags.Abilities);
 			const FGameplayTagContainer AbilitiesToIgnoreTags(GameplayTags.Abilities_Passive);

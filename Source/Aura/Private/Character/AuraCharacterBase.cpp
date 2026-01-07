@@ -18,15 +18,15 @@ AAuraCharacterBase::AAuraCharacterBase()
 
 	BurnDebuffComponent = CreateDefaultSubobject<UDebuffNiagaraComponent>(TEXT("BurnDebuffComponent"));
 	BurnDebuffComponent->SetupAttachment(GetRootComponent());
-	BurnDebuffComponent->DebuffTag = FAuraGameplayTags::Get().Debuff_Burn;
+	BurnDebuffComponent->DebuffTag = FAuraGameplayTags::Get().Debuff_Effect_Burn;
 
 	StunDebuffComponent = CreateDefaultSubobject<UDebuffNiagaraComponent>(TEXT("StunDebuffComponent"));
 	StunDebuffComponent->SetupAttachment(GetRootComponent());
-	StunDebuffComponent->DebuffTag = FAuraGameplayTags::Get().Debuff_Stun;
+	StunDebuffComponent->DebuffTag = FAuraGameplayTags::Get().Debuff_Effect_Stun;
 
 	PhysicalDebuffComponent = CreateDefaultSubobject<UDebuffNiagaraComponent>(TEXT("PhysicalDebuffComponent"));
 	PhysicalDebuffComponent->SetupAttachment(GetRootComponent());
-	PhysicalDebuffComponent->DebuffTag = FAuraGameplayTags::Get().Debuff_Physical;
+	PhysicalDebuffComponent->DebuffTag = FAuraGameplayTags::Get().Debuff_Effect_Physical;
 
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	GetCapsuleComponent()->SetGenerateOverlapEvents(false);

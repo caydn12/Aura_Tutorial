@@ -80,6 +80,7 @@ void AAuraCharacter::LoadProgress()
 			}
 			else
 			{
+				// Load Player State Data
 				if (AAuraPlayerState* AuraPlayerState = Cast<AAuraPlayerState>(GetPlayerState()))
 				{
 					AuraPlayerState->SetLevel(SaveData->PlayerLevel);
@@ -88,11 +89,17 @@ void AAuraCharacter::LoadProgress()
 					AuraPlayerState->SetSpellPoints(SaveData->SpellPoints);
 				}
 
+				// Load Attributes
 				UAuraAbilitySystemLibrary::InitializeDefaultAttributesFromSaveData(this, AbilitySystemComponent, SaveData);
 				ApplyEffectToSelf(DefaultSecondaryAttributes, SaveData->PlayerLevel);
 				ApplyEffectToSelf(DefaultVitalAttributes, SaveData->PlayerLevel);
 
-				AddCharacterAbilities(); // TO DO: Custom abilities based on saved data
+				// Load Abilities
+				if (UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent))
+				{
+					AuraASC->AddCharacterAbilitiesFromSaveData(SaveData);
+					AuraASC->UpdateAbilityStatuses(SaveData->PlayerLevel);
+				}
 			}
 		}
 	}
@@ -261,7 +268,8 @@ void AAuraCharacter::SaveProgress_Implementation(const FName& CheckpointTag)
 						SaveData->SavedAbilities.Add(SavedAbility);
 					}
 				);
-
+				// Clear existing saved abilities before saving current ones
+				SaveData->SavedAbilities.Empty();
 				AuraASC->ForEachAbility(SaveAbilityDelegate);
 
 				AuraGameInstance->SaveInGameData(SaveData);
@@ -319,6 +327,21 @@ void AAuraCharacter::OnRep_Stunned()
 	}
 }
 
+void AAuraCharacter::OnRep_PhysicalDebuff()
+{
+	if (bIsPhysicallyDebuffed)
+	{
+		if (!PhysicalDebuffComponent->IsActive())
+		{
+			PhysicalDebuffComponent->Activate();
+		}
+	}
+	else
+	{
+		PhysicalDebuffComponent->Deactivate();
+	}
+}
+
 void AAuraCharacter::InitAbilityActorInfo()
 {
 	AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
@@ -332,14 +355,19 @@ void AAuraCharacter::InitAbilityActorInfo()
 	OnASCRegistered.Broadcast(AbilitySystemComponent);
 
 	AbilitySystemComponent->RegisterGameplayTagEvent(
-		FAuraGameplayTags::Get().Debuff_Burn,
+		FAuraGameplayTags::Get().Debuff_Effect_Burn,
 		EGameplayTagEventType::NewOrRemoved
 	).AddUObject(this, &AAuraCharacter::BurnTagChanged);
 
 	AbilitySystemComponent->RegisterGameplayTagEvent(
-		FAuraGameplayTags::Get().Debuff_Stun,
+		FAuraGameplayTags::Get().Debuff_Effect_Stun,
 		EGameplayTagEventType::NewOrRemoved
 	).AddUObject(this, &AAuraCharacter::StunTagChanged);
+
+	AbilitySystemComponent->RegisterGameplayTagEvent(
+		FAuraGameplayTags::Get().Debuff_Effect_Physical,
+		EGameplayTagEventType::NewOrRemoved
+	).AddUObject(this, &AAuraCharacter::PhysicalTagChanged);
 
 	if (AAuraPlayerController* AuraPlayerController = Cast<AAuraPlayerController>(GetController()))
 	{

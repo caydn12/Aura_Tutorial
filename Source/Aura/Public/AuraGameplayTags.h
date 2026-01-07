@@ -74,10 +74,11 @@ public:
 	FGameplayTag Debuff_Frequency;
 	FGameplayTag Debuff_Duration;
 
-	FGameplayTag Debuff_Burn;
-	FGameplayTag Debuff_Stun;
-	FGameplayTag Debuff_Arcane;
-	FGameplayTag Debuff_Physical;
+	FGameplayTag Debuff_Effect;
+	FGameplayTag Debuff_Effect_Burn;
+	FGameplayTag Debuff_Effect_Stun;
+	FGameplayTag Debuff_Effect_Arcane;
+	FGameplayTag Debuff_Effect_Physical;
 
 	// Combat Socket Tags
 	FGameplayTag CombatSocket_Weapon;
@@ -95,6 +96,7 @@ public:
 
 	FGameplayTag Abilities;
 	FGameplayTag Abilities_Passive;
+	FGameplayTag Abilities_System;
 
 	FGameplayTag Abilities_None;
 
@@ -110,6 +112,8 @@ public:
 	FGameplayTag Abilities_Passive_LifeSiphon;
 	FGameplayTag Abilities_Passive_ManaSiphon;
 
+	FGameplayTag Abilities_System_ListenForEvent;
+
 	FGameplayTag Abilities_HitReact;
 
 	FGameplayTag Abilities_Status_Locked;
@@ -119,6 +123,7 @@ public:
 
 	FGameplayTag Abilities_Type_Offensive;
 	FGameplayTag Abilities_Type_Passive;
+	FGameplayTag Abilities_Type_System;
 	FGameplayTag Abilities_Type_None;
 
 	// Cooldown Tags
