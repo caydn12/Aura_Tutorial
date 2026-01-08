@@ -5,6 +5,9 @@
 #include "UI/ViewModel/MVVM_LoadMenuSaveSlot.h"
 #include "Kismet/GameplayStatics.h"
 #include "Game/LoadMenuSaveGame.h"
+#include "EngineUtils.h"
+#include "Interaction/SaveInterface.h"
+#include "Serialization/ObjectAndNameAsStringProxyArchive.h"
 
 void UAuraGameInstance::Init()
 {
@@ -61,6 +64,54 @@ void UAuraGameInstance::DeleteSaveSlot(const FString& SlotName)
 	if (UGameplayStatics::DoesSaveGameExist(SlotName, 0))
 	{
 		UGameplayStatics::DeleteGameInSlot(SlotName, 0);
+	}
+}
+
+void UAuraGameInstance::SaveWorldState(UWorld* World)
+{
+	FString WorldName = World->GetMapName();
+	WorldName.RemoveFromStart(World->StreamingLevelsPrefix);
+
+	if (ULoadMenuSaveGame* SaveGame = GetSaveSlotData(SaveSlotName))
+	{
+		if (!SaveGame->DoesSavedMapExist(WorldName))
+		{
+			FSavedMap NewSavedMap;
+			NewSavedMap.MapAssetName = WorldName;
+			SaveGame->SavedMaps.Add(NewSavedMap);
+		}
+
+		FSavedMap SavedMap = SaveGame->GetSavedMapWithMapName(WorldName);
+		SavedMap.SavedActors.Empty();
+
+		for (FActorIterator It(World); It; ++It)
+		{
+			AActor* Actor = *It;
+			if (Actor && Actor->Implements<USaveInterface>())
+			{
+				FSavedActor FoundSavedActor;
+				FoundSavedActor.ActorName = Actor->GetFName();
+				FoundSavedActor.Transform = Actor->GetActorTransform();
+
+				FMemoryWriter MemoryWriter(FoundSavedActor.Bytes);
+				FObjectAndNameAsStringProxyArchive Archive(MemoryWriter, true);
+				Archive.ArIsSaveGame = true;
+				Actor->Serialize(Archive);
+
+				SavedMap.SavedActors.AddUnique(FoundSavedActor);
+			}
+		}
+
+		for (FSavedMap& MapToReplace : SaveGame->SavedMaps)
+		{
+			if (MapToReplace.MapAssetName == WorldName)
+			{
+				MapToReplace = SavedMap;
+				break;
+			}
+		}
+
+		UGameplayStatics::SaveGameToSlot(SaveGame, SaveSlotName, 0);
 	}
 }
 

@@ -46,6 +46,8 @@ public:
 
 	// Map Data
 
+	void SaveWorldState(UWorld* World);
+
 	void TravelToMap(UMVVM_LoadMenuSaveSlot* SaveSlot);
 
 	UPROPERTY(EditDefaultsOnly)
