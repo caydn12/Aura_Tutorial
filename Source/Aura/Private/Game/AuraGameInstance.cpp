@@ -8,6 +8,7 @@
 #include "EngineUtils.h"
 #include "Interaction/SaveInterface.h"
 #include "Serialization/ObjectAndNameAsStringProxyArchive.h"
+#include "AuraLogChannels.h"
 
 void UAuraGameInstance::Init()
 {
@@ -38,7 +39,7 @@ void UAuraGameInstance::SaveInGameData(ULoadMenuSaveGame* SaveDataObject)
 	UGameplayStatics::SaveGameToSlot(SaveDataObject, SaveSlotName, 0);
 }
 
-ULoadMenuSaveGame* UAuraGameInstance::GetSaveSlotData(const FString& SlotName)
+ULoadMenuSaveGame* UAuraGameInstance::GetSaveSlotData(const FString& SlotName) const
 {
 	ULoadMenuSaveGame* LoadMenuSaveObject = nullptr;
 
@@ -67,7 +68,7 @@ void UAuraGameInstance::DeleteSaveSlot(const FString& SlotName)
 	}
 }
 
-void UAuraGameInstance::SaveWorldState(UWorld* World)
+void UAuraGameInstance::SaveWorldState(UWorld* World) const
 {
 	FString WorldName = World->GetMapName();
 	WorldName.RemoveFromStart(World->StreamingLevelsPrefix);
@@ -112,6 +113,47 @@ void UAuraGameInstance::SaveWorldState(UWorld* World)
 		}
 
 		UGameplayStatics::SaveGameToSlot(SaveGame, SaveSlotName, 0);
+	}
+}
+
+void UAuraGameInstance::LoadWorldState(UWorld* World) const
+{
+	FString WorldName = World->GetMapName();
+	WorldName.RemoveFromStart(World->StreamingLevelsPrefix);
+
+	if (UGameplayStatics::DoesSaveGameExist(SaveSlotName, 0))
+	{
+		ULoadMenuSaveGame* SaveGame = GetSaveSlotData(SaveSlotName);
+		if (!SaveGame)
+		{
+			UE_LOG(LogAura, Error, TEXT("Failed to load slot"));
+		}
+		else
+		{
+			FSavedMap SavedMap = SaveGame->GetSavedMapWithMapName(WorldName);
+			for (const FSavedActor& SavedActor : SavedMap.SavedActors)
+			{
+				for (FActorIterator It(World); It; ++It)
+				{
+					AActor* Actor = *It;
+					if (Actor && Actor->Implements<USaveInterface>() && SavedActor.ActorName == Actor->GetFName())
+					{
+						if (ISaveInterface::Execute_ShouldLoadTransform(Actor))
+						{
+							Actor->SetActorTransform(SavedActor.Transform);
+						}
+						FMemoryReader MemoryReader(SavedActor.Bytes);
+						FObjectAndNameAsStringProxyArchive Archive(MemoryReader, true);
+						Archive.ArIsSaveGame = true;
+						Actor->Serialize(Archive); // converts binary bytes back into variables
+
+						ISaveInterface::Execute_LoadActor(Actor);
+
+						break;
+					}
+				}
+			}
+		}
 	}
 }
 

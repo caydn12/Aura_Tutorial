@@ -58,6 +58,11 @@ void AAuraCharacter::PossessedBy(AController* NewController)
 	InitAbilityActorInfo();
 	LoadProgress();
 
+	if (UAuraGameInstance* AuraGameInstance = Cast<UAuraGameInstance>(UGameplayStatics::GetGameInstance(this)))
+	{
+		AuraGameInstance->LoadWorldState(GetWorld());
+	}
+
 	if (AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>())
 	{
 		AuraPlayerState->InitializeDebuffTagsToDebuffEffects();

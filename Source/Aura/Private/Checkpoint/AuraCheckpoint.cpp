@@ -5,6 +5,9 @@
 #include "Components/SphereComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Interaction/PlayerInterface.h"
+#include "Components/DecalComponent.h"
+#include "Components/StaticMeshComponent.h"
+#include "Game/AuraGameInstance.h"
 
 AAuraCheckpoint::AAuraCheckpoint(const FObjectInitializer& ObjectInitializer) 
 	: Super(ObjectInitializer)
@@ -26,10 +29,26 @@ AAuraCheckpoint::AAuraCheckpoint(const FObjectInitializer& ObjectInitializer)
 	Sphere->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 }
 
+void AAuraCheckpoint::LoadActor_Implementation()
+{
+	if (bReached)
+	{
+		OnReachedDelegate.Broadcast();
+	}
+}
+
 void AAuraCheckpoint::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (bCanGlow && OtherActor->Implements<UPlayerInterface>())
 	{
+		bReached = true;
+		OnReachedDelegate.Broadcast();
+
+		if (UAuraGameInstance* AuraGameInstance = Cast<UAuraGameInstance>(GetGameInstance()))
+		{
+			AuraGameInstance->SaveWorldState(GetWorld());
+		}
+
 		IPlayerInterface::Execute_SaveProgress(OtherActor, PlayerStartTag);
 		Glow();
 	}

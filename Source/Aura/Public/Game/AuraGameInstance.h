@@ -36,7 +36,7 @@ public:
 	void SaveSlotData(UMVVM_LoadMenuSaveSlot* SaveSlotViewModel);
 	void SaveInGameData(ULoadMenuSaveGame* SaveDataObject);
 
-	ULoadMenuSaveGame* GetSaveSlotData(const FString& SlotName);
+	ULoadMenuSaveGame* GetSaveSlotData(const FString& SlotName) const;
 	ULoadMenuSaveGame* GetInGameSaveData();
 
 	static void DeleteSaveSlot(const FString& SlotName);
@@ -46,7 +46,8 @@ public:
 
 	// Map Data
 
-	void SaveWorldState(UWorld* World);
+	void SaveWorldState(UWorld* World) const;
+	void LoadWorldState(UWorld* World) const;
 
 	void TravelToMap(UMVVM_LoadMenuSaveSlot* SaveSlot);
 

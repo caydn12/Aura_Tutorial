@@ -7,7 +7,11 @@
 #include "Interaction/SaveInterface.h"
 #include "AuraCheckpoint.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnReachedSignature);
+
 class USphereComponent;
+class UDecalComponent;
+class UStaticMeshComponent;
 
 UCLASS()
 class AURA_API AAuraCheckpoint : public APlayerStart, public ISaveInterface
@@ -17,9 +21,16 @@ class AURA_API AAuraCheckpoint : public APlayerStart, public ISaveInterface
 public:
 	AAuraCheckpoint(const FObjectInitializer& ObjectInitializer);
 
+	// Save Interface
+	virtual bool ShouldLoadTransform_Implementation() override { return false; }
+	virtual void LoadActor_Implementation() override;
+	// End Save Interface
+
 	UPROPERTY(BlueprintReadOnly, SaveGame)
 	bool bReached = false;
 
+	UPROPERTY(BlueprintAssignable)
+	FOnReachedSignature OnReachedDelegate;
 protected:
 	UFUNCTION()
 	virtual void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
