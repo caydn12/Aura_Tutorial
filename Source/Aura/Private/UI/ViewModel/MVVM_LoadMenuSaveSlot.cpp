@@ -42,3 +42,15 @@ void UMVVM_LoadMenuSaveSlot::SetPlayerLevel(int32 InLevel)
 {
 	UE_MVVM_SET_PROPERTY_VALUE(PlayerLevel, InLevel);
 }
+
+void UMVVM_LoadMenuSaveSlot::SetEnteredName(FText InEnteredName)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(EnteredName, InEnteredName);
+	bool bIsEnteredNameValid = !EnteredName.ToString().IsEmpty();
+	SetEnteredNameValid(bIsEnteredNameValid);
+}
+
+void UMVVM_LoadMenuSaveSlot::SetEnteredNameValid(bool bInEnteredNameValid)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(EnteredNameValid, bInEnteredNameValid);
+}

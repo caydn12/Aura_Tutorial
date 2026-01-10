@@ -17,7 +17,7 @@ FString UAuraElectrocute::GetDescription(int32 Level)
 			"<Small>Cooldown: </><Cooldown>%.1f</>\n\n"
 			"<Default>Channels a beam of electricity, "
 			"shocking on impact, and dealing </>"
-			"<Damage>%d</><Default> lightning damage with a chance to stun.</>"),
+			"<ManaCost>%d</><Default> lightning damage with a chance to stun.</>"),
 			Level,
 			ManaCost,
 			Cooldown,
@@ -34,7 +34,7 @@ FString UAuraElectrocute::GetDescription(int32 Level)
 			"<Default>Channels a beam of electricity, "
 			"shocking on impact, "
 			"and spreading to </><Level>%d </><Default>target, "
-			"dealing </><Damage>%d</><Default> lightning damage "
+			"dealing </><ManaCost>%d</><Default> lightning damage "
 			"with a chance to stun.</>"),
 			Level,
 			ManaCost,
@@ -53,7 +53,7 @@ FString UAuraElectrocute::GetDescription(int32 Level)
 			"<Default>Channels a beam of electricity, "
 			"shocking on impact, "
 			"and spreading to </><Level>%d </><Default>targets, "
-			"dealing </><Damage>%d</><Default> lightning damage "
+			"dealing </><ManaCost>%d</><Default> lightning damage "
 			"with a chance to stun.</>"),
 			Level,
 			ManaCost,
@@ -79,7 +79,7 @@ FString UAuraElectrocute::GetNextLevelDescription(int32 Level)
 			"<Default>Channels a beam of electricity, "
 			"shocking on impact, "
 			"and spreading to </><Level>%d </><Default>target, "
-			"dealing </><Damage>%d</><Default> lightning damage "
+			"dealing </><ManaCost>%d</><Default> lightning damage "
 			"with a chance to stun.</>"),
 			Level,
 			ManaCost,
@@ -98,7 +98,7 @@ FString UAuraElectrocute::GetNextLevelDescription(int32 Level)
 			"<Default>Channels a beam of electricity, "
 			"shocking on impact, "
 			"and spreading to </><Level>%d </><Default>targets, "
-			"dealing </><Damage>%d</><Default> lightning damage "
+			"dealing </><ManaCost>%d</><Default> lightning damage "
 			"with a chance to stun.</>"),
 			Level,
 			ManaCost,

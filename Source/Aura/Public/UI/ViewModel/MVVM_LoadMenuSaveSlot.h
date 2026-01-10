@@ -42,6 +42,8 @@ public:
 	void SetPlayerStartTag(FName InPlayerStartTag);
 	void SetPlayerStartTagTrimmed(FString InPlayerStartTagTrimmed);
 	void SetPlayerLevel(int32 InLevel);
+	void SetEnteredName(FText InEnteredName);
+	void SetEnteredNameValid(bool bInEnteredNameValid);
 
 	FString GetPlayerName() const { return PlayerName; }
 	FString GetSaveSlotName() const { return SaveSlotName; }
@@ -49,7 +51,8 @@ public:
 	FName GetPlayerStartTag() const { return PlayerStartTag; }
 	FString GetPlayerStartTagTrimmed() const { return PlayerStartTagTrimmed; }
 	int32 GetPlayerLevel() const { return PlayerLevel; }
-
+	FText GetEnteredName() const { return EnteredName; }
+	bool GetEnteredNameValid() const { return EnteredNameValid; }
 
 private:
 	// Field Notifies for UI Binding
@@ -71,4 +74,10 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, FieldNotify, Setter, Getter, meta = (AllowPrivateAccess = "true"))
 	int32 PlayerLevel;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, FieldNotify, Setter, Getter, meta = (AllowPrivateAccess = "true"))
+	FText EnteredName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, FieldNotify, Setter, Getter, meta = (AllowPrivateAccess = "true"))
+	bool EnteredNameValid;
 };
