@@ -10,7 +10,7 @@
 class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
-class IEnemyInterface;
+class IHighlightInterface;
 class UAuraInputConfig;
 class UAuraAbilitySystemComponent;
 class USplineComponent;
@@ -129,8 +129,8 @@ private:
 	UPROPERTY()
 	TObjectPtr<UAuraAbilitySystemComponent> AuraAbilitySystemComponent;
 
-	TScriptInterface<IEnemyInterface> LastHoveredActor;
-	TScriptInterface<IEnemyInterface> HoveredActor;
+	TScriptInterface<IHighlightInterface> LastHoveredActor;
+	TScriptInterface<IHighlightInterface> HoveredActor;
 	FHitResult CursorHit;
 
 	// Click Movement

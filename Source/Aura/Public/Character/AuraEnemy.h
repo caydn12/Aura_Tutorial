@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Character/AuraCharacterBase.h"
 #include "Interaction/EnemyInterface.h"
+#include "Interaction/HighlightInterface.h"
 #include "UI/WidgetController/OverlayWidgetController.h"
 #include "GameplayTagContainer.h"
 #include "AuraEnemy.generated.h"
@@ -16,7 +17,7 @@ class UBehaviorTree;
 class AAuraAIController;
 
 UCLASS()
-class AURA_API AAuraEnemy : public AAuraCharacterBase, public IEnemyInterface
+class AURA_API AAuraEnemy : public AAuraCharacterBase, public IEnemyInterface, public IHighlightInterface
 {
 	GENERATED_BODY()
 	
@@ -53,9 +54,12 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	TMap<FGameplayTag, TSubclassOf<class UGameplayEffect>> SiphonTagsToSiphonEffects;
 
-	// Enemy Interface
+	// Highlight Interface
 	virtual void HighlightActor() override;
 	virtual void UnHighlightActor() override;
+	// End Highlight Interface
+	
+	// Enemy Interface
 	virtual void SetCombatTarget_Implementation(AActor* InCombatTarget) override;
 	virtual AActor* GetCombatTarget_Implementation() const override;
 	// End Enemy Interface
