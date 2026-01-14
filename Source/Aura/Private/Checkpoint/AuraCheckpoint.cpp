@@ -8,7 +8,6 @@
 #include "Components/DecalComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Game/AuraGameInstance.h"
-#include "Aura/Aura.h"
 
 AAuraCheckpoint::AAuraCheckpoint(const FObjectInitializer& ObjectInitializer) 
 	: Super(ObjectInitializer)
@@ -20,7 +19,7 @@ AAuraCheckpoint::AAuraCheckpoint(const FObjectInitializer& ObjectInitializer)
 	CheckpointMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	CheckpointMesh->SetCollisionResponseToAllChannels(ECR_Block);
 
-	CheckpointMesh->SetCustomDepthStencilValue(CUSTOM_DEPTH_BLUE);
+	CheckpointMesh->SetCustomDepthStencilValue(CustomDepthStencilValue);
 
 	const float CapsuleHalfHeight = GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight();
 	CheckpointMesh->SetRelativeLocation(FVector(225.f, 0.f, -CapsuleHalfHeight));
@@ -30,6 +29,9 @@ AAuraCheckpoint::AAuraCheckpoint(const FObjectInitializer& ObjectInitializer)
 	Sphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	Sphere->SetCollisionResponseToAllChannels(ECR_Ignore);
 	Sphere->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+
+	MoveToComponent = CreateDefaultSubobject<USceneComponent>("MoveToComponent");
+	MoveToComponent->SetupAttachment(GetRootComponent());
 }
 
 void AAuraCheckpoint::LoadActor_Implementation()
@@ -38,6 +40,21 @@ void AAuraCheckpoint::LoadActor_Implementation()
 	{
 		OnReachedDelegate.Broadcast();
 	}
+}
+
+void AAuraCheckpoint::HighlightActor_Implementation()
+{
+	CheckpointMesh->SetRenderCustomDepth(true);
+}
+
+void AAuraCheckpoint::UnHighlightActor_Implementation()
+{
+	CheckpointMesh->SetRenderCustomDepth(false);
+}
+
+void AAuraCheckpoint::SetMoveToLocation_Implementation(FVector& OutDestination)
+{
+	OutDestination = MoveToComponent->GetComponentLocation();
 }
 
 void AAuraCheckpoint::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

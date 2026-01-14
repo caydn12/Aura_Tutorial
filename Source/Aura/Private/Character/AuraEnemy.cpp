@@ -186,6 +186,11 @@ void AAuraEnemy::UnHighlightActor_Implementation()
 	Weapon->SetRenderCustomDepth(false);
 }
 
+void AAuraEnemy::SetMoveToLocation_Implementation(FVector& OutDestination)
+{
+	// Do nothing. This is used for save points, map change doorways, etc.
+}
+
 void AAuraEnemy::SetCombatTarget_Implementation(AActor* InCombatTarget)
 {
 	CombatTarget = InCombatTarget;

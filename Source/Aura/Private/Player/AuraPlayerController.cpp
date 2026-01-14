@@ -378,6 +378,19 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 		{
 			if (InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_LMB))
 			{
+				if (IsValid(HoveredActor) && HoveredActor->Implements<UHighlightInterface>())
+				{
+					IHighlightInterface::Execute_SetMoveToLocation(HoveredActor, CachedDestination);
+				}
+				else if (FXCursor && GetASC() && !GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_InputPressed))
+				{
+					UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+						this,
+						FXCursor,
+						CachedDestination
+					);
+				}
+
 				if (UNavigationPath* NavPath = UNavigationSystemV1::FindPathToLocationSynchronously(this, ControlledPawn->GetActorLocation(), CachedDestination))
 				{
 					Spline->ClearSplinePoints();
@@ -399,16 +412,6 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 					{
 						CachedDestination = NavPath->PathPoints[NavPath->PathPoints.Num() - 1];
 						bAutoRunning = true;
-
-
-						if (FXCursor && GetASC() && !GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_InputPressed))
-						{
-							UNiagaraFunctionLibrary::SpawnSystemAtLocation(
-								this,
-								FXCursor,
-								CachedDestination
-							);
-						}
 					}
 				}
 			}
