@@ -13,7 +13,6 @@
 #include "NavigationPath.h"
 #include "GameFramework/Character.h"
 #include "UI/Widget/DamageTextComponent.h"
-#include "AbilitySystem/AuraAbilitySystemLibrary.h" // PgUp/PgDown stored as static function to adjust scalability. Could be moved.
 #include "NiagaraSystem.h" // Click to move cursors
 #include "NiagaraFunctionLibrary.h"
 #include "GameFramework/SpringArmComponent.h"

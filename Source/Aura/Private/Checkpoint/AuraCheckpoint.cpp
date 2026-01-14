@@ -8,6 +8,7 @@
 #include "Components/DecalComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Game/AuraGameInstance.h"
+#include "Aura/Aura.h"
 
 AAuraCheckpoint::AAuraCheckpoint(const FObjectInitializer& ObjectInitializer) 
 	: Super(ObjectInitializer)
@@ -18,6 +19,8 @@ AAuraCheckpoint::AAuraCheckpoint(const FObjectInitializer& ObjectInitializer)
 	CheckpointMesh->SetupAttachment(GetRootComponent());
 	CheckpointMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	CheckpointMesh->SetCollisionResponseToAllChannels(ECR_Block);
+
+	CheckpointMesh->SetCustomDepthStencilValue(CUSTOM_DEPTH_BLUE);
 
 	const float CapsuleHalfHeight = GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight();
 	CheckpointMesh->SetRelativeLocation(FVector(225.f, 0.f, -CapsuleHalfHeight));
