@@ -10,13 +10,19 @@
 class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
-class IHighlightInterface;
 class UAuraInputConfig;
 class UAuraAbilitySystemComponent;
 class USplineComponent;
 class UDamageTextComponent;
 class UNiagaraSystem;
 class AMagicCircle;
+
+enum class ETargetingStatus : uint8
+{
+	TargetingEnemy,
+	TargetingNonEnemy,
+	NotTargeting
+};
 
 USTRUCT(BlueprintType)
 struct FCameraOccludedActor
@@ -110,6 +116,12 @@ private:
 	void ForceShowOccludedActors();
 	bool ShouldCheckCameraOcclusion() const;
 
+	// Highlighting
+	static void HighlightActor(AActor* InActor);
+	static void UnHighlightActor(AActor* InActor);
+
+	ETargetingStatus GetTargetingStatus() const;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputMappingContext> AuraContext;
 
@@ -129,8 +141,8 @@ private:
 	UPROPERTY()
 	TObjectPtr<UAuraAbilitySystemComponent> AuraAbilitySystemComponent;
 
-	TScriptInterface<IHighlightInterface> LastHoveredActor;
-	TScriptInterface<IHighlightInterface> HoveredActor;
+	TObjectPtr<AActor> LastHoveredActor;
+	TObjectPtr<AActor> HoveredActor;
 	FHitResult CursorHit;
 
 	// Click Movement
@@ -138,7 +150,7 @@ private:
 	float FollowTime = 0.0f;
 	float ShortPressThreshold = 0.5f;
 	bool bAutoRunning = false;
-	bool bTargeting = false;
+	ETargetingStatus TargetingStatus = ETargetingStatus::NotTargeting;
 
 	UPROPERTY(EditDefaultsOnly)
 	float AutoRunAcceptanceRadius = 50.0f;

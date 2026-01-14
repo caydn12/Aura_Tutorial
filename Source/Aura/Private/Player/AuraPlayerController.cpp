@@ -23,6 +23,7 @@
 #include "Aura/Aura.h"
 #include "Actor/MagicCircle.h"
 #include "Interaction/CombatInterface.h"
+#include "Interaction/EnemyInterface.h"
 #include "Components/DecalComponent.h"
 
 AAuraPlayerController::AAuraPlayerController()
@@ -228,8 +229,8 @@ void AAuraPlayerController::CursorTrace()
 {
 	if (GetASC() && GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_CursorTrace))
 	{
-		if (LastHoveredActor) LastHoveredActor->UnHighlightActor();
-		if (HoveredActor) HoveredActor->UnHighlightActor();
+		UnHighlightActor(LastHoveredActor);
+		UnHighlightActor(HoveredActor);
 		LastHoveredActor = nullptr;
 		HoveredActor = nullptr;
 		return;
@@ -241,14 +242,58 @@ void AAuraPlayerController::CursorTrace()
 	if (CursorHit.bBlockingHit)
 	{
 		LastHoveredActor = HoveredActor;
-		HoveredActor = CursorHit.GetActor();
+
+		if (IsValid(CursorHit.GetActor()) && CursorHit.GetActor()->Implements<UHighlightInterface>())
+		{
+			HoveredActor = CursorHit.GetActor();
+		}
+		else
+		{
+			HoveredActor = nullptr;
+		}
 
 		if (LastHoveredActor != HoveredActor)
 		{
-			if (LastHoveredActor) LastHoveredActor->UnHighlightActor();
-			if (HoveredActor) HoveredActor->HighlightActor();
+			UnHighlightActor(LastHoveredActor);
+			HighlightActor(HoveredActor);
 		}
 	}
+}
+
+void AAuraPlayerController::HighlightActor(AActor* InActor)
+{
+	if (IsValid(InActor) && InActor->Implements<UHighlightInterface>())
+	{
+		IHighlightInterface::Execute_HighlightActor(InActor);
+	}
+}
+
+void AAuraPlayerController::UnHighlightActor(AActor* InActor)
+{
+	if (IsValid(InActor) && InActor->Implements<UHighlightInterface>())
+	{
+		IHighlightInterface::Execute_UnHighlightActor(InActor);
+	}
+}
+
+ETargetingStatus AAuraPlayerController::GetTargetingStatus() const
+{
+	ETargetingStatus FoundStatus = ETargetingStatus::NotTargeting;
+
+	if (IsValid(HoveredActor))
+	{
+		if (HoveredActor->Implements<UEnemyInterface>())
+		{
+			FoundStatus = ETargetingStatus::TargetingEnemy;
+
+		}
+		else
+		{
+			FoundStatus = ETargetingStatus::TargetingNonEnemy;
+		}
+	}
+
+	return FoundStatus;
 }
 
 void AAuraPlayerController::AutoRun()
@@ -309,10 +354,9 @@ void AAuraPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 	{
 		return;
 	}
-
 	if (InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_LMB))
 	{
-		bTargeting = HoveredActor ? true : false;
+		TargetingStatus = GetTargetingStatus();
 		bAutoRunning = false;
 	}
 	if (GetASC()) GetASC()->AbilityInputTagPressed(InputTag);
@@ -327,7 +371,7 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 
 	GetASC()->AbilityInputTagReleased(InputTag);
 
-	if (!bTargeting && !bShiftKeyDown)
+	if (TargetingStatus != ETargetingStatus::TargetingEnemy && !bShiftKeyDown)
 	{
 		const APawn* ControlledPawn = GetPawn();
 
@@ -372,7 +416,7 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 		}
 
 		FollowTime = 0.0f;
-		bTargeting = false;
+		TargetingStatus = ETargetingStatus::NotTargeting;
 	}
 }
 
@@ -383,7 +427,7 @@ void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 		return;
 	}
 
-	if ((bTargeting || bShiftKeyDown) && InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_LMB))
+	if ((TargetingStatus == ETargetingStatus::TargetingEnemy || bShiftKeyDown) && InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_LMB))
 	{
 		if (GetASC() != nullptr)
 		{
