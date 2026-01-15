@@ -28,7 +28,13 @@ AActor* AAuraGameModeBase::ChoosePlayerStart_Implementation(AController* Player)
 				}
 			}
 		}
+
+		if (ChosenStart == nullptr)
+		{
+			ChosenStart = Cast<APlayerStart>(PlayerStartActors[0]);
+		}
 	}
+
 
 	return ChosenStart;
 }

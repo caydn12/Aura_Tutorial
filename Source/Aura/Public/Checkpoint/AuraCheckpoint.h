@@ -57,14 +57,14 @@ protected:
 	TObjectPtr<UStaticMeshComponent> CheckpointMesh;
 
 	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<USphereComponent> Sphere;
+
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USceneComponent> MoveToComponent;
 
 	UPROPERTY(EditDefaultsOnly)
 	int32 CustomDepthStencilValue = CUSTOM_DEPTH_BLUE;
 private:
-
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<USphereComponent> Sphere;
 
 	bool bCanGlow = true;
 };

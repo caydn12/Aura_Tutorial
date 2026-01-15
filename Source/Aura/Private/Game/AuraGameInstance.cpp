@@ -68,13 +68,19 @@ void UAuraGameInstance::DeleteSaveSlot(const FString& SlotName)
 	}
 }
 
-void UAuraGameInstance::SaveWorldState(UWorld* World) const
+void UAuraGameInstance::SaveWorldState(UWorld* World, const FString& InDestinationMapAssetName) const
 {
 	FString WorldName = World->GetMapName();
 	WorldName.RemoveFromStart(World->StreamingLevelsPrefix);
 
 	if (ULoadMenuSaveGame* SaveGame = GetSaveSlotData(SaveSlotName))
 	{
+		if (InDestinationMapAssetName != FString(""))
+		{
+			SaveGame->MapAssetName = InDestinationMapAssetName;
+			SaveGame->MapName = GetMapNameFromMapAssetName(InDestinationMapAssetName);
+		}
+
 		if (!SaveGame->DoesSavedMapExist(WorldName))
 		{
 			FSavedMap NewSavedMap;
@@ -162,4 +168,17 @@ void UAuraGameInstance::TravelToMap(UMVVM_LoadMenuSaveSlot* SaveSlot)
 	const FString SlotName = SaveSlot->GetSaveSlotName();
 
 	UGameplayStatics::OpenLevelBySoftObjectPtr(SaveSlot, SoftLoadedMaps.FindChecked(SaveSlot->GetMapName()));
+}
+
+FString UAuraGameInstance::GetMapNameFromMapAssetName(const FString& MapAssetName) const
+{
+	FString FoundMapName = FString();
+	for (auto& Map : SoftLoadedMaps)
+	{
+		if (Map.Value.ToSoftObjectPath().GetAssetName() == MapAssetName)
+		{
+			FoundMapName = Map.Key;
+		}
+	}
+	return FoundMapName;
 }

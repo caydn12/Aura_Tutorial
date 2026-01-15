@@ -28,10 +28,6 @@ public:
 	UPROPERTY()
 	FString SaveSlotName = FString();
 
-	// Tutorial uses this slot index but I don't track slot index in my system
-	//UPROPERTY()
-	//int32 SaveSlotIndex = 0;
-
 	// Saving Data
 	void SaveSlotData(UMVVM_LoadMenuSaveSlot* SaveSlotViewModel);
 	void SaveInGameData(ULoadMenuSaveGame* SaveDataObject);
@@ -46,10 +42,12 @@ public:
 
 	// Map Data
 
-	void SaveWorldState(UWorld* World) const;
+	void SaveWorldState(UWorld* World, const FString& InDestinationMapAssetName = FString()) const;
 	void LoadWorldState(UWorld* World) const;
 
 	void TravelToMap(UMVVM_LoadMenuSaveSlot* SaveSlot);
+
+	FString GetMapNameFromMapAssetName(const FString& MapAssetName) const;
 
 	UPROPERTY(EditDefaultsOnly)
 	FString DefaultMapName;

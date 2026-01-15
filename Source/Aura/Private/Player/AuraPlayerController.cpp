@@ -79,6 +79,14 @@ void AAuraPlayerController::SetupInputComponent()
 	AuraInputComponent->BindAbilityActions(InputConfig, this, &ThisClass::AbilityInputTagPressed, &ThisClass::AbilityInputTagReleased, &ThisClass::AbilityInputTagHeld);
 }
 
+void AAuraPlayerController::NotifyLoadedWorld(FName WorldPackageName, bool bFinalNotify)
+{
+	Super::NotifyLoadedWorld(WorldPackageName, bFinalNotify);
+	
+	// Reset control rotation so if loaded into a rotated checkpoint, input is still correct.
+	SetControlRotation(FRotator::ZeroRotator);
+}
+
 void AAuraPlayerController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
