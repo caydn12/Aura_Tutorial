@@ -41,6 +41,7 @@ public:
 	void SetMapName(FString InMapName);
 	void SetPlayerStartTag(FName InPlayerStartTag);
 	void SetPlayerStartTagTrimmed(FString InPlayerStartTagTrimmed);
+	void SetCompletedGoalpoints(int32 InCompletedGoalpoints);
 	void SetPlayerLevel(int32 InLevel);
 	void SetEnteredName(FText InEnteredName);
 	void SetEnteredNameValid(bool bInEnteredNameValid);
@@ -50,6 +51,7 @@ public:
 	FString GetMapName() const { return MapName; }
 	FName GetPlayerStartTag() const { return PlayerStartTag; }
 	FString GetPlayerStartTagTrimmed() const { return PlayerStartTagTrimmed; }
+	int32 GetCompletedGoalpoints() const { return CompletedGoalpoints; }
 	int32 GetPlayerLevel() const { return PlayerLevel; }
 	FText GetEnteredName() const { return EnteredName; }
 	bool GetEnteredNameValid() const { return EnteredNameValid; }
@@ -71,6 +73,9 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, FieldNotify, Setter, Getter, meta = (AllowPrivateAccess = "true"))
 	FString PlayerStartTagTrimmed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, FieldNotify, Setter, Getter, meta = (AllowPrivateAccess = "true"))
+	int32 CompletedGoalpoints;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, FieldNotify, Setter, Getter, meta = (AllowPrivateAccess = "true"))
 	int32 PlayerLevel;

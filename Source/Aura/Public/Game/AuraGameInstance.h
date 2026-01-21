@@ -6,6 +6,25 @@
 #include "Engine/GameInstance.h"
 #include "AuraGameInstance.generated.h"
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnCompletedGoalpointsChangedGISignature, int32 /*NewCompletedGoalpoints*/);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnLevelClearedChangedSignature, bool /*bCleared*/);
+
+UENUM(BlueprintType)
+enum class ELevelID : uint8
+{
+	Level_01,
+	Level_02,
+	Level_03,
+	Level_04,
+	Level_05,
+	Level_06,
+	Level_07,
+	Level_08,
+	Level_09,
+	Level_10,
+	Level_None
+};
+
 class UCharacterClassInfo;
 class UAbilityInfo;
 class UMVVM_LoadMenuSaveSlot;
@@ -20,6 +39,19 @@ class AURA_API UAuraGameInstance : public UGameInstance
 public:
 	// Begin Play Equivalent
 	virtual void Init() override;
+
+	// Goalpoints
+
+	void SetCompletedGoalpoints(const int32 NewCompletedGoalpoints);
+	int32 GetCompletedGoalpoints() const { return CompletedGoalpoints; }
+
+	UFUNCTION()
+	void SetLevelCleared(ELevelID LevelID, bool bCleared);
+
+	UFUNCTION()
+	bool IsLevelCleared(ELevelID LevelID) const { return LevelClearedMap.Contains(LevelID) ? LevelClearedMap[LevelID] : false; }
+
+	FOnLevelClearedChangedSignature OnLevelClearedChangedDelegate;
 
 	// Player Start Data
 	UPROPERTY()
@@ -75,4 +107,13 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Ability Info")
 	TObjectPtr<UAbilityInfo> AbilityInfo;
+
+	FOnCompletedGoalpointsChangedGISignature OnCompletedGoalpointsChangedGIDelegate;
+
+	// Goal point objectives
+	UPROPERTY(BlueprintReadOnly)
+	int32 CompletedGoalpoints = 0;
+
+	UPROPERTY()
+	TMap<ELevelID, bool> LevelClearedMap;
 };

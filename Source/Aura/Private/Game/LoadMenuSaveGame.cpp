@@ -30,3 +30,9 @@ bool ULoadMenuSaveGame::DoesSavedMapExist(const FString& InMapName) const
     }
 	return bFoundMap;
 }
+
+void ULoadMenuSaveGame::UpdateLevelClearedMap(TMap<ELevelID, bool> InNewLevelClearedMap)
+{
+    LevelClearedMap.Empty();
+	LevelClearedMap = InNewLevelClearedMap;
+}

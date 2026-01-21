@@ -5,9 +5,11 @@
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "Player/AuraPlayerState.h"
+#include "Game/AuraGameInstance.h"
 #include "AbilitySystem/Data/LevelUpInfo.h"
 #include "AbilitySystem/Data/AbilityInfo.h"
 #include "AuraGameplayTags.h"
+#include "Kismet/GameplayStatics.h"
 
 void UOverlayWidgetController::OnXPChanged(int32 NewXP)
 {
@@ -48,6 +50,11 @@ void UOverlayWidgetController::OnAbilityEquipped(const FGameplayTag& AbilityTag,
 	AbilityInfoDelegate.Broadcast(Info);
 }
 
+void UOverlayWidgetController::OnCompletedGoalpointsChanged(int32 NewCompletedGoalpoints)
+{
+	OnCompletedGoalpointsChangedUIDelegate.Broadcast(NewCompletedGoalpoints);
+}
+
 void UOverlayWidgetController::BroadcastInitialValues()
 {
 	OnHealthChanged.Broadcast(GetAuraAS()->GetHealth());
@@ -68,6 +75,16 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 			OnPlayerLevelChanged.Broadcast(NewLevel, bShowLevelUp);
 		}
 	);
+
+	if (UAuraGameInstance* AuraGameInstance = Cast<UAuraGameInstance>(UGameplayStatics::GetGameInstance(this)))
+	{
+		AuraGameInstance->OnCompletedGoalpointsChangedGIDelegate.AddUObject(
+			this,
+			&UOverlayWidgetController::OnCompletedGoalpointsChanged
+		);
+
+		OnCompletedGoalpointsChanged(AuraGameInstance->GetCompletedGoalpoints());
+	}
 
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(
 		GetAuraAS()->GetHealthAttribute()).AddLambda(

@@ -150,6 +150,9 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	virtual void MulticastHandleDeath(const FVector& DeathImpulse);
 
+	void SetCharacterClass(ECharacterClass InCharacterClass) { CharacterClass = InCharacterClass; }
+
+
 	// Combat Interface
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
 	virtual void Die(const FVector& DeathImpulse) override;

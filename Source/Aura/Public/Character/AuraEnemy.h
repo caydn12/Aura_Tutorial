@@ -48,6 +48,8 @@ public:
 	virtual void PossessedBy(AController* NewController) override;
 	void HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
 
+	void SetLevel(int32 InLevel) { Level = InLevel; }
+
 	UPROPERTY(EditDefaultsOnly)
 	TMap<FGameplayTag, TSubclassOf<class UGameplayEffect>> DebuffTagsToDebuffEffects;
 

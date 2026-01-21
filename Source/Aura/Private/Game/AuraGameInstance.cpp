@@ -15,6 +15,35 @@ void UAuraGameInstance::Init()
 	Super::Init();
 
 	SoftLoadedMaps.Add(DefaultMapName, DefaultMap);
+
+	LevelClearedMap.Add(ELevelID::Level_01, false);
+	LevelClearedMap.Add(ELevelID::Level_02, false);
+	LevelClearedMap.Add(ELevelID::Level_03, false);
+	LevelClearedMap.Add(ELevelID::Level_04, false);
+	LevelClearedMap.Add(ELevelID::Level_05, false);
+	LevelClearedMap.Add(ELevelID::Level_06, false);
+	LevelClearedMap.Add(ELevelID::Level_07, false);
+	LevelClearedMap.Add(ELevelID::Level_08, false);
+	LevelClearedMap.Add(ELevelID::Level_09, false);
+	LevelClearedMap.Add(ELevelID::Level_10, false);
+}
+
+void UAuraGameInstance::SetCompletedGoalpoints(const int32 NewCompletedGoalpoints)
+{
+	if (CompletedGoalpoints != NewCompletedGoalpoints)
+	{
+		CompletedGoalpoints = NewCompletedGoalpoints;
+		OnCompletedGoalpointsChangedGIDelegate.Broadcast(CompletedGoalpoints);
+	}
+}
+
+void UAuraGameInstance::SetLevelCleared(ELevelID LevelID, bool bCleared)
+{
+	if (bCleared != IsLevelCleared(LevelID))
+	{
+		LevelClearedMap[LevelID] = bCleared;
+		OnLevelClearedChangedDelegate.Broadcast(LevelClearedMap[LevelID]);
+	}
 }
 
 void UAuraGameInstance::SaveSlotData(UMVVM_LoadMenuSaveSlot* SaveSlotViewModel)
@@ -28,13 +57,19 @@ void UAuraGameInstance::SaveSlotData(UMVVM_LoadMenuSaveSlot* SaveSlotViewModel)
 	LoadMenuSaveGameObject->MapName = SaveSlotViewModel->GetMapName();
 	LoadMenuSaveGameObject->PlayerStartTag = SaveSlotViewModel->GetPlayerStartTag();
 	LoadMenuSaveGameObject->PlayerLevel = SaveSlotViewModel->GetPlayerLevel();
+	LoadMenuSaveGameObject->CompletedGoalpoints = SaveSlotViewModel->GetCompletedGoalpoints();
 
 	UGameplayStatics::SaveGameToSlot(LoadMenuSaveGameObject, SaveSlotViewModel->GetSaveSlotName(), 0);
 }
 
 void UAuraGameInstance::SaveInGameData(ULoadMenuSaveGame* SaveDataObject)
 {
+	// This looks weird but is correct logic
 	PlayerStartTag = SaveDataObject->PlayerStartTag;
+
+	// Getting the game instance current count for saving
+	SaveDataObject->CompletedGoalpoints = CompletedGoalpoints;
+	SaveDataObject->UpdateLevelClearedMap(LevelClearedMap);
 
 	UGameplayStatics::SaveGameToSlot(SaveDataObject, SaveSlotName, 0);
 }

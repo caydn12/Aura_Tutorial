@@ -54,7 +54,7 @@ void AMagicCircle::OnTargetingSphereBeginOverlap(UPrimitiveComponent* Overlapped
 {
 	if (IHighlightInterface* HighlightInterface = Cast<IHighlightInterface>(OtherActor))
 	{
-		HighlightInterface->HighlightActor();
+		IHighlightInterface::Execute_HighlightActor(OtherActor);
 	}
 }
 
@@ -62,7 +62,7 @@ void AMagicCircle::OnTargetingSphereEndOverlap(UPrimitiveComponent* OverlappedCo
 {
 	if (IHighlightInterface* HighlightInterface = Cast<IHighlightInterface>(OtherActor))
 	{
-		HighlightInterface->UnHighlightActor();
+		IHighlightInterface::Execute_UnHighlightActor(OtherActor);
 	}
 }
 

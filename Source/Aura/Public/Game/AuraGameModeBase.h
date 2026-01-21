@@ -6,6 +6,8 @@
 #include "GameFramework/GameModeBase.h"
 #include "AuraGameModeBase.generated.h"
 
+
+
 UCLASS()
 class AURA_API AAuraGameModeBase : public AGameModeBase
 {
@@ -14,6 +16,9 @@ class AURA_API AAuraGameModeBase : public AGameModeBase
 public:
 	virtual AActor* ChoosePlayerStart_Implementation(AController* Player) override;
 
+
+
 	UPROPERTY(EditDefaultsOnly)
 	FName DefaultPlayerStartTag = FName();
+
 };

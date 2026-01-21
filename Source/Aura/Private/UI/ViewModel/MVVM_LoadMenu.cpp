@@ -42,6 +42,7 @@ void UMVVM_LoadMenu::NewSaveSlotButtonPressed(int32 SlotIndex, const FString& En
 		SaveSlotViewModels[SlotIndex]->SetPlayerName(EnteredName);
 		SaveSlotViewModels[SlotIndex]->SetMapName(AuraGameInstance->DefaultMapName);
 		SaveSlotViewModels[SlotIndex]->SetPlayerLevel(1);
+		SaveSlotViewModels[SlotIndex]->SetCompletedGoalpoints(0);
 
 		if (AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(this)))
 		{
@@ -85,6 +86,7 @@ void UMVVM_LoadMenu::PlayButtonPressed()
 		{
 			AuraGameInstance->PlayerStartTag = SelectedSaveSlotViewModel->GetPlayerStartTag();
 			AuraGameInstance->SaveSlotName = SelectedSaveSlotViewModel->GetSaveSlotName();
+			AuraGameInstance->CompletedGoalpoints = SelectedSaveSlotViewModel->GetCompletedGoalpoints();
 
 			AuraGameInstance->TravelToMap(SelectedSaveSlotViewModel);
 		}
@@ -103,6 +105,10 @@ void UMVVM_LoadMenu::LoadSaveData()
 			{
 				SaveSlotViewModel.Value->SetPlayerName(LoadMenuSaveObject->PlayerName);
 				SaveSlotViewModel.Value->SetPlayerLevel(LoadMenuSaveObject->PlayerLevel);
+
+				AuraGameInstance->LevelClearedMap.Empty();
+				AuraGameInstance->LevelClearedMap = LoadMenuSaveObject->LevelClearedMap;
+
 				// LoadMenuSaveGame.h defaults PlayerName to "Default Name".
 				// Save data is always created, and will have default data if unaffected by the user.
 				// In that case, we want to show the slot as vacant. If the name has changed, the slot is taken by the user.
@@ -115,6 +121,7 @@ void UMVVM_LoadMenu::LoadSaveData()
 					SaveSlotViewModel.Value->SetSaveSlotWidget(ESaveSlotWidget::ESS_Taken);
 					SaveSlotViewModel.Value->SetMapName(LoadMenuSaveObject->MapName);
 					SaveSlotViewModel.Value->SetPlayerStartTag(LoadMenuSaveObject->PlayerStartTag);
+					SaveSlotViewModel.Value->SetCompletedGoalpoints(LoadMenuSaveObject->CompletedGoalpoints);
 				}
 			}
 		}

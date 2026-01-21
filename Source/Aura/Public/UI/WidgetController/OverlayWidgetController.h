@@ -33,6 +33,7 @@ struct FUIWidgetRow : public FTableRowBase
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttributeChangedSignature, float, NewValue);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnXPPercentChangedSignature, float, NewValue);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMessageWidgetRowSignature, FUIWidgetRow, Row);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCompletedGoalpointsChangedUISignature, int32, NewCompletedGoalpoints);
 
 
 UCLASS(Blueprintable, BlueprintType)
@@ -48,6 +49,9 @@ protected:
 	void OnXPChanged(int32 NewXP);
 
 	void OnAbilityEquipped(const FGameplayTag& AbilityTag, const FGameplayTag& Status, const FGameplayTag& Slot, const FGameplayTag& PreviousSlot) const;
+
+	UFUNCTION()
+	void OnCompletedGoalpointsChanged(int32 NewCompletedGoalpoints);
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widget Data")
 	TObjectPtr<UDataTable> MessageWidgetDataTable;
@@ -73,6 +77,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "GAS|Level")
 	FOnPlayerLevelChangedSignature OnPlayerLevelChanged;
+
+	UPROPERTY(BlueprintAssignable, Category = "GAS|Goalpoints")
+	FOnCompletedGoalpointsChangedUISignature OnCompletedGoalpointsChangedUIDelegate;
 
 	UPROPERTY(BlueprintAssignable, Category = "GAS|Messages")
 	FMessageWidgetRowSignature MessageWidgetRow;

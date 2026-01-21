@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/SaveGame.h"
 #include "GameplayTagContainer.h"
+#include "Game/AuraGameInstance.h"
 #include "LoadMenuSaveGame.generated.h"
 
 class UGameplayAbility;
@@ -73,6 +74,11 @@ class AURA_API ULoadMenuSaveGame : public USaveGame
 	
 public:
 
+	FSavedMap GetSavedMapWithMapName(const FString& InMapName) const;
+	bool DoesSavedMapExist(const FString& InMapName) const;
+
+	void UpdateLevelClearedMap(TMap<ELevelID, bool> InNewLevelClearedMap);
+
 	UPROPERTY()
 	FString PlayerName = FString("Default Name");
 
@@ -84,6 +90,12 @@ public:
 
 	UPROPERTY()
 	FName PlayerStartTag;
+
+	UPROPERTY()
+	int32 CompletedGoalpoints = 0;
+
+	UPROPERTY()
+	TMap<ELevelID, bool> LevelClearedMap;
 
 	UPROPERTY()
 	bool bFirstTimePlaying = true;
@@ -123,7 +135,4 @@ public:
 
 	UPROPERTY()
 	TArray<FSavedMap> SavedMaps;
-
-	FSavedMap GetSavedMapWithMapName(const FString& InMapName) const;
-	bool DoesSavedMapExist(const FString& InMapName) const;
 };

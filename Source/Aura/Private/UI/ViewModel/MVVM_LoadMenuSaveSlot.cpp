@@ -38,6 +38,11 @@ void UMVVM_LoadMenuSaveSlot::SetPlayerStartTagTrimmed(FString InPlayerStartTagTr
 	UE_MVVM_SET_PROPERTY_VALUE(PlayerStartTagTrimmed, InPlayerStartTagTrimmed);
 }
 
+void UMVVM_LoadMenuSaveSlot::SetCompletedGoalpoints(int32 InCompletedGoalpoints)
+{
+	UE_MVVM_SET_PROPERTY_VALUE(CompletedGoalpoints, InCompletedGoalpoints);
+}
+
 void UMVVM_LoadMenuSaveSlot::SetPlayerLevel(int32 InLevel)
 {
 	UE_MVVM_SET_PROPERTY_VALUE(PlayerLevel, InLevel);
