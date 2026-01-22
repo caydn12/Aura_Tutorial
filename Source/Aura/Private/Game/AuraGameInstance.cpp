@@ -30,10 +30,6 @@ void UAuraGameInstance::SetCompletedGoalpoints(const int32 NewCompletedGoalpoint
 
 void UAuraGameInstance::SetLevelCleared(ELevelID LevelID, bool bCleared)
 {
-	if (LevelClearedMap.IsEmpty())
-	{
-		ResetLevelClearedData();
-	}
 
 	if (bCleared != IsLevelCleared(LevelID))
 	{
