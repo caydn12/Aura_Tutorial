@@ -51,6 +51,9 @@ public:
 	UFUNCTION()
 	bool IsLevelCleared(ELevelID LevelID) const { return LevelClearedMap.Contains(LevelID) ? LevelClearedMap[LevelID] : false; }
 
+	UFUNCTION()
+	void ResetLevelClearedData();
+
 	FOnLevelClearedChangedSignature OnLevelClearedChangedDelegate;
 
 	// Player Start Data

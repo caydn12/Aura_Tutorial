@@ -44,4 +44,6 @@ private:
 	float SpawnInterval = 5.0f;
 
 	FTimerHandle SpawnTimerHandle;
+
+	bool bIsBoundToLevelCleared = false;
 };

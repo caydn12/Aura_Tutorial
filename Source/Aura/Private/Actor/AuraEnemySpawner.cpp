@@ -69,7 +69,11 @@ void AAuraEnemySpawner::BeginPlay()
 
 	if (UAuraGameInstance* GameInstance = Cast<UAuraGameInstance>(UGameplayStatics::GetGameInstance(this)))
 	{
-		GameInstance->OnLevelClearedChangedDelegate.AddUObject(this, &AAuraEnemySpawner::HandleLevelClearedChanged);
+		if (!bIsBoundToLevelCleared)
+		{
+			GameInstance->OnLevelClearedChangedDelegate.AddUObject(this, &AAuraEnemySpawner::HandleLevelClearedChanged);
+			bIsBoundToLevelCleared = true;
+		}
 		HandleLevelClearedChanged(bLevelCleared);
 	}
 }

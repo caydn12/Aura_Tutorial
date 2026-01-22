@@ -16,16 +16,7 @@ void UAuraGameInstance::Init()
 
 	SoftLoadedMaps.Add(DefaultMapName, DefaultMap);
 
-	LevelClearedMap.Add(ELevelID::Level_01, false);
-	LevelClearedMap.Add(ELevelID::Level_02, false);
-	LevelClearedMap.Add(ELevelID::Level_03, false);
-	LevelClearedMap.Add(ELevelID::Level_04, false);
-	LevelClearedMap.Add(ELevelID::Level_05, false);
-	LevelClearedMap.Add(ELevelID::Level_06, false);
-	LevelClearedMap.Add(ELevelID::Level_07, false);
-	LevelClearedMap.Add(ELevelID::Level_08, false);
-	LevelClearedMap.Add(ELevelID::Level_09, false);
-	LevelClearedMap.Add(ELevelID::Level_10, false);
+	ResetLevelClearedData();
 }
 
 void UAuraGameInstance::SetCompletedGoalpoints(const int32 NewCompletedGoalpoints)
@@ -39,11 +30,31 @@ void UAuraGameInstance::SetCompletedGoalpoints(const int32 NewCompletedGoalpoint
 
 void UAuraGameInstance::SetLevelCleared(ELevelID LevelID, bool bCleared)
 {
+	if (LevelClearedMap.IsEmpty())
+	{
+		ResetLevelClearedData();
+	}
+
 	if (bCleared != IsLevelCleared(LevelID))
 	{
 		LevelClearedMap[LevelID] = bCleared;
 		OnLevelClearedChangedDelegate.Broadcast(LevelClearedMap[LevelID]);
 	}
+}
+
+void UAuraGameInstance::ResetLevelClearedData()
+{
+	LevelClearedMap.Empty();
+	LevelClearedMap.Add(ELevelID::Level_01, false);
+	LevelClearedMap.Add(ELevelID::Level_02, false);
+	LevelClearedMap.Add(ELevelID::Level_03, false);
+	LevelClearedMap.Add(ELevelID::Level_04, false);
+	LevelClearedMap.Add(ELevelID::Level_05, false);
+	LevelClearedMap.Add(ELevelID::Level_06, false);
+	LevelClearedMap.Add(ELevelID::Level_07, false);
+	LevelClearedMap.Add(ELevelID::Level_08, false);
+	LevelClearedMap.Add(ELevelID::Level_09, false);
+	LevelClearedMap.Add(ELevelID::Level_10, false);
 }
 
 void UAuraGameInstance::SaveSlotData(UMVVM_LoadMenuSaveSlot* SaveSlotViewModel)

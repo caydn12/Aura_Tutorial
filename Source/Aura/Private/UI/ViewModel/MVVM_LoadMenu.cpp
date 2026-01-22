@@ -106,9 +106,15 @@ void UMVVM_LoadMenu::LoadSaveData()
 				SaveSlotViewModel.Value->SetPlayerName(LoadMenuSaveObject->PlayerName);
 				SaveSlotViewModel.Value->SetPlayerLevel(LoadMenuSaveObject->PlayerLevel);
 
-				AuraGameInstance->LevelClearedMap.Empty();
-				AuraGameInstance->LevelClearedMap = LoadMenuSaveObject->LevelClearedMap;
-
+				if (LoadMenuSaveObject->LevelClearedMap.Num() > 0)
+				{
+					AuraGameInstance->LevelClearedMap.Empty();
+					AuraGameInstance->LevelClearedMap = LoadMenuSaveObject->LevelClearedMap;
+				}
+				else
+				{
+					AuraGameInstance->ResetLevelClearedData();
+				}
 				// LoadMenuSaveGame.h defaults PlayerName to "Default Name".
 				// Save data is always created, and will have default data if unaffected by the user.
 				// In that case, we want to show the slot as vacant. If the name has changed, the slot is taken by the user.
