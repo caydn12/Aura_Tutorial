@@ -33,6 +33,11 @@ void AAuraEnemyGoalpointSpawner::BeginPlay()
 		this, &AAuraEnemyGoalpointSpawner::OnSphereOverlap
 	);
 
+	if (GoalpointState == EGoalpointState::Active)
+	{
+		GoalpointState = EGoalpointState::Idle;
+	}
+
 	SetState(GoalpointState);
 }
 

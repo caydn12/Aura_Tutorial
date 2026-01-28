@@ -30,7 +30,6 @@ void UAuraGameInstance::SetCompletedGoalpoints(const int32 NewCompletedGoalpoint
 
 void UAuraGameInstance::SetLevelCleared(ELevelID LevelID, bool bCleared)
 {
-
 	if (bCleared != IsLevelCleared(LevelID))
 	{
 		LevelClearedMap[LevelID] = bCleared;
@@ -49,8 +48,6 @@ void UAuraGameInstance::ResetLevelClearedData()
 	LevelClearedMap.Add(ELevelID::Level_06, false);
 	LevelClearedMap.Add(ELevelID::Level_07, false);
 	LevelClearedMap.Add(ELevelID::Level_08, false);
-	LevelClearedMap.Add(ELevelID::Level_09, false);
-	LevelClearedMap.Add(ELevelID::Level_10, false);
 }
 
 void UAuraGameInstance::SaveSlotData(UMVVM_LoadMenuSaveSlot* SaveSlotViewModel)
