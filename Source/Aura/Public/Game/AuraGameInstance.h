@@ -6,8 +6,8 @@
 #include "Engine/GameInstance.h"
 #include "AuraGameInstance.generated.h"
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnCompletedGoalpointsChangedGISignature, int32 /*NewCompletedGoalpoints*/);
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnLevelClearedChangedSignature, bool /*bCleared*/);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnCompletedGoalpointsChangedGISignature, int32 /*NewCompletedGoalpoints*/)
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnLevelClearedChangedSignature, bool /*bCleared*/)
 
 UENUM(BlueprintType)
 enum class ELevelID : uint8
