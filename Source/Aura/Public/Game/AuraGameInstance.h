@@ -80,6 +80,7 @@ public:
 
 	void TravelToMap(UMVVM_LoadMenuSaveSlot* SaveSlot);
 
+	UFUNCTION(BlueprintCallable, Category = "System|Map")
 	FString GetMapNameFromMapAssetName(const FString& MapAssetName) const;
 
 	UPROPERTY(EditDefaultsOnly)
