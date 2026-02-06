@@ -8,6 +8,7 @@
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnCompletedGoalpointsChangedGISignature, int32 /*NewCompletedGoalpoints*/)
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnLevelClearedChangedSignature, bool /*bCleared*/)
+DECLARE_MULTICAST_DELEGATE(FOnGoalpointsCompletedSignature)
 
 UENUM(BlueprintType)
 enum class ELevelID : uint8
@@ -50,9 +51,14 @@ public:
 	bool IsLevelCleared(ELevelID LevelID) const { return LevelClearedMap.Contains(LevelID) ? LevelClearedMap[LevelID] : false; }
 
 	UFUNCTION()
+	bool AreAllGoalpointsCompleted() const;
+
+	UFUNCTION()
 	void ResetLevelClearedData();
 
 	FOnLevelClearedChangedSignature OnLevelClearedChangedDelegate;
+
+	FOnGoalpointsCompletedSignature OnGoalpointsCompletedDelegate;
 
 	// Player Start Data
 	UPROPERTY()

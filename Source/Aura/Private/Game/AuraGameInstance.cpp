@@ -34,7 +34,17 @@ void UAuraGameInstance::SetLevelCleared(ELevelID LevelID, bool bCleared)
 	{
 		LevelClearedMap[LevelID] = bCleared;
 		OnLevelClearedChangedDelegate.Broadcast(LevelClearedMap[LevelID]);
+
+		if (AreAllGoalpointsCompleted())
+		{
+			OnGoalpointsCompletedDelegate.Broadcast();
+		}
 	}
+}
+
+bool UAuraGameInstance::AreAllGoalpointsCompleted() const
+{
+	return CompletedGoalpoints == 8;
 }
 
 void UAuraGameInstance::ResetLevelClearedData()

@@ -95,6 +95,7 @@ void AAuraCharacter::LoadProgress()
 				}
 
 				// Load Attributes
+				// Would need to create a library function for vital attributes to load from save data. Currently system always spawns in at max hp.
 				UAuraAbilitySystemLibrary::InitializeDefaultAttributesFromSaveData(this, AbilitySystemComponent, SaveData);
 				ApplyEffectToSelf(DefaultSecondaryAttributes, SaveData->PlayerLevel);
 				ApplyEffectToSelf(DefaultVitalAttributes, SaveData->PlayerLevel);
