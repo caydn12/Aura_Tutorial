@@ -4,7 +4,9 @@
 #include "Game/AuraGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/PlayerStart.h"
+#include "GameFramework/Character.h"
 #include "Game/AuraGameInstance.h"
+#include "Game/LoadMenuSaveGame.h"
 
 AActor* AAuraGameModeBase::ChoosePlayerStart_Implementation(AController* Player)
 {
@@ -37,4 +39,16 @@ AActor* AAuraGameModeBase::ChoosePlayerStart_Implementation(AController* Player)
 
 
 	return ChosenStart;
+}
+
+void AAuraGameModeBase::PlayerDied(ACharacter* DeadCharacter)
+{
+	if (UAuraGameInstance* AuraGameInstance = Cast<UAuraGameInstance>(GetGameInstance()))
+	{
+		ULoadMenuSaveGame* SaveGame = AuraGameInstance->GetInGameSaveData();
+		if (SaveGame)
+		{
+			UGameplayStatics::OpenLevel(DeadCharacter, FName(SaveGame->MapAssetName));
+		}
+	}
 }

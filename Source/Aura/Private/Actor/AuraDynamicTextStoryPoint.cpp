@@ -8,10 +8,7 @@
 
 void AAuraDynamicTextStoryPoint::LoadActor_Implementation()
 {
-	if (bGameWon)
-	{
-		SetStoryPointText(CompletedText);
-	}
+	// Not necessary in this actor. Must be implemented.
 }
 
 void AAuraDynamicTextStoryPoint::SetStoryPointText(const FText& NewText)

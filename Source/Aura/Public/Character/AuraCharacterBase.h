@@ -58,6 +58,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
 	ECharacterClass CharacterClass = ECharacterClass::Warrior;
 
+	UPROPERTY(BlueprintReadOnly)
 	bool bDead = false;
 
 	int32 MinionCount = 0;

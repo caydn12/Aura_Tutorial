@@ -43,6 +43,7 @@ void UMVVM_LoadMenu::NewSaveSlotButtonPressed(int32 SlotIndex, const FString& En
 		SaveSlotViewModels[SlotIndex]->SetMapName(AuraGameInstance->DefaultMapName);
 		SaveSlotViewModels[SlotIndex]->SetPlayerLevel(1);
 		SaveSlotViewModels[SlotIndex]->SetCompletedGoalpoints(0);
+		SaveSlotViewModels[SlotIndex]->MapAssetName = AuraGameInstance->DefaultMap.ToSoftObjectPath().GetAssetName();
 
 		if (AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(this)))
 		{
@@ -87,6 +88,13 @@ void UMVVM_LoadMenu::PlayButtonPressed()
 			AuraGameInstance->PlayerStartTag = SelectedSaveSlotViewModel->GetPlayerStartTag();
 			AuraGameInstance->SaveSlotName = SelectedSaveSlotViewModel->GetSaveSlotName();
 			AuraGameInstance->CompletedGoalpoints = SelectedSaveSlotViewModel->GetCompletedGoalpoints();
+
+			TMap<ELevelID, bool> SaveDataLevelClearedMap = AuraGameInstance->GetSaveSlotData(AuraGameInstance->SaveSlotName)->LevelClearedMap;
+			if (SaveDataLevelClearedMap.Num() > 0)
+			{
+				AuraGameInstance->LevelClearedMap.Empty();
+				AuraGameInstance->LevelClearedMap = SaveDataLevelClearedMap;
+			}
 
 			AuraGameInstance->TravelToMap(SelectedSaveSlotViewModel);
 		}

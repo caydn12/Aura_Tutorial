@@ -44,7 +44,16 @@ void UAuraGameInstance::SetLevelCleared(ELevelID LevelID, bool bCleared)
 
 bool UAuraGameInstance::AreAllGoalpointsCompleted() const
 {
-	return CompletedGoalpoints == 8;
+	bool bAllCleared = true;
+	for (const auto& LevelClearedPair : LevelClearedMap)
+	{
+		if (!LevelClearedPair.Value)
+		{
+			bAllCleared = false;
+			break;
+		}
+	}
+	return bAllCleared;
 }
 
 void UAuraGameInstance::ResetLevelClearedData()
@@ -69,6 +78,7 @@ void UAuraGameInstance::SaveSlotData(UMVVM_LoadMenuSaveSlot* SaveSlotViewModel)
 
 	LoadMenuSaveGameObject->PlayerName = SaveSlotViewModel->GetPlayerName();
 	LoadMenuSaveGameObject->MapName = SaveSlotViewModel->GetMapName();
+	LoadMenuSaveGameObject->MapAssetName = SaveSlotViewModel->MapAssetName;
 	LoadMenuSaveGameObject->PlayerStartTag = SaveSlotViewModel->GetPlayerStartTag();
 	LoadMenuSaveGameObject->PlayerLevel = SaveSlotViewModel->GetPlayerLevel();
 	LoadMenuSaveGameObject->CompletedGoalpoints = SaveSlotViewModel->GetCompletedGoalpoints();

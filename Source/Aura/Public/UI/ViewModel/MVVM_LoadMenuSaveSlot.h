@@ -56,6 +56,9 @@ public:
 	FText GetEnteredName() const { return EnteredName; }
 	bool GetEnteredNameValid() const { return EnteredNameValid; }
 
+	UPROPERTY()
+	FString MapAssetName;
+
 private:
 	// Field Notifies for UI Binding
 

@@ -303,6 +303,7 @@ void AAuraCharacterBase::MulticastHandleDeath_Implementation(const FVector& Deat
 	bDead = true;
 	BurnDebuffComponent->Deactivate();
 	StunDebuffComponent->Deactivate();
+	PhysicalDebuffComponent->Deactivate();
 	OnDeath.Broadcast(this);
 }
 
