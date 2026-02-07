@@ -32,6 +32,9 @@ protected:
 	virtual void StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount) override;
 	virtual void PhysicalTagChanged(const FGameplayTag CallbackTag, int32 NewCount) override;
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void SpawnLoot();
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (ExposeOnSpawn = "true"), Category = "Character Class Defaults")
 	int32 Level = 1;
 

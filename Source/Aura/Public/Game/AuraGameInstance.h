@@ -29,6 +29,7 @@ class UAbilityInfo;
 class UMVVM_LoadMenuSaveSlot;
 class USaveGame;
 class ULoadMenuSaveGame;
+class ULootTiers;
 
 UCLASS()
 class AURA_API UAuraGameInstance : public UGameInstance
@@ -115,6 +116,10 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Ability Info")
 	TObjectPtr<UAbilityInfo> AbilityInfo;
+
+	// Loot
+	UPROPERTY(EditDefaultsOnly, Category = "Loot Tiers")
+	TObjectPtr<ULootTiers> LootTiers;
 
 	FOnCompletedGoalpointsChangedGISignature OnCompletedGoalpointsChangedGIDelegate;
 

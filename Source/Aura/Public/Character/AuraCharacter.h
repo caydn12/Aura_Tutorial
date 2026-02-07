@@ -45,7 +45,7 @@ public:
 
 	// Death
 	UPROPERTY(EditDefaultsOnly)
-	float DeathTime = 5.f;
+	float DeathTime = 3.f;
 
 	FTimerHandle DeathTimerHandle;
 

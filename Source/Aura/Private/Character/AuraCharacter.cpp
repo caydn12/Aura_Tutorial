@@ -301,7 +301,7 @@ void AAuraCharacter::Die(const FVector& DeathImpulse)
 	DeathTimerDelegate.BindLambda(
 		[this]()
 		{
-			AAuraGameModeBase* AuraGM = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(this));
+			AAuraGameModeBase* AuraGM = GetWorld()->GetAuthGameMode<AAuraGameModeBase>();
 			if (AuraGM)
 			{
 				AuraGM->PlayerDied(this);

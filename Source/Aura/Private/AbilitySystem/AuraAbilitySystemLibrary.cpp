@@ -15,6 +15,7 @@
 #include "Engine/OverlapResult.h"
 #include "AbilitySystem/Data/CharacterClassInfo.h"
 #include "AbilitySystem/Data/AbilityInfo.h"
+#include "AbilitySystem/Data/LootTiers.h"
 #include "AuraGameplayTags.h"
 #include "Game/LoadMenuSaveGame.h"
 
@@ -165,6 +166,17 @@ UAbilityInfo* UAuraAbilitySystemLibrary::GetAbilityInfo(const UObject* WorldCont
 		AbilityInfo = AuraGameInstance->AbilityInfo;
 	}
 	return AbilityInfo;
+}
+
+ULootTiers* UAuraAbilitySystemLibrary::GetLootTiers(const UObject* WorldContextObject)
+{
+	ULootTiers* LootTiers = nullptr;
+	const UAuraGameInstance* AuraGameInstance = Cast<UAuraGameInstance>(UGameplayStatics::GetGameInstance(WorldContextObject));
+	if (AuraGameInstance)
+	{
+		LootTiers = AuraGameInstance->LootTiers;
+	}
+	return LootTiers;
 }
 
 bool UAuraAbilitySystemLibrary::IsBlockedHit(const FGameplayEffectContextHandle& EffectContextHandle)
