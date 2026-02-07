@@ -182,11 +182,44 @@ void AAuraCharacterBase::SetIsBeingShocked_Implementation(bool bInBeingShocked)
 
 FVector AAuraCharacterBase::GetCharacterLocationOnFloor_Implementation() const
 {
-	FVector FoundLocation = FVector::ZeroVector;
-	if (GetCharacterMovement()->CurrentFloor.IsWalkableFloor())
+	FVector FoundLocation = GetActorLocation();
+	if (GetCharacterMovement() && 
+		GetCharacterMovement()->CurrentFloor.IsWalkableFloor() &&
+		GetCharacterMovement()->CurrentFloor.HitResult.bBlockingHit)
 	{
 		FoundLocation = GetCharacterMovement()->CurrentFloor.HitResult.ImpactPoint;
 	}
+	else
+	{
+		UWorld* World = GetWorld();
+		if (World)
+		{
+			const FVector Start = GetActorLocation() + FVector(0.0f, 0.0f, 50.0f);
+			const FVector End = GetActorLocation() - FVector(0.0f, 0.0f, 500.0f);
+
+			DrawDebugLine(World, Start, End, FColor::Red, false, 2.0f, 0, 2.0f);
+
+			FHitResult Hit;
+			FCollisionQueryParams Params(SCENE_QUERY_STAT(GetCharacterLocationOnFloor), false);
+			Params.AddIgnoredActor(this);
+
+			if (const USkeletalMeshComponent* SkeletalMesh = GetMesh())
+			{
+				Params.AddIgnoredComponent(SkeletalMesh);
+			}
+			if (const UCapsuleComponent* Capsule = GetCapsuleComponent())
+			{
+				Params.AddIgnoredComponent(Capsule);
+			}
+
+			if (World->LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility, Params))
+			{
+				DrawDebugSphere(World, Hit.ImpactPoint, 20.f, 12, FColor::Green, false, 2.0f);
+				FoundLocation = Hit.ImpactPoint;
+			}
+		}
+	}
+
 	return FoundLocation;
 }
 
