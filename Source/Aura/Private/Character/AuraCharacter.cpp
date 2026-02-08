@@ -297,6 +297,11 @@ void AAuraCharacter::Die(const FVector& DeathImpulse)
 {
 	Super::Die(DeathImpulse);
 
+	if (APlayerController* PC = Cast<APlayerController>(GetController()))
+	{
+		PC->DisableInput(PC);
+	}
+
 	FTimerDelegate DeathTimerDelegate;
 	DeathTimerDelegate.BindLambda(
 		[this]()
