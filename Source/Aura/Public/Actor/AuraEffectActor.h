@@ -80,10 +80,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pickup Movement")
 	FVector InitialLocation;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Pickup Movement")
+	UPROPERTY(BlueprintReadWrite, Category = "Pickup Movement")
 	FVector CalculatedLocation;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Pickup Movement")
+	UPROPERTY(BlueprintReadWrite, Category = "Pickup Movement")
 	FRotator CalculatedRotation;
 
 	// End Movement
