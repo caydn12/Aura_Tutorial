@@ -197,8 +197,6 @@ FVector AAuraCharacterBase::GetCharacterLocationOnFloor_Implementation() const
 			const FVector Start = GetActorLocation() + FVector(0.0f, 0.0f, 50.0f);
 			const FVector End = GetActorLocation() - FVector(0.0f, 0.0f, 500.0f);
 
-			DrawDebugLine(World, Start, End, FColor::Red, false, 2.0f, 0, 2.0f);
-
 			FHitResult Hit;
 			FCollisionQueryParams Params(SCENE_QUERY_STAT(GetCharacterLocationOnFloor), false);
 			Params.AddIgnoredActor(this);
@@ -214,7 +212,6 @@ FVector AAuraCharacterBase::GetCharacterLocationOnFloor_Implementation() const
 
 			if (World->LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility, Params))
 			{
-				DrawDebugSphere(World, Hit.ImpactPoint, 20.f, 12, FColor::Green, false, 2.0f);
 				FoundLocation = Hit.ImpactPoint;
 			}
 		}

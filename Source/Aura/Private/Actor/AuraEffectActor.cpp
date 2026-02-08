@@ -4,17 +4,53 @@
 #include "Actor/AuraEffectActor.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 AAuraEffectActor::AAuraEffectActor()
 {
- 	PrimaryActorTick.bCanEverTick = false;
+ 	PrimaryActorTick.bCanEverTick = true;
 
 	SetRootComponent(CreateDefaultSubobject<USceneComponent>(TEXT("SceneRoot")));
+}
+
+void AAuraEffectActor::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if (bSinusoidalMovement)
+	{
+		RunningTime += DeltaTime;
+
+		const float SinePeriod = ((2 * PI) / SinePeriodConstant);
+
+		if (RunningTime > SinePeriod)
+		{
+			RunningTime = 0.f;
+		}
+	}
+	HandleSinusoidalMovement(DeltaTime);
 }
 
 void AAuraEffectActor::BeginPlay()
 {
 	Super::BeginPlay();
+	InitialLocation = GetActorLocation();
+	CalculatedLocation = InitialLocation;
+	CalculatedRotation = GetActorRotation();
+}
+
+void AAuraEffectActor::StartRotation()
+{
+	bRotates = true;
+	CalculatedRotation = GetActorRotation();
+}
+
+void AAuraEffectActor::StartSinusoidalMovement()
+{
+	RunningTime = 0.f;
+	bSinusoidalMovement = true;
+	InitialLocation = GetActorLocation();
+	CalculatedLocation = InitialLocation;
 }
 
 void AAuraEffectActor::ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGameplayEffect> GameplayEffectClass, const EEffectRemovalPolicy RemovalPolicy)
@@ -87,15 +123,19 @@ void AAuraEffectActor::EvaluateEffectsForRemoval(AActor* TargetActor, const TArr
 void AAuraEffectActor::OnOverlap(AActor* TargetActor)
 {
 	const bool bIsEnemy = TargetActor->ActorHasTag(FName("Enemy"));
+	const bool bIsPlayer = TargetActor->ActorHasTag(FName("Player"));
 	if (!bIsEnemy || (bIsEnemy && bApplyEffectsToEnemies))
 	{
-		EvaluateEffectsForApplication(TargetActor, InstantEffects, EEffectApplicationPolicy::ApplyOnOverlap);
-		EvaluateEffectsForApplication(TargetActor, DurationEffects, EEffectApplicationPolicy::ApplyOnOverlap);
-		EvaluateEffectsForApplication(TargetActor, InfiniteEffects, EEffectApplicationPolicy::ApplyOnOverlap);
-
-		if (bDestroyOnEffectApplication)
+		if (bIsPlayer)
 		{
-			Destroy();
+			EvaluateEffectsForApplication(TargetActor, InstantEffects, EEffectApplicationPolicy::ApplyOnOverlap);
+			EvaluateEffectsForApplication(TargetActor, DurationEffects, EEffectApplicationPolicy::ApplyOnOverlap);
+			EvaluateEffectsForApplication(TargetActor, InfiniteEffects, EEffectApplicationPolicy::ApplyOnOverlap);
+
+			if (bDestroyOnEffectApplication)
+			{
+				Destroy();
+			}
 		}
 	}
 }
@@ -103,16 +143,36 @@ void AAuraEffectActor::OnOverlap(AActor* TargetActor)
 void AAuraEffectActor::OnEndOverlap(AActor* TargetActor)
 {
 	const bool bIsEnemy = TargetActor->ActorHasTag(FName("Enemy"));
+	const bool bIsPlayer = TargetActor->ActorHasTag(FName("Player"));
+
 	if (!bIsEnemy || (bIsEnemy && bApplyEffectsToEnemies))
 	{
-		EvaluateEffectsForApplication(TargetActor, InstantEffects, EEffectApplicationPolicy::ApplyOnEndOverlap);
-		EvaluateEffectsForApplication(TargetActor, DurationEffects, EEffectApplicationPolicy::ApplyOnEndOverlap);
-		EvaluateEffectsForApplication(TargetActor, InfiniteEffects, EEffectApplicationPolicy::ApplyOnEndOverlap);
-		EvaluateEffectsForRemoval(TargetActor, InfiniteEffects, EEffectRemovalPolicy::RemoveOnEndOverlap);
-
-		if (bDestroyOnEffectRemoval)
+		if (bIsPlayer)
 		{
-			Destroy();
+			EvaluateEffectsForApplication(TargetActor, InstantEffects, EEffectApplicationPolicy::ApplyOnEndOverlap);
+			EvaluateEffectsForApplication(TargetActor, DurationEffects, EEffectApplicationPolicy::ApplyOnEndOverlap);
+			EvaluateEffectsForApplication(TargetActor, InfiniteEffects, EEffectApplicationPolicy::ApplyOnEndOverlap);
+			EvaluateEffectsForRemoval(TargetActor, InfiniteEffects, EEffectRemovalPolicy::RemoveOnEndOverlap);
+
+			if (bDestroyOnEffectRemoval)
+			{
+				Destroy();
+			}
 		}
+	}
+}
+
+void AAuraEffectActor::HandleSinusoidalMovement(float DeltaTime)
+{
+	if (bRotates)
+	{
+		const FRotator DeltaRotation(0.f, DeltaTime * RotationRate, 0.f);
+		CalculatedRotation = UKismetMathLibrary::ComposeRotators(CalculatedRotation, DeltaRotation);
+	}
+
+	if (bSinusoidalMovement)
+	{
+		const float DeltaHeight = SineAmplitude * FMath::Sin(RunningTime * SinePeriodConstant);
+		CalculatedLocation = InitialLocation + FVector(0.f, 0.f, DeltaHeight);
 	}
 }
