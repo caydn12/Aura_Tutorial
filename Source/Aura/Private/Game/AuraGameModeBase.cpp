@@ -48,6 +48,20 @@ void AAuraGameModeBase::PlayerDied(ACharacter* DeadCharacter)
 		ULoadMenuSaveGame* SaveGame = AuraGameInstance->GetInGameSaveData();
 		if (SaveGame)
 		{
+			if (SaveGame->CompletedGoalpoints < AuraGameInstance->GetCompletedGoalpoints())
+			{
+				AuraGameInstance->SetCompletedGoalpoints(SaveGame->CompletedGoalpoints);
+				if (SaveGame->LevelClearedMap.IsEmpty())
+				{
+					AuraGameInstance->ResetLevelClearedData();
+				}
+				else
+				{
+					AuraGameInstance->LevelClearedMap.Empty();
+					AuraGameInstance->LevelClearedMap = SaveGame->LevelClearedMap;
+				}
+			}
+
 			UGameplayStatics::OpenLevel(DeadCharacter, FName(SaveGame->MapAssetName));
 		}
 	}
